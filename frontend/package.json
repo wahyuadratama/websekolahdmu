@@ -1,0 +1,29 @@
+{
+  "name": "dmu-frontend",
+  "version": "1.0.0",
+  "description": "Frontend Website Pondok Pesantren Modern Darul Mukhlisin dengan Next.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "dompurify": "^3.0.9",
+    "jsdom": "^23.0.1",
+    "autoprefixer": "^10.4.16",
+    "axios": "^1.6.2",
+    "next": "^14.2.21",
+    "postcss": "^8.4.32",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-quill": "^2.0.0",
+    "sweetalert2": "^11.26.17",
+    "tailwindcss": "^3.4.0",
+    "quill": "^2.0.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.55.0",
+    "eslint-config-next": "^14.0.4"
+  }
+}

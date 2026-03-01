@@ -1,0 +1,11 @@
+{
+  "name": "webskolahdmu-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "setup": "bash ./setup.sh",
+    "start:backend": "npm --prefix backend run start",
+    "start:frontend": "npm --prefix frontend run start",
+    "build:frontend": "npm --prefix frontend run build"
+  }
+}

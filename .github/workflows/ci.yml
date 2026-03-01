@@ -1,0 +1,35 @@
+name: CI Build
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install backend deps
+        run: npm --prefix backend ci
+
+      - name: Install frontend deps
+        run: npm --prefix frontend ci
+
+      - name: Build frontend
+        run: npm --prefix frontend run build
+
+      - name: Summary
+        run: |
+          echo "✅ Backend install: SUCCESS"
+          echo "✅ Frontend install: SUCCESS"
+          echo "✅ Frontend build: SUCCESS"
