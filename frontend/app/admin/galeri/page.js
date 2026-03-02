@@ -106,8 +106,8 @@ export default function GaleriPage() {
     <AdminLayout title="Kelola Galeri">
       <div>
         {/* Form Section */}
-        <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
-          <h3 className="text-xl font-bold mb-4">
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200 mb-6">
+          <h3 className="text-lg sm:text-xl font-bold mb-4">
             {editId ? 'Edit Galeri' : 'Tambah Foto Galeri'}
           </h3>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -120,7 +120,7 @@ export default function GaleriPage() {
                 required
                 value={form.judul}
                 onChange={(e) => setForm({ ...form, judul: e.target.value })}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500"
                 placeholder="Masukkan judul foto"
               />
             </div>
@@ -130,7 +130,7 @@ export default function GaleriPage() {
                 type="text"
                 value={form.deskripsi}
                 onChange={(e) => setForm({ ...form, deskripsi: e.target.value })}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500"
                 placeholder="Deskripsi foto (opsional)"
               />
             </div>
@@ -141,31 +141,33 @@ export default function GaleriPage() {
                 onChange={(url) => setForm({ ...form, url })}
               />
             </div>
-            <div className="flex space-x-4">
-              <button
-                type="submit"
-                disabled={loading}
-                className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition disabled:opacity-50"
-              >
-                <i className="fas fa-save mr-2"></i>
-                {loading ? 'Menyimpan...' : 'Simpan'}
-              </button>
-              {editId && (
+            <div className="sticky bottom-2 z-10 -mx-2 rounded-xl border border-slate-200 bg-white/95 p-3 shadow-md backdrop-blur sm:mx-0">
+              <div className="flex flex-wrap gap-3">
                 <button
-                  type="button"
-                  onClick={handleCancel}
-                  className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition"
+                  type="submit"
+                  disabled={loading}
+                  className="rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 px-6 py-2 text-white hover:opacity-95 transition disabled:opacity-50"
                 >
-                  <i className="fas fa-times mr-2"></i>Batal
+                  <i className="fas fa-save mr-2"></i>
+                  {loading ? 'Menyimpan...' : 'Simpan'}
                 </button>
-              )}
+                {editId && (
+                  <button
+                    type="button"
+                    onClick={handleCancel}
+                    className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition"
+                  >
+                    <i className="fas fa-times mr-2"></i>Batal
+                  </button>
+                )}
+              </div>
             </div>
           </form>
         </div>
 
         {/* Gallery Grid */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h3 className="text-xl font-bold mb-4">Daftar Galeri ({galeri.length})</h3>
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
+          <h3 className="text-lg sm:text-xl font-bold mb-4">Daftar Galeri ({galeri.length})</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {galeri.length === 0 ? (
               <p className="col-span-4 text-center py-4 text-gray-600">Belum ada foto</p>
@@ -207,3 +209,6 @@ export default function GaleriPage() {
     </AdminLayout>
   );
 }
+
+
+

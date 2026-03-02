@@ -73,9 +73,9 @@ export default function PesanPage() {
   return (
     <AdminLayout title="Kelola Pesan">
       <div>
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-bold">
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <h3 className="text-lg sm:text-xl font-bold">
               Pesan Masuk ({unreadCount} belum dibaca)
             </h3>
             {unreadCount > 0 && (
@@ -84,13 +84,39 @@ export default function PesanPage() {
               </span>
             )}
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
+          <div className="space-y-3 md:hidden">
+            {pesan.length === 0 ? (
+              <div className="rounded-lg border border-slate-200 p-4 text-center text-sm text-gray-600">Belum ada pesan</div>
+            ) : (
+              pesan.map((item) => (
+                <div key={item.id} className={`rounded-lg border p-4 ${item.status === 'unread' ? 'border-blue-200 bg-blue-50/40' : 'border-slate-200'}`}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-semibold text-slate-800">{item.nama}</p>
+                      <p className="text-xs text-slate-500">{item.email || 'Email tidak diisi'}</p>
+                    </div>
+                    {item.status === 'unread' && <span className="rounded bg-blue-500 px-2 py-1 text-xs font-semibold text-white">Baru</span>}
+                  </div>
+                  <p className="mt-2 text-sm text-slate-700">{item.subjek}</p>
+                  <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
+                    <span>{new Date(item.createdAt).toLocaleDateString('id-ID')}</span>
+                    <div className="space-x-1">
+                      <button onClick={() => handleView(item)} className="rounded-md px-2 py-1 text-blue-600 hover:bg-blue-100" title="Lihat Detail"><i className="fas fa-eye"></i></button>
+                      <button onClick={() => handleDelete(item.id)} className="rounded-md px-2 py-1 text-red-600 hover:bg-red-100" title="Hapus"><i className="fas fa-trash"></i></button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          <div className="-mx-4 hidden overflow-x-auto px-4 sm:mx-0 sm:px-0 md:block">
+            <table className="w-full min-w-[720px]">
               <thead className="bg-gray-100">
                 <tr>
                   <th className="px-4 py-2 text-left">Status</th>
                   <th className="px-4 py-2 text-left">Nama</th>
-                  <th className="px-4 py-2 text-left">Email</th>
+                  <th className="px-4 py-2 text-left">Email (Opsional)</th>
                   <th className="px-4 py-2 text-left">Subjek</th>
                   <th className="px-4 py-2 text-left">Tanggal</th>
                   <th className="px-4 py-2 text-center">Aksi</th>
@@ -98,47 +124,18 @@ export default function PesanPage() {
               </thead>
               <tbody>
                 {pesan.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className="text-center py-4 text-gray-600">
-                      Belum ada pesan
-                    </td>
-                  </tr>
+                  <tr><td colSpan="6" className="text-center py-4 text-gray-600">Belum ada pesan</td></tr>
                 ) : (
                   pesan.map((item) => (
-                    <tr
-                      key={item.id}
-                      className={`border-b hover:bg-gray-50 ${
-                        item.status === 'unread' ? 'bg-blue-50' : ''
-                      }`}
-                    >
-                      <td className="px-4 py-3">
-                        {item.status === 'unread' && (
-                          <span className="bg-blue-500 text-white px-2 py-1 rounded text-xs font-semibold">
-                            Baru
-                          </span>
-                        )}
-                      </td>
+                    <tr key={item.id} className={`border-b hover:bg-gray-50 ${item.status === 'unread' ? 'bg-blue-50' : ''}`}>
+                      <td className="px-4 py-3">{item.status === 'unread' && <span className="bg-blue-500 text-white px-2 py-1 rounded text-xs font-semibold">Baru</span>}</td>
                       <td className="px-4 py-3 font-semibold">{item.nama}</td>
-                      <td className="px-4 py-3">{item.email}</td>
+                      <td className="px-4 py-3">{item.email || <span className="text-gray-400 italic">Tidak diisi</span>}</td>
                       <td className="px-4 py-3">{item.subjek}</td>
-                      <td className="px-4 py-3">
-                        {new Date(item.createdAt).toLocaleDateString('id-ID')}
-                      </td>
+                      <td className="px-4 py-3">{new Date(item.createdAt).toLocaleDateString('id-ID')}</td>
                       <td className="px-4 py-3 text-center space-x-2">
-                        <button
-                          onClick={() => handleView(item)}
-                          className="text-blue-600 hover:text-blue-800"
-                          title="Lihat Detail"
-                        >
-                          <i className="fas fa-eye"></i>
-                        </button>
-                        <button
-                          onClick={() => handleDelete(item.id)}
-                          className="text-red-600 hover:text-red-800"
-                          title="Hapus"
-                        >
-                          <i className="fas fa-trash"></i>
-                        </button>
+                        <button onClick={() => handleView(item)} className="text-blue-600 hover:text-blue-800" title="Lihat Detail"><i className="fas fa-eye"></i></button>
+                        <button onClick={() => handleDelete(item.id)} className="text-red-600 hover:text-red-800" title="Hapus"><i className="fas fa-trash"></i></button>
                       </td>
                     </tr>
                   ))
@@ -152,8 +149,8 @@ export default function PesanPage() {
         {selectedPesan && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold">Detail Pesan</h3>
+              <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h3 className="text-lg sm:text-xl font-bold">Detail Pesan</h3>
                 <button
                   onClick={() => setSelectedPesan(null)}
                   className="text-gray-600 hover:text-gray-800"
@@ -169,12 +166,11 @@ export default function PesanPage() {
                 <div>
                   <label className="font-semibold text-gray-700">Email:</label>
                   <p>
-                    <a
-                      href={`mailto:${selectedPesan.email}`}
-                      className="text-blue-600 hover:underline"
-                    >
-                      {selectedPesan.email}
-                    </a>
+                    {selectedPesan.email ? (
+                      <a href={`mailto:${selectedPesan.email}`} className="text-blue-600 hover:underline">{selectedPesan.email}</a>
+                    ) : (
+                      <span className="text-gray-500 italic">Tidak diisi</span>
+                    )}
                   </p>
                 </div>
                 <div>
@@ -191,13 +187,15 @@ export default function PesanPage() {
                   <label className="font-semibold text-gray-700">Tanggal:</label>
                   <p>{new Date(selectedPesan.createdAt).toLocaleString('id-ID')}</p>
                 </div>
-                <div className="flex space-x-2 pt-4">
-                  <a
-                    href={`mailto:${selectedPesan.email}?subject=Re: ${selectedPesan.subjek}`}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
-                  >
-                    <i className="fas fa-reply mr-2"></i>Balas via Email
-                  </a>
+                <div className="flex flex-wrap gap-2 pt-4">
+                  {selectedPesan.email && (
+                    <a
+                      href={`mailto:${selectedPesan.email}?subject=Re: ${selectedPesan.subjek}`}
+                      className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+                    >
+                      <i className="fas fa-reply mr-2"></i>Balas via Email
+                    </a>
+                  )}
                   <button
                     onClick={() => handleDelete(selectedPesan.id)}
                     className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
@@ -213,3 +211,7 @@ export default function PesanPage() {
     </AdminLayout>
   );
 }
+
+
+
+

@@ -54,13 +54,13 @@ export default function SettingsPage() {
     <AdminLayout title="Pengaturan">
       <div>
         {/* Form Section */}
-        <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
-          <h3 className="text-xl font-bold mb-4">Statistik Website</h3>
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200 mb-6">
+          <h3 className="text-lg sm:text-xl font-bold mb-4">Statistik Website</h3>
           <p className="text-gray-600 mb-6">
             Update angka statistik yang ditampilkan di halaman utama website
           </p>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid gap-4 md:grid-cols-2">
               <div>
                 <label className="block text-gray-700 mb-2 font-semibold">
                   <i className="fas fa-users text-blue-600 mr-2"></i>
@@ -72,7 +72,7 @@ export default function SettingsPage() {
                   min="0"
                   value={stats.siswa}
                   onChange={(e) => setStats({ ...stats, siswa: parseInt(e.target.value) || 0 })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500"
                 />
               </div>
               <div>
@@ -86,11 +86,11 @@ export default function SettingsPage() {
                   min="0"
                   value={stats.guru}
                   onChange={(e) => setStats({ ...stats, guru: parseInt(e.target.value) || 0 })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500"
                 />
               </div>
             </div>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid gap-4 md:grid-cols-2">
               <div>
                 <label className="block text-gray-700 mb-2 font-semibold">
                   <i className="fas fa-book text-purple-600 mr-2"></i>
@@ -104,7 +104,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     setStats({ ...stats, keahlian: parseInt(e.target.value) || 0 })
                   }
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500"
                 />
               </div>
               <div>
@@ -120,14 +120,14 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     setStats({ ...stats, prestasi: parseInt(e.target.value) || 0 })
                   }
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500"
                 />
               </div>
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition disabled:opacity-50"
+              className="rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 px-6 py-2 text-white hover:opacity-95 transition disabled:opacity-50"
             >
               <i className="fas fa-save mr-2"></i>
               {loading ? 'Menyimpan...' : 'Simpan Perubahan'}
@@ -136,12 +136,12 @@ export default function SettingsPage() {
         </div>
 
         {/* Preview Section */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h3 className="text-xl font-bold mb-4">Preview Statistik</h3>
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
+          <h3 className="text-lg sm:text-xl font-bold mb-4">Preview Statistik</h3>
           <p className="text-gray-600 mb-6">
             Tampilan statistik yang akan muncul di halaman utama website
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg text-center">
               <i className="fas fa-users text-4xl text-blue-600 mb-2"></i>
               <h4 className="text-3xl font-bold text-blue-600">{stats.siswa}</h4>
@@ -168,3 +168,7 @@ export default function SettingsPage() {
     </AdminLayout>
   );
 }
+
+
+
+

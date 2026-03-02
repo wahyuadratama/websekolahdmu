@@ -110,11 +110,6 @@ class ValidationMiddleware {
       .trim()
       .notEmpty().withMessage('Nama harus diisi')
       .isLength({ min: 3 }).withMessage('Nama minimal 3 karakter'),
-    body('email')
-      .trim()
-      .notEmpty().withMessage('Email harus diisi')
-      .isEmail().withMessage('Format email tidak valid')
-      .normalizeEmail(),
     body('subjek')
       .trim()
       .notEmpty().withMessage('Subjek harus diisi')

@@ -7,6 +7,7 @@ import { API_BASE } from '@/lib/config';
 export default function PendaftaranSection() {
   const [pendaftar, setPendaftar] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     fetch(`${API_BASE}/pendaftaran/count`)
@@ -17,6 +18,18 @@ export default function PendaftaranSection() {
         }
       })
       .catch(err => console.error('Error:', err));
+  }, []);
+
+  useEffect(() => {
+    const checkHash = () => {
+      if (window.location.hash === '#pendaftaran') {
+        setIsOpen(true);
+      }
+    };
+
+    checkHash();
+    window.addEventListener('hashchange', checkHash);
+    return () => window.removeEventListener('hashchange', checkHash);
   }, []);
 
   const handleSubmit = async (e) => {
@@ -75,246 +88,99 @@ export default function PendaftaranSection() {
           <p className="text-xl text-gray-600">Tahun Ajaran 2026/2027</p>
         </div>
 
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-5 gap-8">
-            {/* Left Side - Info */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Kuota Card */}
-              <div className="bg-gradient-to-br from-green-500 to-emerald-600 text-white p-8 rounded-2xl shadow-xl">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                    <i className="fas fa-users text-2xl"></i>
+        <div className="mx-auto max-w-7xl">
+          {!isOpen ? (
+            <div className="mx-auto max-w-3xl rounded-2xl border border-blue-100 bg-white p-6 text-center shadow-sm md:p-8">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsOpen(true);
+                  setTimeout(() => document.getElementById('pendaftaran')?.scrollIntoView({ behavior: 'smooth' }), 50);
+                }}
+                className="mt-4 inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
+              >
+                <i className="fas fa-user-plus mr-2"></i>Buka Form Pendaftaran
+              </button>
+            </div>
+          ) : (
+            <div className="grid gap-8 lg:grid-cols-5">
+              <div className="space-y-6 lg:col-span-2">
+                <div className="rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 p-8 text-white shadow-xl">
+                  <div className="mb-6 flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/20">
+                      <i className="fas fa-users text-2xl"></i>
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold">Kuota Terbatas</h3>
+                      <p className="text-sm text-green-100">Segera daftarkan!</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-2xl font-bold">Kuota Terbatas</h3>
-                    <p className="text-green-100 text-sm">Segera daftarkan!</p>
+                  <div className="rounded-xl bg-white/20 p-6 text-center backdrop-blur-sm">
+                    <p className="mb-2 text-sm opacity-90">Pendaftar Saat Ini</p>
+                    <p className="mb-2 text-5xl font-bold">{pendaftar}</p>
+                    <p className="text-sm opacity-90">dari 100 kuota tersedia</p>
+                    <div className="mt-4 h-2 rounded-full bg-white/20">
+                      <div className="h-2 rounded-full bg-white transition-all duration-500" style={{ width: `${(pendaftar / 100) * 100}%` }}></div>
+                    </div>
                   </div>
                 </div>
-                <div className="bg-white/20 backdrop-blur-sm p-6 rounded-xl text-center">
-                  <p className="text-sm mb-2 opacity-90">Pendaftar Saat Ini</p>
-                  <p className="text-5xl font-bold mb-2">{pendaftar}</p>
-                  <p className="text-sm opacity-90">dari 100 kuota tersedia</p>
-                  <div className="mt-4 bg-white/20 rounded-full h-2">
-                    <div 
-                      className="bg-white h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${(pendaftar / 100) * 100}%` }}
-                    ></div>
-                  </div>
+
+                <div className="rounded-2xl bg-white p-6 shadow-lg">
+                  <h4 className="mb-4 flex items-center gap-2 text-xl font-bold text-gray-800"><i className="fas fa-check-circle text-blue-500"></i>Keuntungan Mendaftar</h4>
+                  <ul className="space-y-3">
+                    <li className="flex items-start gap-3"><i className="fas fa-star mt-1 text-yellow-500"></i><span className="text-gray-700">Bebas biaya pendaftaran</span></li>
+                    <li className="flex items-start gap-3"><i className="fas fa-star mt-1 text-yellow-500"></i><span className="text-gray-700">Tes masuk gratis</span></li>
+                    <li className="flex items-start gap-3"><i className="fas fa-star mt-1 text-yellow-500"></i><span className="text-gray-700">Beasiswa prestasi tersedia</span></li>
+                    <li className="flex items-start gap-3"><i className="fas fa-star mt-1 text-yellow-500"></i><span className="text-gray-700">Fasilitas lengkap & modern</span></li>
+                  </ul>
                 </div>
               </div>
 
-              {/* Keuntungan */}
-              <div className="bg-white p-6 rounded-2xl shadow-lg">
-                <h4 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                  <i className="fas fa-check-circle text-blue-500"></i>
-                  Keuntungan Mendaftar
-                </h4>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-3">
-                    <i className="fas fa-star text-yellow-500 mt-1"></i>
-                    <span className="text-gray-700">Bebas biaya pendaftaran</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <i className="fas fa-star text-yellow-500 mt-1"></i>
-                    <span className="text-gray-700">Tes masuk gratis</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <i className="fas fa-star text-yellow-500 mt-1"></i>
-                    <span className="text-gray-700">Beasiswa prestasi tersedia</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <i className="fas fa-star text-yellow-500 mt-1"></i>
-                    <span className="text-gray-700">Fasilitas lengkap & modern</span>
-                  </li>
-                </ul>
-              </div>
+              <div className="lg:col-span-3">
+                <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-xl">
+                  <div className="mb-6 flex items-center justify-between border-b pb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100"><i className="fas fa-edit text-blue-600"></i></div>
+                      <h3 className="text-2xl font-bold text-gray-800">Form Pendaftaran</h3>
+                    </div>
+                    <button type="button" onClick={() => setIsOpen(false)} className="text-sm font-medium text-gray-500 hover:text-gray-700">Sembunyikan</button>
+                  </div>
 
-              {/* Kontak */}
-              <div className="bg-gradient-to-br from-blue-500 to-cyan-600 text-white p-6 rounded-2xl shadow-lg">
-                <h4 className="text-lg font-bold mb-4">Butuh Bantuan?</h4>
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-center gap-3">
-                    <i className="fas fa-phone"></i>
-                    <span>(+62) 878-2527-9426</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <i className="fas fa-envelope"></i>
-                    <span>info@darulmukhlisin.sch.id</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <i className="fas fa-clock"></i>
-                    <span>Senin - Jumat: 07.00 - 16.00 WIB</span>
-                  </div>
+                  <form onSubmit={handleSubmit} className="space-y-5">
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div><label className="mb-2 block text-sm font-medium text-gray-700">Nama Lengkap <span className="text-red-500">*</span></label><input type="text" name="nama" required placeholder="Masukkan nama lengkap" className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
+                      <div><label className="mb-2 block text-sm font-medium text-gray-700">NISN <span className="text-red-500">*</span></label><input type="text" name="nisn" required placeholder="Nomor Induk Siswa Nasional" className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div><label className="mb-2 block text-sm font-medium text-gray-700">Tempat Lahir <span className="text-red-500">*</span></label><input type="text" name="tempat_lahir" required placeholder="Kota/Kabupaten" className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
+                      <div><label className="mb-2 block text-sm font-medium text-gray-700">Tanggal Lahir <span className="text-red-500">*</span></label><input type="date" name="tanggal_lahir" required className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div><label className="mb-2 block text-sm font-medium text-gray-700">Jenis Kelamin <span className="text-red-500">*</span></label><select name="jenis_kelamin" required className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"><option value="">Pilih jenis kelamin</option><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option></select></div>
+                      <div><label className="mb-2 block text-sm font-medium text-gray-700">Asal Sekolah <span className="text-red-500">*</span></label><input type="text" name="asal_sekolah" required placeholder="Nama sekolah asal" className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
+                    </div>
+
+                    <div><label className="mb-2 block text-sm font-medium text-gray-700">Alamat Lengkap <span className="text-red-500">*</span></label><textarea name="alamat" rows="3" required placeholder="Jalan, RT/RW, Kelurahan, Kecamatan, Kota" className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea></div>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div><label className="mb-2 block text-sm font-medium text-gray-700">Nama Orang Tua/Wali <span className="text-red-500">*</span></label><input type="text" name="nama_ortu" required placeholder="Nama lengkap orang tua" className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
+                      <div><label className="mb-2 block text-sm font-medium text-gray-700">No. Telepon/WA <span className="text-red-500">*</span></label><input type="tel" name="telepon" required placeholder="08xxxxxxxxxx" className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
+                    </div>
+
+                    <div><label className="mb-2 block text-sm font-medium text-gray-700">Email (Opsional)</label><input type="email" name="email" placeholder="email@example.com" className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
+
+                    <div className="pt-4">
+                      <button type="submit" disabled={loading} className="w-full rounded-lg bg-gradient-to-r from-blue-500 to-cyan-600 py-4 text-lg font-bold text-white shadow-lg transition-all duration-300 hover:from-blue-600 hover:to-cyan-700 hover:shadow-xl disabled:opacity-50">
+                        {loading ? (<><i className="fas fa-spinner fa-spin mr-2"></i>Mengirim Data...</>) : (<><i className="fas fa-paper-plane mr-2"></i>Daftar Sekarang</>)}
+                      </button>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
-
-            {/* Right Side - Form */}
-            <div className="lg:col-span-3">
-              <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-                <div className="flex items-center gap-3 mb-6 pb-6 border-b">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <i className="fas fa-edit text-blue-600"></i>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-800">Form Pendaftaran</h3>
-                </div>
-
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-gray-700 mb-2 font-medium text-sm">
-                        Nama Lengkap <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="nama"
-                        required
-                        placeholder="Masukkan nama lengkap"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 mb-2 font-medium text-sm">
-                        NISN <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="nisn"
-                        required
-                        placeholder="Nomor Induk Siswa Nasional"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-gray-700 mb-2 font-medium text-sm">
-                        Tempat Lahir <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="tempat_lahir"
-                        required
-                        placeholder="Kota/Kabupaten"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 mb-2 font-medium text-sm">
-                        Tanggal Lahir <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="date"
-                        name="tanggal_lahir"
-                        required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-gray-700 mb-2 font-medium text-sm">
-                        Jenis Kelamin <span className="text-red-500">*</span>
-                      </label>
-                      <select
-                        name="jenis_kelamin"
-                        required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      >
-                        <option value="">Pilih jenis kelamin</option>
-                        <option value="Laki-laki">Laki-laki</option>
-                        <option value="Perempuan">Perempuan</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 mb-2 font-medium text-sm">
-                        Asal Sekolah <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="asal_sekolah"
-                        required
-                        placeholder="Nama sekolah asal"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 mb-2 font-medium text-sm">
-                      Alamat Lengkap <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      name="alamat"
-                      rows="3"
-                      required
-                      placeholder="Jalan, RT/RW, Kelurahan, Kecamatan, Kota"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    ></textarea>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-gray-700 mb-2 font-medium text-sm">
-                        Nama Orang Tua/Wali <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="nama_ortu"
-                        required
-                        placeholder="Nama lengkap orang tua"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 mb-2 font-medium text-sm">
-                        No. Telepon/WA <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="tel"
-                        name="telepon"
-                        required
-                        placeholder="08xxxxxxxxxx"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 mb-2 font-medium text-sm">
-                      Email (Opsional)
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="email@example.com"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                  </div>
-
-                  <div className="pt-4">
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full bg-gradient-to-r from-blue-500 to-cyan-600 text-white py-4 rounded-lg font-bold text-lg hover:from-blue-600 hover:to-cyan-700 transition-all duration-300 disabled:opacity-50 shadow-lg hover:shadow-xl"
-                    >
-                      {loading ? (
-                        <>
-                          <i className="fas fa-spinner fa-spin mr-2"></i>Mengirim Data...
-                        </>
-                      ) : (
-                        <>
-                          <i className="fas fa-paper-plane mr-2"></i>Daftar Sekarang
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </section>

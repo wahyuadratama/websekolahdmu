@@ -201,8 +201,8 @@ export default function BeritaPage() {
     <AdminLayout title="Kelola Berita">
       <div>
         {/* Form Section */}
-        <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
-          <h3 className="text-xl font-bold mb-4">
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200 mb-6">
+          <h3 className="text-lg sm:text-xl font-bold mb-4">
             {editId ? 'Edit Berita' : 'Tambah Berita Baru'}
           </h3>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -215,18 +215,18 @@ export default function BeritaPage() {
                 required
                 value={form.judul}
                 onChange={(e) => setForm({ ...form, judul: e.target.value })}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500"
                 placeholder="Masukkan judul berita"
               />
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid gap-4 md:grid-cols-2">
               <div>
                 <label className="block text-gray-700 mb-2 font-semibold">Kategori</label>
                 <select
                   value={form.kategori}
                   onChange={(e) => setForm({ ...form, kategori: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500"
                 >
                   <option>Akademik</option>
                   <option>Prestasi</option>
@@ -241,7 +241,7 @@ export default function BeritaPage() {
                 <select
                   value={form.status}
                   onChange={(e) => setForm({ ...form, status: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500"
                 >
                   <option value="published">Published</option>
                   <option value="draft">Draft</option>
@@ -255,7 +255,7 @@ export default function BeritaPage() {
                 type="text"
                 value={form.author}
                 onChange={(e) => setForm({ ...form, author: e.target.value })}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500"
                 placeholder="Nama penulis (opsional)"
               />
             </div>
@@ -266,7 +266,7 @@ export default function BeritaPage() {
                 rows="2"
                 value={form.excerpt}
                 onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500"
                 placeholder="Ringkasan singkat berita (opsional)"
               ></textarea>
             </div>
@@ -299,35 +299,37 @@ export default function BeritaPage() {
                 value={form.tags}
                 onChange={(e) => setForm({ ...form, tags: e.target.value })}
                 placeholder="pendidikan, islam, pesantren"
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500"
               />
             </div>
 
-            <div className="flex space-x-4">
-              <button
-                type="submit"
-                disabled={loading}
-                className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition disabled:opacity-50"
-              >
-                <i className="fas fa-save mr-2"></i>
-                {loading ? 'Menyimpan...' : 'Simpan'}
-              </button>
-              {editId && (
+            <div className="sticky bottom-2 z-10 -mx-2 rounded-xl border border-slate-200 bg-white/95 p-3 shadow-md backdrop-blur sm:mx-0">
+              <div className="flex flex-wrap gap-3">
                 <button
-                  type="button"
-                  onClick={handleCancel}
-                  className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition"
+                  type="submit"
+                  disabled={loading}
+                  className="rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 px-6 py-2 text-white hover:opacity-95 transition disabled:opacity-50"
                 >
-                  <i className="fas fa-times mr-2"></i>Batal
+                  <i className="fas fa-save mr-2"></i>
+                  {loading ? 'Menyimpan...' : 'Simpan'}
                 </button>
-              )}
+                {editId && (
+                  <button
+                    type="button"
+                    onClick={handleCancel}
+                    className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition"
+                  >
+                    <i className="fas fa-times mr-2"></i>Batal
+                  </button>
+                )}
+              </div>
             </div>
           </form>
         </div>
 
         {/* List Section */}
-        <div className="bg-white p-4 lg:p-6 rounded-lg shadow-lg">
-          <h3 className="text-xl font-bold mb-4">Daftar Berita ({berita.length})</h3>
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
+          <h3 className="text-lg sm:text-xl font-bold mb-4">Daftar Berita ({berita.length})</h3>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3 text-sm text-gray-600">
             <span>Total: {total || berita.length}</span>
             <div className="flex items-center gap-2">
@@ -351,7 +353,29 @@ export default function BeritaPage() {
               </button>
             </div>
           </div>
-          <div className="overflow-x-auto -mx-4 lg:mx-0">
+          <div className="space-y-3 md:hidden">
+            {berita.length === 0 ? (
+              <div className="rounded-lg border border-slate-200 p-4 text-center text-sm text-gray-600">Belum ada berita</div>
+            ) : (
+              berita.map((item) => (
+                <div key={item.id} className="rounded-lg border border-slate-200 p-4">
+                  <p className="font-semibold text-slate-800">{item.judul}</p>
+                  <p className="mt-1 text-sm text-slate-500">{item.kategori} • {new Date(item.createdAt).toLocaleDateString('id-ID')}</p>
+                  <div className="mt-3 flex items-center justify-between">
+                    <span className={`px-2 py-1 rounded text-xs ${item.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                      {item.status}
+                    </span>
+                    <div className="space-x-1">
+                      <button onClick={() => handleEdit(item)} className="rounded-md px-2 py-1 text-blue-600 hover:bg-blue-50" title="Edit"><i className="fas fa-edit"></i></button>
+                      <button onClick={() => handleDelete(item.id)} className="rounded-md px-2 py-1 text-red-600 hover:bg-red-50" title="Hapus"><i className="fas fa-trash"></i></button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          <div className="hidden overflow-x-auto -mx-4 lg:mx-0 md:block">
             <table className="w-full min-w-[640px]">
               <thead className="bg-gray-100">
                 <tr>
@@ -365,9 +389,7 @@ export default function BeritaPage() {
               <tbody>
                 {berita.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="text-center py-4 text-gray-600">
-                      Belum ada berita
-                    </td>
+                    <td colSpan="5" className="text-center py-4 text-gray-600">Belum ada berita</td>
                   </tr>
                 ) : (
                   berita.map((item) => (
@@ -375,34 +397,12 @@ export default function BeritaPage() {
                       <td className="px-3 lg:px-4 py-3 text-sm">{item.judul}</td>
                       <td className="px-3 lg:px-4 py-3 text-sm">{item.kategori}</td>
                       <td className="px-3 lg:px-4 py-3">
-                        <span
-                          className={`px-2 py-1 rounded text-xs ${
-                            item.status === 'published'
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-yellow-100 text-yellow-800'
-                          }`}
-                        >
-                          {item.status}
-                        </span>
+                        <span className={`px-2 py-1 rounded text-xs ${item.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>{item.status}</span>
                       </td>
-                      <td className="px-3 lg:px-4 py-3 text-sm">
-                        {new Date(item.createdAt).toLocaleDateString('id-ID')}
-                      </td>
+                      <td className="px-3 lg:px-4 py-3 text-sm">{new Date(item.createdAt).toLocaleDateString('id-ID')}</td>
                       <td className="px-3 lg:px-4 py-3 text-center space-x-2">
-                        <button
-                          onClick={() => handleEdit(item)}
-                          className="text-blue-600 hover:text-blue-800 p-2"
-                          title="Edit"
-                        >
-                          <i className="fas fa-edit"></i>
-                        </button>
-                        <button
-                          onClick={() => handleDelete(item.id)}
-                          className="text-red-600 hover:text-red-800 p-2"
-                          title="Hapus"
-                        >
-                          <i className="fas fa-trash"></i>
-                        </button>
+                        <button onClick={() => handleEdit(item)} className="text-blue-600 hover:text-blue-800 p-2" title="Edit"><i className="fas fa-edit"></i></button>
+                        <button onClick={() => handleDelete(item.id)} className="text-red-600 hover:text-red-800 p-2" title="Hapus"><i className="fas fa-trash"></i></button>
                       </td>
                     </tr>
                   ))
@@ -415,3 +415,6 @@ export default function BeritaPage() {
     </AdminLayout>
   );
 }
+
+
+

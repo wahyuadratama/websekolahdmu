@@ -103,7 +103,7 @@ class Database {
       `CREATE TABLE IF NOT EXISTS pesan (
         id BIGINT AUTO_INCREMENT PRIMARY KEY,
         nama VARCHAR(120) NOT NULL,
-        email VARCHAR(120) NOT NULL,
+        email VARCHAR(120) NULL,
         subjek VARCHAR(200) NOT NULL,
         pesan TEXT NOT NULL,
         status ENUM('unread','read') NOT NULL DEFAULT 'unread',
@@ -141,6 +141,10 @@ class Database {
     for (const s of sql) {
       await this.pool.query(s);
     }
+
+    // Lightweight compatibility migration
+    // Kontak form tidak lagi mewajibkan email
+    await this.pool.query('ALTER TABLE pesan MODIFY email VARCHAR(120) NULL');
   }
 
   async query(sql, params = []) {

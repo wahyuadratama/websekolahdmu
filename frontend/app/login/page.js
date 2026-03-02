@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { colors } from '@/lib/designSystem';
 import { showError, showLoading, closeLoading } from '@/lib/sweetalert';
 
 export default function LoginPage() {
@@ -16,7 +15,7 @@ export default function LoginPage() {
 
     const formData = {
       username: e.target.username.value,
-      password: e.target.password.value,
+      password: e.target.password.value
     };
 
     try {
@@ -27,13 +26,13 @@ export default function LoginPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formData)
       });
 
       let data = {};
       try {
         data = await response.json();
-      } catch (_) {
+      } catch {
         // ignore invalid JSON, handled below
       }
 
@@ -46,94 +45,106 @@ export default function LoginPage() {
       }
     } catch (error) {
       closeLoading();
-      showError('Terjadi kesalahan: ' + error.message);
+      showError(`Terjadi kesalahan: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-4"
-      style={{
-        backgroundImage: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
-      }}
-    >
-      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
-        <div className="text-center mb-8">
-          <Image
-            src="/images/LOGO DMU.png"
-            alt="Logo DMU"
-            width={80}
-            height={80}
-            className="mx-auto mb-4"
-          />
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Admin Login</h1>
-          <p className="text-gray-600">Pondok Pesantren Modern Darul Mukhlisin</p>
-        </div>
+    <div className="relative min-h-screen overflow-hidden bg-slate-950">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-24 -left-16 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
+        <div className="absolute top-1/3 -right-16 h-80 w-80 rounded-full bg-blue-500/20 blur-3xl" />
+        <div className="absolute -bottom-20 left-1/3 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl" />
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              <i className="fas fa-user mr-2"></i>Username
-            </label>
-            <input
-              type="text"
-              name="username"
-              required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-              placeholder="Masukkan username"
-            />
-          </div>
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl items-center justify-center px-4 py-10 lg:px-8">
+        <div className="grid w-full overflow-hidden rounded-3xl border border-white/10 bg-white shadow-2xl lg:grid-cols-2">
+          <section className="hidden bg-gradient-to-br from-slate-900 via-cyan-900 to-blue-900 p-10 text-white lg:flex lg:flex-col lg:justify-between">
+            <div>
+              <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs tracking-wide text-cyan-100">
+                <i className="fas fa-shield-alt"></i>
+                Admin Secure Access
+              </p>
+              <h1 className="text-3xl font-bold leading-tight">Pondok Pesantren Modern Darul Mukhlisin</h1>
+              <p className="mt-4 text-sm text-slate-200">
+                Selamat datang di panel admin. Kelola berita, galeri, data guru, pendaftaran, dan pesan dari satu dashboard.
+              </p>
+            </div>
 
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              <i className="fas fa-lock mr-2"></i>Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-              placeholder="Masukkan password"
-            />
-          </div>
+            <div className="space-y-3 text-sm text-slate-200">
+              <div className="flex items-start gap-3">
+                <i className="fas fa-check-circle mt-0.5 text-cyan-300"></i>
+                <p>Kontrol konten website secara terpusat</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <i className="fas fa-check-circle mt-0.5 text-cyan-300"></i>
+                <p>Monitoring statistik dan pesan masuk real-time</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <i className="fas fa-check-circle mt-0.5 text-cyan-300"></i>
+                <p>Akses aman berbasis autentikasi admin</p>
+              </div>
+            </div>
+          </section>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full text-white py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50"
-            style={{ backgroundColor: colors.primary }}
-          >
-            {loading ? (
-              <>
-                <i className="fas fa-spinner fa-spin mr-2"></i>Loading...
-              </>
-            ) : (
-              <>
-                <i className="fas fa-sign-in-alt mr-2"></i>Login
-              </>
-            )}
-          </button>
-        </form>
+          <section className="p-6 sm:p-10">
+            <div className="mx-auto w-full max-w-md">
+              <div className="mb-8 text-center">
+                <div className="mx-auto mb-4 grid h-20 w-20 place-items-center rounded-2xl bg-slate-100">
+                  <Image src="/images/LOGO DMU.png" alt="Logo DMU" width={58} height={58} />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-800">Masuk ke Admin Panel</h2>
+                <p className="mt-1 text-sm text-slate-500">Gunakan akun admin yang terdaftar</p>
+              </div>
 
-        <div className="mt-6 text-center">
-          <a
-            href="/"
-            className="hover:underline font-semibold"
-            style={{ color: colors.primary }}
-          >
-            <i className="fas fa-arrow-left mr-2"></i>Kembali ke Beranda
-          </a>
-        </div>
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-slate-700">Username</label>
+                  <div className="relative">
+                    <i className="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      name="username"
+                      required
+                      className="w-full rounded-xl border border-slate-300 py-3 pl-10 pr-4 text-slate-800 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100"
+                      placeholder="Masukkan username"
+                    />
+                  </div>
+                </div>
 
-        <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-          <p className="text-sm text-gray-600 text-center mb-2">
-            <i className="fas fa-info-circle mr-2"></i>Default Login:
-          </p>
-          <p className="text-xs text-gray-500 text-center">
-            Username: <strong>superadmin</strong> | Password: <strong>Super@dmin123</strong>
-          </p>
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-slate-700">Password</label>
+                  <div className="relative">
+                    <i className="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="password"
+                      name="password"
+                      required
+                      className="w-full rounded-xl border border-slate-300 py-3 pl-10 pr-4 text-slate-800 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100"
+                      placeholder="Masukkan password"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 px-4 py-3 font-semibold text-white shadow-md transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {loading ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-sign-in-alt"></i>}
+                  {loading ? 'Memproses...' : 'Masuk'}
+                </button>
+              </form>
+
+              <div className="mt-7 text-center">
+                <a href="/" className="text-sm font-semibold text-cyan-700 hover:underline">
+                  <i className="fas fa-arrow-left mr-2"></i>Kembali ke Beranda
+                </a>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </div>

@@ -6,52 +6,40 @@ import Link from 'next/link';
 import { API_BASE, API_URL } from '@/lib/config';
 
 export function ValuePropSection() {
+  const points = [
+    {
+      title: 'Kurikulum Terpadu',
+      desc: "Integrasi diniyah dan umum, menyiapkan santri memahami ilmu syar'i serta kompetensi akademik modern."
+    },
+    {
+      title: 'Akhlak & Tahfiz',
+      desc: 'Pembinaan adab harian, tahsin-tahfiz terstruktur, dan lingkungan yang menumbuhkan ruhiyah santri.'
+    },
+    {
+      title: 'Pembinaan Personal',
+      desc: 'Pendampingan asatidz/asatidzah yang dekat, mentoring karakter, dan perhatian pada perkembangan individu.'
+    }
+  ];
+
   return (
-    <section className="py-16 bg-white" id="keunggulan">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold">
-            <i className="fas fa-shield-alt"></i>
-            <span>Keunggulan DMU</span>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4 mb-3">
-            Pesantren modern berakar pada Qur'an dan akhlak
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto text-base">
-            Fondasi agama yang kuat dipadukan dengan kurikulum modern untuk membentuk generasi berilmu dan beradab.
-          </p>
+    <section className="bg-white py-20" id="keunggulan">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto mb-10 max-w-3xl text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Keunggulan DMU</p>
+          <h2 className="mt-3 text-3xl font-bold text-gray-900 md:text-4xl">Pendidikan modern dengan fondasi iman dan adab</h2>
+          <p className="mt-3 text-base text-gray-600">Dirancang untuk membentuk generasi berilmu, berkarakter, dan siap melanjutkan studi maupun berkontribusi di masyarakat.</p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm">
-            <div className="flex items-center gap-3 mb-3 text-blue-700">
-              <i className="fas fa-book-open text-lg"></i>
-              <h3 className="text-lg font-semibold text-gray-900">Kurikulum Terpadu</h3>
+        <div className="divide-y divide-slate-200 border-y border-slate-200">
+          {points.map((item, idx) => (
+            <div key={item.title} className="grid gap-3 py-5 md:grid-cols-[80px_1fr] md:gap-6">
+              <p className="text-sm font-semibold text-blue-700">0{idx + 1}</p>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">{item.title}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-gray-600">{item.desc}</p>
+              </div>
             </div>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              Integrasi diniyah dan umum, menyiapkan santri memahami ilmu syar'i serta kompetensi akademik modern.
-            </p>
-          </div>
-
-          <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm">
-            <div className="flex items-center gap-3 mb-3 text-blue-700">
-              <i className="fas fa-mosque text-lg"></i>
-              <h3 className="text-lg font-semibold text-gray-900">Akhlak & Tahfiz</h3>
-            </div>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              Pembinaan adab harian, tahsin-tahfiz terstruktur, dan lingkungan yang menumbuhkan ruhiyah santri.
-            </p>
-          </div>
-
-          <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm">
-            <div className="flex items-center gap-3 mb-3 text-blue-700">
-              <i className="fas fa-users text-lg"></i>
-              <h3 className="text-lg font-semibold text-gray-900">Pembinaan Personal</h3>
-            </div>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              Pendampingan asatidz/asatidzah yang dekat, mentoring karakter, dan perhatian pada perkembangan individu.
-            </p>
-          </div>
+          ))}
         </div>
       </div>
     </section>
@@ -61,51 +49,36 @@ export function ValuePropSection() {
 export function WhyChooseUsSection() {
   const points = [
     {
-      icon: 'fas fa-user-shield',
       title: 'Pengasuhan Aman 24/7',
-      desc: 'Asrama terpantau dengan pendamping yang tinggal bersama santri, memastikan keamanan dan kedisiplinan harian.',
+      desc: 'Asrama terpantau dengan pendamping yang tinggal bersama santri, memastikan keamanan dan kedisiplinan harian.'
     },
     {
-      icon: 'fas fa-chalkboard-teacher',
       title: 'Guru Tinggal & Membina',
-      desc: 'Asatidz/asatidzah hadir di lingkungan pesantren sepanjang waktu, memberi mentoring karakter dan belajar yang dekat.',
+      desc: 'Asatidz/asatidzah hadir di lingkungan pesantren sepanjang waktu, memberi mentoring karakter dan belajar yang dekat.'
     },
     {
-      icon: 'fas fa-seedling',
       title: 'Karakter & Akademik Seimbang',
-      desc: 'Integrasi diniyah, akademik, dan life skills agar santri berilmu, berakhlak, dan siap bersosial.',
+      desc: 'Integrasi diniyah, akademik, dan life skills agar santri berilmu, berakhlak, dan siap bersosial.'
     },
     {
-      icon: 'fas fa-handshake',
       title: 'Kolaborasi dengan Orang Tua',
-      desc: 'Laporan perkembangan berkala dan komunikasi terbuka sehingga orang tua selalu terlibat dalam progres anak.',
-    },
+      desc: 'Laporan perkembangan berkala dan komunikasi terbuka sehingga orang tua selalu terlibat dalam progres anak.'
+    }
   ];
 
   return (
-    <section className="py-16 bg-white" id="mengapa-kami">
-      <div className="container mx-auto px-4">
-        <div className="max-w-2xl mx-auto text-center mb-10">
-          <div className="inline-flex items-center gap-2 text-blue-700 font-semibold text-sm">
-            <i className="fas fa-check-circle"></i>
-            <span>Mengapa Memilih DMU</span>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-3 mb-3">Alasan yang membangun kepercayaan</h2>
-          <p className="text-gray-600 text-base">
-            Poin-poin yang penting bagi orang tua dan siswa: keamanan, pembinaan dekat, keseimbangan akademik, dan transparansi.
-          </p>
+    <section className="bg-slate-50 py-20" id="mengapa-kami">
+      <div className="mx-auto grid w-full max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Mengapa Memilih DMU</p>
+          <h2 className="mt-3 text-3xl font-bold text-gray-900 md:text-4xl">Alasan yang membangun kepercayaan orang tua</h2>
+          <p className="mt-4 text-base leading-relaxed text-gray-600">Fokus kami tidak hanya akademik, tetapi juga keamanan, pembinaan karakter, dan komunikasi yang baik dengan keluarga santri.</p>
         </div>
-
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="space-y-4">
           {points.map((item) => (
-            <div key={item.title} className="flex items-start gap-4 p-5 rounded-xl border border-gray-100 bg-white">
-              <div className="w-12 h-12 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center">
-                <i className={`${item.icon} text-lg`}></i>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">{item.title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
-              </div>
+            <div key={item.title} className="border-l-4 border-blue-600 bg-white px-4 py-3">
+              <h3 className="font-semibold text-gray-900">{item.title}</h3>
+              <p className="mt-1 text-sm text-gray-600">{item.desc}</p>
             </div>
           ))}
         </div>
@@ -119,39 +92,33 @@ export function SocialProofSection() {
     {
       quote: 'Anak kami lebih mandiri dan teratur. Pembinaan harian terasa nyata karena guru tinggal bersama santri.',
       name: 'Ibu Sari',
-      role: 'Orang tua santri kelas 8',
+      role: 'Orang tua santri kelas 8'
     },
     {
       quote: 'Lingkungan asrama aman dan tenang, jadi kami tenang melepas anak jauh dari rumah.',
       name: 'Bapak Rahman',
-      role: 'Orang tua santri kelas 7',
+      role: 'Orang tua santri kelas 7'
     },
     {
       quote: 'Belajar diniyah dan umum seimbang; saya merasa siap melanjutkan studi dan tetap menjaga adab.',
       name: 'Fauzan',
-      role: 'Santri kelas 11',
-    },
+      role: 'Santri kelas 11'
+    }
   ];
 
   return (
-    <section className="py-16 bg-white" id="social-proof">
-      <div className="container mx-auto px-4">
-        <div className="max-w-2xl mx-auto text-center mb-12">
-          <div className="inline-flex items-center gap-2 text-blue-700 font-semibold text-sm">
-            <i className="fas fa-comment-dots"></i>
-            <span>Suara Mereka</span>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-3 mb-3">Kesaksian yang membangun percaya</h2>
-          <p className="text-gray-600 text-base">Pendapat orang tua dan santri tentang keamanan, kedekatan pembina, dan keseimbangan belajar.</p>
+    <section className="bg-white py-20" id="social-proof">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 border-b border-slate-200 pb-5">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Suara Mereka</p>
+          <h2 className="mt-3 text-3xl font-bold text-gray-900 md:text-4xl">Testimoni Orang Tua & Santri</h2>
         </div>
-
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="space-y-5">
           {testimonials.map((item) => (
-            <div key={item.name} className="h-full p-6 rounded-2xl bg-gray-50">
-              <p className="text-gray-800 text-base leading-relaxed mb-4">“{item.quote}”</p>
-              <div className="text-sm text-gray-700 font-semibold">{item.name}</div>
-              <div className="text-xs text-gray-500">{item.role}</div>
-            </div>
+            <blockquote key={item.name} className="border-l-4 border-blue-600 pl-4">
+              <p className="text-gray-700 leading-relaxed">“{item.quote}”</p>
+              <footer className="mt-2 text-sm text-gray-500">{item.name} — {item.role}</footer>
+            </blockquote>
           ))}
         </div>
       </div>
@@ -161,26 +128,17 @@ export function SocialProofSection() {
 
 export function FinalCTASection() {
   return (
-    <section className="py-16 bg-white" id="ajakan">
-      <div className="container mx-auto px-4">
-        <div className="max-w-2xl mx-auto text-center space-y-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Siap bergabung dengan DMU?</h2>
-          <p className="text-gray-600 text-base">
-            Mulai dengan pendaftaran atau hubungi kami untuk memastikan kebutuhan anak Anda terjawab.
-          </p>
-          <div className="flex items-center justify-center gap-4">
-            <Link
-              href="#pendaftaran"
-              className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
-            >
-              Daftar Sekarang
-            </Link>
-            <Link
-              href="#kontak"
-              className="text-blue-700 font-semibold hover:text-blue-800"
-            >
-              Hubungi Kami
-            </Link>
+    <section className="bg-slate-900 py-20 text-white" id="ajakan">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-6 md:grid-cols-[1fr_auto]">
+          <div>
+            <p className="text-sm uppercase tracking-[0.2em] text-blue-200">Informasi Pendaftaran</p>
+            <h2 className="mt-2 text-3xl font-bold md:text-4xl">Siap bergabung bersama DMU?</h2>
+            <p className="mt-3 text-slate-300">Tim kami siap membantu proses pendaftaran dan konsultasi pendidikan putra-putri Anda.</p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link href="#pendaftaran" className="inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 font-semibold text-slate-900 transition hover:bg-slate-100">Daftar Sekarang</Link>
+            <Link href="#kontak" className="inline-flex items-center justify-center rounded-lg border border-white/40 px-6 py-3 font-semibold text-white transition hover:bg-white/10">Hubungi Kami</Link>
           </div>
         </div>
       </div>
@@ -212,7 +170,7 @@ export function BeritaSection() {
   if (loading) {
     return (
       <section id="berita" className="py-20 bg-white">
-        <div className="container mx-auto px-4 text-center">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
       </section>
@@ -221,17 +179,17 @@ export function BeritaSection() {
 
   return (
     <section id="berita" className="py-20 bg-white fade-in-up">
-      <div className="container mx-auto px-4">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="inline-block bg-blue-50 px-4 py-2 rounded-full mb-4">
             <span className="text-blue-700 font-semibold text-sm">
               <i className="fas fa-newspaper mr-2"></i>Informasi Terkini
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
             Berita Terbaru
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">Tiga kabar utama terbaru dari Darul Mukhlisin.</p>
+          <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">Tiga kabar utama terbaru dari Darul Mukhlisin.</p>
         </div>
 
         {curated.length === 0 ? (
@@ -303,7 +261,7 @@ export function GaleriSection() {
   if (loading) {
     return (
       <section id="galeri" className="py-20 bg-gradient-to-b from-gray-50 to-white">
-        <div className="container mx-auto px-4 text-center">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
         </div>
       </section>
@@ -312,7 +270,7 @@ export function GaleriSection() {
 
   return (
     <section id="galeri" className="py-20 bg-gradient-to-b from-gray-50 to-white fade-in-up">
-      <div className="container mx-auto px-4">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="inline-block bg-purple-50 px-4 py-2 rounded-full mb-4">
             <span className="text-purple-700 font-semibold text-sm flex items-center justify-center gap-2">
@@ -320,13 +278,13 @@ export function GaleriSection() {
               Dokumentasi Terpilih
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
             Galeri Kegiatan
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">Empat momen terbaru yang menggambarkan kehidupan pesantren.</p>
+          <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">Empat momen terbaru yang menggambarkan kehidupan pesantren.</p>
           <div className="w-24 h-1 bg-purple-500 mx-auto rounded-full"></div>
         </div>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {galeri.length === 0 ? (
             <p className="text-gray-600 text-center col-span-4">Belum ada foto tersedia.</p>
           ) : (
@@ -337,7 +295,7 @@ export function GaleriSection() {
                   alt={item.judul}
                   width={400}
                   height={300}
-                  className="w-full h-48 object-cover"
+                  className="w-full h-52 w-full object-cover"
                 />
                 <div className="p-3 bg-white">
                   <p className="text-sm font-semibold text-gray-800 truncate">{item.judul}</p>
@@ -379,7 +337,7 @@ export function GuruSection() {
   if (loading) {
     return (
       <section id="guru" className="py-20 bg-white">
-        <div className="container mx-auto px-4 text-center">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
         </div>
       </section>
@@ -388,7 +346,7 @@ export function GuruSection() {
 
   return (
     <section id="guru" className="py-20 bg-white fade-in-up">
-      <div className="container mx-auto px-4">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="inline-block bg-green-100 px-4 py-2 rounded-full mb-4">
               <span className="text-green-600 font-bold text-sm inline-flex items-center gap-2">
@@ -396,12 +354,12 @@ export function GuruSection() {
                 PENGAJAR PROFESIONAL
               </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
             Tenaga Pendidik
           </h2>
           <div className="w-24 h-1 bg-green-500 mx-auto rounded-full"></div>
         </div>
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {guru.length === 0 ? (
             <p className="text-gray-600 text-center col-span-4">Belum ada data guru tersedia.</p>
           ) : (
@@ -412,7 +370,7 @@ export function GuruSection() {
                   alt={item.nama}
                   width={200}
                   height={200}
-                  className="w-full h-48 object-cover"
+                  className="w-full h-52 w-full object-cover"
                 />
                 <div className="p-6">
                   <h3 className="text-lg font-bold mb-2">{item.nama}</h3>
@@ -439,7 +397,6 @@ export function KontakSection() {
 
     const formData = {
       nama: e.target.nama.value,
-      email: e.target.email.value,
       subjek: e.target.subjek.value,
       pesan: e.target.pesan.value,
     };
@@ -468,7 +425,7 @@ export function KontakSection() {
 
   return (
     <section id="kontak" className="py-20 bg-gradient-to-b from-gray-50 to-white fade-in-up">
-      <div className="container mx-auto px-4">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="inline-block px-4 py-2 rounded-full mb-4" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)' }}>
               <span className="font-bold text-sm text-blue-600 inline-flex items-center gap-2">
@@ -476,13 +433,13 @@ export function KontakSection() {
                 KONTAK KAMI
               </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
             Hubungi Kami
           </h2>
           <p className="text-gray-600 text-lg">Kami siap membantu Anda</p>
           <div className="w-24 h-1 mx-auto rounded-full mt-4 bg-blue-500"></div>
         </div>
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid gap-6 lg:grid-cols-2">
           <div>
             <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
               <h3 className="text-xl font-bold mb-4 text-blue-500">
@@ -544,15 +501,7 @@ export function KontakSection() {
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              <div>
-                <label className="block text-gray-700 mb-2">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+
               <div>
                 <label className="block text-gray-700 mb-2">Subjek</label>
                 <input
@@ -585,3 +534,6 @@ export function KontakSection() {
     </section>
   );
 }
+
+
+

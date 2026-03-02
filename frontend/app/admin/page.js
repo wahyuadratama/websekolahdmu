@@ -4,12 +4,118 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import AdminLayout from '@/components/AdminLayout';
-import { colors } from '@/lib/designSystem';
 import { showError } from '@/lib/sweetalert';
 import { API_URL } from '@/lib/config';
 
+const statItems = [
+  {
+    key: 'berita',
+    label: 'Total Berita',
+    icon: 'fa-newspaper',
+    href: '/admin/berita',
+    iconWrap: 'bg-blue-100 text-blue-600',
+    accent: 'text-blue-600',
+    bgAccent: 'bg-blue-50'
+  },
+  {
+    key: 'galeri',
+    label: 'Total Galeri',
+    icon: 'fa-images',
+    href: '/admin/galeri',
+    iconWrap: 'bg-purple-100 text-purple-600',
+    accent: 'text-purple-600',
+    bgAccent: 'bg-purple-50'
+  },
+  {
+    key: 'guru',
+    label: 'Total Guru',
+    icon: 'fa-chalkboard-teacher',
+    href: '/admin/guru',
+    iconWrap: 'bg-emerald-100 text-emerald-600',
+    accent: 'text-emerald-600',
+    bgAccent: 'bg-emerald-50'
+  },
+  {
+    key: 'pendaftaran',
+    label: 'Pendaftar Baru',
+    icon: 'fa-user-plus',
+    href: '/admin/pendaftaran',
+    iconWrap: 'bg-amber-100 text-amber-600',
+    accent: 'text-amber-600',
+    bgAccent: 'bg-amber-50'
+  },
+  {
+    key: 'pesan',
+    label: 'Pesan Belum Dibaca',
+    icon: 'fa-envelope',
+    href: '/admin/pesan',
+    iconWrap: 'bg-rose-100 text-rose-600',
+    accent: 'text-rose-600',
+    bgAccent: 'bg-rose-50',
+    badge: true
+  }
+];
+
+const quickMenus = [
+  {
+    href: '/admin/berita',
+    title: 'Kelola Berita',
+    subtitleKey: 'berita',
+    subtitleSuffix: 'berita tersedia',
+    icon: 'fa-newspaper',
+    iconWrap: 'bg-blue-100 text-blue-600'
+  },
+  {
+    href: '/admin/galeri',
+    title: 'Kelola Galeri',
+    subtitleKey: 'galeri',
+    subtitleSuffix: 'foto tersedia',
+    icon: 'fa-images',
+    iconWrap: 'bg-purple-100 text-purple-600'
+  },
+  {
+    href: '/admin/guru',
+    title: 'Kelola Guru',
+    subtitleKey: 'guru',
+    subtitleSuffix: 'guru terdaftar',
+    icon: 'fa-chalkboard-teacher',
+    iconWrap: 'bg-emerald-100 text-emerald-600'
+  },
+  {
+    href: '/admin/pesan',
+    title: 'Lihat Pesan',
+    subtitleKey: 'pesan',
+    subtitleSuffix: 'pesan belum dibaca',
+    icon: 'fa-envelope',
+    iconWrap: 'bg-rose-100 text-rose-600',
+    showBadge: true
+  },
+  {
+    href: '/admin/pendaftaran',
+    title: 'Data Pendaftaran',
+    subtitleKey: 'pendaftaran',
+    subtitleSuffix: 'pendaftar baru',
+    icon: 'fa-user-plus',
+    iconWrap: 'bg-amber-100 text-amber-600'
+  },
+  {
+    href: '/admin/settings',
+    title: 'Pengaturan',
+    subtitleKey: null,
+    subtitleSuffix: 'Update statistik website',
+    icon: 'fa-cog',
+    iconWrap: 'bg-slate-100 text-slate-700'
+  }
+];
+
 export default function AdminDashboard() {
-  const [stats, setStats] = useState({});
+  const [stats, setStats] = useState({
+    berita: 0,
+    galeri: 0,
+    guru: 0,
+    pendaftaran: 0,
+    pesan: 0
+  });
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -23,12 +129,8 @@ export default function AdminDashboard() {
         fetch(`${API_URL}/api/berita`).then((r) => r.json()),
         fetch(`${API_URL}/api/galeri`).then((r) => r.json()),
         fetch(`${API_URL}/api/guru`).then((r) => r.json()),
-        fetch(`${API_URL}/api/pendaftaran`, {
-          credentials: 'include',
-        }).then((r) => r.json()),
-        fetch(`${API_URL}/api/pesan`, {
-          credentials: 'include',
-        }).then((r) => r.json()),
+        fetch(`${API_URL}/api/pendaftaran`, { credentials: 'include' }).then((r) => r.json()),
+        fetch(`${API_URL}/api/pesan`, { credentials: 'include' }).then((r) => r.json())
       ]);
 
       setStats({
@@ -36,7 +138,7 @@ export default function AdminDashboard() {
         galeri: galeri.data?.length || 0,
         guru: guru.data?.length || 0,
         pendaftaran: pendaftaran.data?.length || 0,
-        pesan: pesan.data?.filter((p) => p.status === 'unread').length || 0,
+        pesan: pesan.data?.filter((p) => p.status === 'unread').length || 0
       });
     } catch (error) {
       showError('Gagal memuat statistik: ' + error.message);
@@ -48,144 +150,95 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <AdminLayout title="Dashboard">
-        <div className="flex items-center justify-center py-12">
-          <i className="fas fa-spinner fa-spin text-4xl" style={{ color: colors.primary }}></i>
+        <div className="flex min-h-[50vh] items-center justify-center">
+          <div className="h-14 w-14 rounded-2xl bg-white shadow-md grid place-items-center">
+            <i className="fas fa-spinner fa-spin text-2xl text-cyan-600"></i>
+          </div>
         </div>
       </AdminLayout>
     );
   }
 
-  const statItems = [
-    { label: 'Total Berita', value: stats.berita, icon: 'fa-newspaper', color: 'blue', href: '/admin/berita' },
-    { label: 'Total Galeri', value: stats.galeri, icon: 'fa-images', color: 'purple', href: '/admin/galeri' },
-    { label: 'Total Guru', value: stats.guru, icon: 'fa-chalkboard-teacher', color: 'green', href: '/admin/guru' },
-    { label: 'Pendaftar Baru', value: stats.pendaftaran, icon: 'fa-user-plus', color: 'orange', href: '/admin/pendaftaran' },
-    { label: 'Pesan Belum Dibaca', value: stats.pesan, icon: 'fa-envelope', color: 'red', href: '/admin/pesan', badge: stats.pesan > 0 },
-  ];
-
   return (
     <AdminLayout title="Dashboard">
-      {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-8 rounded-xl mb-6">
-        <h2 className="text-2xl font-bold mb-2">Selamat Datang di Admin Panel!</h2>
-        <p className="text-blue-100">Kelola konten website pesantren dengan mudah dan efisien</p>
-      </div>
+      <section className="mb-6 rounded-2xl bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 p-7 text-white shadow-lg">
+        <p className="mb-2 inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1 text-xs font-medium">
+          <i className="fas fa-sparkles"></i>
+          Ringkasan Hari Ini
+        </p>
+        <h2 className="text-2xl font-bold tracking-tight">Selamat Datang di Admin Panel DMU</h2>
+        <p className="mt-2 text-blue-100">Monitor statistik dan kelola seluruh konten website dari satu tempat.</p>
+      </section>
 
-      {/* Statistics Overview */}
-      <div className="mb-6">
-        <h3 className="text-lg font-bold text-gray-800 mb-4">Statistik Overview</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          {statItems.map((item, index) => (
-            <Link
-              key={index}
-              href={item.href}
-              className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 relative overflow-hidden group"
-            >
-              <div className={`absolute top-0 right-0 w-20 h-20 bg-${item.color}-50 rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity`}></div>
-              <div className="relative">
-                <div className="flex items-center justify-between mb-3">
-                  <div className={`w-12 h-12 rounded-lg bg-${item.color}-100 flex items-center justify-center`}>
-                    <i className={`fas ${item.icon} text-${item.color}-600 text-xl`}></i>
+      <section className="mb-8">
+        <h3 className="mb-4 text-lg font-bold text-slate-800">Statistik Overview</h3>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
+          {statItems.map((item) => {
+            const value = stats[item.key] || 0;
+
+            return (
+              <Link
+                key={item.key}
+                href={item.href}
+                className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <div className={`absolute -right-6 -top-6 h-24 w-24 rounded-full ${item.bgAccent} opacity-70 transition group-hover:opacity-100`} />
+
+                <div className="relative">
+                  <div className="mb-4 flex items-center justify-between">
+                    <div className={`grid h-11 w-11 place-items-center rounded-xl ${item.iconWrap}`}>
+                      <i className={`fas ${item.icon}`}></i>
+                    </div>
+                    {item.badge && value > 0 && (
+                      <span className="rounded-full bg-rose-500 px-2 py-1 text-xs font-bold text-white">{value}</span>
+                    )}
                   </div>
-                  {item.badge && (
-                    <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                      {item.value}
-                    </span>
-                  )}
-                </div>
-                <p className="text-gray-500 text-sm mb-1">{item.label}</p>
-                <p className={`text-3xl font-bold text-${item.color}-600`}>{item.value}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
 
-      {/* Menu Navigasi */}
-      <div>
-        <h3 className="text-lg font-bold text-gray-800 mb-4">Menu Navigasi</h3>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="divide-y divide-gray-100">
-            <Link href="/admin/berita" className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors group">
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                  <i className="fas fa-newspaper text-blue-600"></i>
+                  <p className="text-sm text-slate-500">{item.label}</p>
+                  <p className={`mt-1 text-3xl font-bold ${item.accent}`}>{value}</p>
                 </div>
-                <div>
-                  <p className="font-semibold text-gray-800">Kelola Berita</p>
-                  <p className="text-sm text-gray-500">{stats.berita} berita tersedia</p>
-                </div>
-              </div>
-              <i className="fas fa-chevron-right text-gray-400 group-hover:text-gray-600"></i>
-            </Link>
-            <Link href="/admin/galeri" className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors group">
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                  <i className="fas fa-images text-purple-600"></i>
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-800">Kelola Galeri</p>
-                  <p className="text-sm text-gray-500">{stats.galeri} foto tersedia</p>
-                </div>
-              </div>
-              <i className="fas fa-chevron-right text-gray-400 group-hover:text-gray-600"></i>
-            </Link>
-            <Link href="/admin/guru" className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors group">
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                  <i className="fas fa-chalkboard-teacher text-green-600"></i>
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-800">Kelola Guru</p>
-                  <p className="text-sm text-gray-500">{stats.guru} guru terdaftar</p>
-                </div>
-              </div>
-              <i className="fas fa-chevron-right text-gray-400 group-hover:text-gray-600"></i>
-            </Link>
-            <Link href="/admin/pesan" className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors group">
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center relative">
-                  <i className="fas fa-envelope text-red-600"></i>
-                  {stats.pesan > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                      {stats.pesan}
-                    </span>
-                  )}
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-800">Lihat Pesan</p>
-                  <p className="text-sm text-gray-500">{stats.pesan} pesan belum dibaca</p>
-                </div>
-              </div>
-              <i className="fas fa-chevron-right text-gray-400 group-hover:text-gray-600"></i>
-            </Link>
-            <Link href="/admin/pendaftaran" className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors group">
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
-                  <i className="fas fa-user-plus text-orange-600"></i>
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-800">Data Pendaftaran</p>
-                  <p className="text-sm text-gray-500">{stats.pendaftaran} pendaftar baru</p>
-                </div>
-              </div>
-              <i className="fas fa-chevron-right text-gray-400 group-hover:text-gray-600"></i>
-            </Link>
-            <Link href="/admin/settings" className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors group">
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
-                  <i className="fas fa-cog text-gray-600"></i>
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-800">Pengaturan</p>
-                  <p className="text-sm text-gray-500">Update statistik website</p>
-                </div>
-              </div>
-              <i className="fas fa-chevron-right text-gray-400 group-hover:text-gray-600"></i>
-            </Link>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      <section>
+        <h3 className="mb-4 text-lg font-bold text-slate-800">Menu Navigasi</h3>
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="divide-y divide-slate-100">
+            {quickMenus.map((menu) => {
+              const value = menu.subtitleKey ? stats[menu.subtitleKey] || 0 : null;
+              const subtitle = menu.subtitleKey ? `${value} ${menu.subtitleSuffix}` : menu.subtitleSuffix;
+
+              return (
+                <Link
+                  key={menu.href}
+                  href={menu.href}
+                  className="group flex items-center justify-between p-4 transition hover:bg-slate-50"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className={`relative grid h-10 w-10 place-items-center rounded-lg ${menu.iconWrap}`}>
+                      <i className={`fas ${menu.icon}`}></i>
+                      {menu.showBadge && stats.pesan > 0 && (
+                        <span className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full bg-rose-500 text-[10px] font-bold text-white">
+                          {stats.pesan}
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-800">{menu.title}</p>
+                      <p className="text-sm text-slate-500">{subtitle}</p>
+                    </div>
+                  </div>
+
+                  <i className="fas fa-chevron-right text-slate-300 transition group-hover:text-slate-500"></i>
+                </Link>
+              );
+            })}
           </div>
         </div>
-      </div>
+      </section>
     </AdminLayout>
   );
 }

@@ -7,7 +7,7 @@ class Pesan {
   }
 
   static async create(payload) {
-    const result = await database.query('INSERT INTO pesan (nama,email,subjek,pesan,status) VALUES (?,?,?,?,?)', [payload.nama, payload.email, payload.subjek, payload.pesan, payload.status || 'unread']);
+    const result = await database.query('INSERT INTO pesan (nama,email,subjek,pesan,status) VALUES (?,?,?,?,?)', [payload.nama, payload.email || null, payload.subjek, payload.pesan, payload.status || 'unread']);
     return this.findById(result.insertId);
   }
 
