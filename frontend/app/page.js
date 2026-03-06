@@ -9,7 +9,7 @@ import GaleriSection from '@/components/GaleriSection';
 import GuruSection from '@/components/GuruSection';
 import KontakSection from '@/components/KontakSection';
 import ScrollToTop from '@/components/ScrollToTop';
-import { ValuePropSection, WhyChooseUsSection, SocialProofSection, FinalCTASection } from '@/components/Sections';
+import { FalsafahPondokSection, ValuePropSection, WhyChooseUsSection, SocialProofSection, FinalCTASection } from '@/components/Sections';
 
 export const metadata = {
   title: 'Ponpes Modern Darul Mukhlisin - Beranda',
@@ -23,8 +23,9 @@ export default function Home() {
       <Navbar />
       <main>
         <HeroSection />
-        <StatsSection />
         <BeritaSection />
+        <FalsafahPondokSection />
+        <StatsSection />
         <ValuePropSection />
         <WhyChooseUsSection />
         <ProfilSection />
