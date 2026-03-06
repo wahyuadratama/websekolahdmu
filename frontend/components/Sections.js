@@ -5,6 +5,58 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { API_BASE, API_URL } from '@/lib/config';
 
+export function FalsafahPondokSection() {
+  const items = [
+    {
+      icon: 'fas fa-heart',
+      title: 'Panca Jiwa',
+      desc: 'Lima nilai jiwa pondok: keikhlasan, kesederhanaan, berdikari, ukhuwah islamiyah, dan kebebasan yang bertanggung jawab.',
+      href: '/falsafah/panca-jiwa'
+    },
+    {
+      icon: 'fas fa-compass',
+      title: 'Motto',
+      desc: 'Arah pendidikan: berbudi tinggi, berbadan sehat, berpengetahuan luas, dan berpikiran bebas dalam koridor nilai Islam.',
+      href: '/falsafah/motto'
+    },
+    {
+      icon: 'fas fa-seedling',
+      title: 'Panca Jangka',
+      desc: 'Program strategis pengembangan pondok meliputi pendidikan, kaderisasi, fasilitas, pendanaan, dan kesejahteraan keluarga pondok.',
+      href: '/falsafah/panca-jangka'
+    }
+  ];
+
+  return (
+    <section className="bg-slate-50 py-12 sm:py-16 md:py-20" id="falsafah-pondok">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-8 sm:mb-10 text-center">
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">Falsafah Pondok</p>
+          <h2 className="mt-3 text-2xl sm:text-3xl font-bold text-gray-900 md:text-4xl">Nilai yang Menjiwai Pendidikan</h2>
+          <p className="mx-auto mt-3 max-w-3xl text-sm sm:text-base text-gray-600">Klik setiap menu untuk melihat penjelasan lengkap falsafah Pondok Pesantren Darul Mukhlisin.</p>
+        </div>
+
+        <div className="grid gap-4 sm:gap-5 md:grid-cols-3 md:gap-6">
+          {items.map((item) => (
+            <Link
+              key={item.title}
+              href={item.href}
+              className="group rounded-2xl border border-emerald-100 bg-white p-5 sm:p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                <i className={item.icon}></i>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 group-hover:text-emerald-700">{item.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-gray-600">{item.desc}</p>
+              <p className="mt-4 text-sm font-semibold text-emerald-700">Baca selengkapnya <i className="fas fa-arrow-right ml-1" /></p>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function ValuePropSection() {
   const points = [
     {
@@ -151,7 +203,7 @@ export function BeritaSection() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE}/berita?status=published&limit=3`)
+    fetch(`${API_BASE}/berita?status=published&limit=6`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -165,7 +217,7 @@ export function BeritaSection() {
       });
   }, []);
 
-  const curated = berita.slice(0, 3);
+  const curated = berita.slice(0, 6);
 
   if (loading) {
     return (
@@ -177,68 +229,58 @@ export function BeritaSection() {
     );
   }
 
+  const [first, ...rest] = curated;
+
   return (
-    <section id="berita" className="pb-20 pt-10 md:pt-14 bg-white fade-in-up">
+    <section id="berita" className="bg-white py-14 md:py-16 fade-in-up">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <div className="inline-block bg-blue-50 px-4 py-2 rounded-full mb-4">
-            <span className="text-blue-700 font-semibold text-sm">
-              <i className="fas fa-newspaper mr-2"></i>Informasi Terkini
-            </span>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
-            Berita Terbaru
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">Tiga kabar utama terbaru dari Darul Mukhlisin.</p>
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4">
+          <h2 className="text-2xl font-bold text-gray-900 md:text-3xl">Berita Terkini</h2>
+          <Link href="/berita" className="text-sm font-semibold text-blue-700 hover:text-blue-800">Lihat Semua Berita</Link>
         </div>
 
         {curated.length === 0 ? (
           <p className="text-gray-600 text-center">Belum ada berita tersedia.</p>
         ) : (
-          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            {curated.map((item) => (
-              <Link
-                key={item.id}
-                href={`/berita/${item.slug}`}
-                className="group block overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
-              >
-                <div className="relative">
-                  {item.gambar ? (
-                    <Image
-                      src={item.gambar.startsWith('http') ? item.gambar : `${API_URL}${item.gambar}`}
-                      alt={item.judul}
-                      width={640}
-                      height={380}
-                      className="h-52 w-full object-cover transition duration-500 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="flex h-52 w-full items-center justify-center bg-slate-100 text-slate-400">
-                      <i className="fas fa-newspaper text-3xl"></i>
-                    </div>
-                  )}
-                  <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-blue-700">
-                    {item.kategori}
-                  </span>
-                </div>
+          <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+            <Link
+              href={`/berita/${first.slug}`}
+              className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+            >
+              <div className="relative">
+                {first.gambar ? (
+                  <Image
+                    src={first.gambar.startsWith('http') ? first.gambar : `${API_URL}${first.gambar}`}
+                    alt={first.judul}
+                    width={900}
+                    height={460}
+                    className="h-64 w-full object-cover transition duration-500 group-hover:scale-[1.03] md:h-80"
+                  />
+                ) : (
+                  <div className="flex h-64 w-full items-center justify-center bg-slate-100 text-slate-400 md:h-80">
+                    <i className="fas fa-newspaper text-4xl"></i>
+                  </div>
+                )}
+                <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-blue-700">{first.kategori}</span>
+              </div>
+              <div className="p-5 md:p-6">
+                <p className="mb-2 text-xs text-gray-500">{new Date(first.createdAt).toLocaleDateString('id-ID')}</p>
+                <h3 className="line-clamp-2 text-xl font-bold text-gray-900 md:text-2xl">{first.judul}</h3>
+                <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-gray-600">{first.excerpt || first.konten.substring(0, 180)}...</p>
+              </div>
+            </Link>
 
-                <div className="p-5">
-                  <div className="mb-2 flex items-center gap-2 text-xs text-gray-500">
-                    <i className="fas fa-calendar text-[10px]"></i>
-                    {new Date(item.createdAt).toLocaleDateString('id-ID')}
-                  </div>
-                  <h3 className="mb-2 line-clamp-2 text-lg font-bold text-gray-900">{item.judul}</h3>
-                  <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600">
-                    {item.excerpt || item.konten.substring(0, 120)}...
-                  </p>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="truncate text-gray-500">
-                      <i className="fas fa-user mr-2 text-xs"></i>{item.author || 'Admin'}
-                    </span>
-                    <span className="font-semibold text-blue-700">Baca</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5">
+              <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-blue-700">Update Terbaru</p>
+              <div className="space-y-4">
+                {rest.map((item) => (
+                  <Link key={item.id} href={`/berita/${item.slug}`} className="block border-b border-slate-200 pb-3 last:border-none last:pb-0">
+                    <p className="line-clamp-2 text-sm font-semibold text-gray-900 hover:text-blue-700">{item.judul}</p>
+                    <p className="mt-1 text-xs text-gray-500">{new Date(item.createdAt).toLocaleDateString('id-ID')}</p>
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>
