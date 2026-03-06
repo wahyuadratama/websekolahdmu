@@ -151,11 +151,11 @@ export function BeritaSection() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE}/berita`)
+    fetch(`${API_BASE}/berita?status=published&limit=3`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          setBerita(data.data.filter(item => item.status === 'published'));
+          setBerita(data.data || []);
         }
         setLoading(false);
       })
@@ -178,7 +178,7 @@ export function BeritaSection() {
   }
 
   return (
-    <section id="berita" className="py-20 bg-white fade-in-up">
+    <section id="berita" className="pb-20 pt-10 md:pt-14 bg-white fade-in-up">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="inline-block bg-blue-50 px-4 py-2 rounded-full mb-4">
@@ -195,39 +195,46 @@ export function BeritaSection() {
         {curated.length === 0 ? (
           <p className="text-gray-600 text-center">Belum ada berita tersedia.</p>
         ) : (
-          <div className="space-y-6">
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {curated.map((item) => (
               <Link
                 key={item.id}
                 href={`/berita/${item.slug}`}
-                className="block bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition overflow-hidden"
+                className="group block overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
               >
-                <div className="md:flex">
-                  {item.gambar && (
-                    <div className="md:w-1/3">
-                      <Image
-                        src={item.gambar.startsWith('http') ? item.gambar : `${API_URL}${item.gambar}`}
-                        alt={item.judul}
-                        width={400}
-                        height={240}
-                        className="w-full h-48 md:h-full object-cover"
-                      />
+                <div className="relative">
+                  {item.gambar ? (
+                    <Image
+                      src={item.gambar.startsWith('http') ? item.gambar : `${API_URL}${item.gambar}`}
+                      alt={item.judul}
+                      width={640}
+                      height={380}
+                      className="h-52 w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="flex h-52 w-full items-center justify-center bg-slate-100 text-slate-400">
+                      <i className="fas fa-newspaper text-3xl"></i>
                     </div>
                   )}
-                  <div className="p-6 md:w-2/3">
-                    <div className="flex items-center gap-3 text-sm text-blue-700 font-semibold mb-2">
-                      <span className="px-3 py-1 bg-blue-50 rounded-full">{item.kategori}</span>
-                      <span className="text-gray-500 flex items-center gap-2">
-                        <i className="fas fa-calendar text-xs"></i>
-                        {new Date(item.createdAt).toLocaleDateString('id-ID')}
-                      </span>
-                    </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{item.judul}</h3>
-                    <p className="text-gray-600 mb-3 line-clamp-3">{item.excerpt || item.konten.substring(0, 160)}...</p>
-                    <div className="flex items-center gap-3 text-sm text-gray-500">
-                      <span className="flex items-center gap-2"><i className="fas fa-user text-xs"></i>{item.author || 'Admin'}</span>
-                      <span className="flex items-center gap-2 text-blue-700 font-semibold">Baca <i className="fas fa-arrow-right text-xs"></i></span>
-                    </div>
+                  <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-blue-700">
+                    {item.kategori}
+                  </span>
+                </div>
+
+                <div className="p-5">
+                  <div className="mb-2 flex items-center gap-2 text-xs text-gray-500">
+                    <i className="fas fa-calendar text-[10px]"></i>
+                    {new Date(item.createdAt).toLocaleDateString('id-ID')}
+                  </div>
+                  <h3 className="mb-2 line-clamp-2 text-lg font-bold text-gray-900">{item.judul}</h3>
+                  <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600">
+                    {item.excerpt || item.konten.substring(0, 120)}...
+                  </p>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="truncate text-gray-500">
+                      <i className="fas fa-user mr-2 text-xs"></i>{item.author || 'Admin'}
+                    </span>
+                    <span className="font-semibold text-blue-700">Baca</span>
                   </div>
                 </div>
               </Link>
@@ -244,11 +251,11 @@ export function GaleriSection() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE}/galeri`)
+    fetch(`${API_BASE}/galeri?limit=4`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          setGaleri(data.data.slice(0, 4));
+          setGaleri(data.data || []);
         }
         setLoading(false);
       })
@@ -320,11 +327,11 @@ export function GuruSection() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE}/guru`)
+    fetch(`${API_BASE}/guru?limit=4`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          setGuru(data.data.slice(0, 4));
+          setGuru(data.data || []);
         }
         setLoading(false);
       })

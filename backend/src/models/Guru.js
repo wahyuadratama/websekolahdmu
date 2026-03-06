@@ -1,10 +1,12 @@
 import database from '../config/database.js';
 
 class Guru {
-  static async getAll({ activeOnly = true } = {}) {
+  static async getAll({ activeOnly = true, limit = 0 } = {}) {
+    const safeLimit = Math.min(Math.max(parseInt(limit, 10) || 0, 0), 100);
+    const limitSql = safeLimit > 0 ? ` LIMIT ${safeLimit}` : '';
     const rows = activeOnly
-      ? await database.query("SELECT * FROM guru WHERE status='aktif' ORDER BY created_at DESC")
-      : await database.query('SELECT * FROM guru ORDER BY created_at DESC');
+      ? await database.query(`SELECT * FROM guru WHERE status='aktif' ORDER BY created_at DESC${limitSql}`)
+      : await database.query(`SELECT * FROM guru ORDER BY created_at DESC${limitSql}`);
     return rows.map(this.mapRow);
   }
 

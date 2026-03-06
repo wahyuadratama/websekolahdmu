@@ -19,13 +19,17 @@ class Settings {
   static async initializeDefaults() {
     const defaults = [
       { key: 'stats_siswa', value: 1200, description: 'Jumlah santri aktif' },
+      { key: 'stats_pendaftar', value: 0, description: 'Jumlah pendaftar baru' },
       { key: 'stats_guru', value: 85, description: 'Jumlah guru/ustadz' },
       { key: 'stats_keahlian', value: 15, description: 'Jumlah program unggulan' },
       { key: 'stats_prestasi', value: 50, description: 'Jumlah prestasi' }
     ];
 
     for (const def of defaults) {
-      await this.setSetting(def.key, def.value, def.description);
+      const exists = await this.getSetting(def.key);
+      if (exists === null || exists === undefined) {
+        await this.setSetting(def.key, def.value, def.description);
+      }
     }
     console.log('✅ Default settings initialized');
   }

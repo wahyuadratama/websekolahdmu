@@ -24,12 +24,12 @@ export default function Home() {
       <main>
         <HeroSection />
         <StatsSection />
+        <BeritaSection />
         <ValuePropSection />
         <WhyChooseUsSection />
         <ProfilSection />
         <PendaftaranSection />
         <SocialProofSection />
-        <BeritaSection />
         <GaleriSection />
         <GuruSection />
         <FinalCTASection />

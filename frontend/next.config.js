@@ -21,8 +21,17 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'ui-avatars.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'darulmukhlisin.ponpes.id',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.darulmukhlisin.ponpes.id',
+      },
     ],
-    unoptimized: true,
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60,
   },
 }
 

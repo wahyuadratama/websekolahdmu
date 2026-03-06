@@ -1,6 +1,12 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const normalizeApiOrigin = (value = '') =>
+  value
+    .trim()
+    .replace(/\/$/, '')
+    .replace(/\/api$/, '');
+
+const API_URL = normalizeApiOrigin(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000');
 
 class ApiClient {
   constructor() {

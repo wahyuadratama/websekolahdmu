@@ -1,8 +1,12 @@
 import database from '../config/database.js';
 
 class Galeri {
-  static async getAll() {
-    const rows = await database.query('SELECT * FROM galeri ORDER BY created_at DESC');
+  static async getAll({ limit = 0 } = {}) {
+    const safeLimit = Math.min(Math.max(parseInt(limit, 10) || 0, 0), 100);
+    const sql = safeLimit > 0
+      ? `SELECT * FROM galeri ORDER BY created_at DESC LIMIT ${safeLimit}`
+      : 'SELECT * FROM galeri ORDER BY created_at DESC';
+    const rows = await database.query(sql);
     return rows.map(this.mapRow);
   }
 

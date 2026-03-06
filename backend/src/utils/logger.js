@@ -32,8 +32,8 @@ class Logger {
     const logMessage = this.formatMessage(level, message, meta);
     const logFile = this.getLogFilePath('app');
 
-    // Write to file
-    fs.appendFileSync(logFile, logMessage);
+    // Write to file (non-blocking)
+    fs.appendFile(logFile, logMessage, () => {});
 
     // Also log to console in development
     if (process.env.NODE_ENV !== 'production') {
@@ -61,9 +61,9 @@ class Logger {
   error(message, meta = {}) {
     this.writeLog('error', message, meta);
     
-    // Write errors to separate error log
+    // Write errors to separate error log (non-blocking)
     const errorLog = this.getLogFilePath('error');
-    fs.appendFileSync(errorLog, this.formatMessage('error', message, meta));
+    fs.appendFile(errorLog, this.formatMessage('error', message, meta), () => {});
   }
 
   success(message, meta = {}) {

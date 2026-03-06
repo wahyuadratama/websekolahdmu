@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+
 import Link from 'next/link';
 import AdminLayout from '@/components/AdminLayout';
 import { showError } from '@/lib/sweetalert';
@@ -117,11 +117,10 @@ export default function AdminDashboard() {
     pesan: 0
   });
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
     loadStats();
-  }, [router]);
+  }, []);
 
   const loadStats = async () => {
     try {

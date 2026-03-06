@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { showError, showLoading, closeLoading } from '@/lib/sweetalert';
+import { API_BASE } from '@/lib/config';
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -21,8 +22,7 @@ export default function LoginPage() {
     try {
       showLoading('Memproses login...');
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/auth/login`, {
+      const response = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

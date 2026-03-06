@@ -68,8 +68,8 @@ class RateLimiter {
   // Standard rate limit for API endpoints
   apiLimiter() {
     return this.limit({
-      windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 100, // 100 requests per 15 minutes
+      windowMs: 5 * 60 * 1000, // 5 minutes
+      max: 600, // 600 requests per 5 minutes (lebih aman untuk dashboard polling)
       message: 'Terlalu banyak request, silakan coba lagi nanti'
     });
   }

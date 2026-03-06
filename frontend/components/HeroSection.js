@@ -18,7 +18,7 @@ export default function HeroSection() {
       `${API_URL}/uploads/poto 4.jpg`
     ];
 
-    fetch(`${API_URL}/api/galeri`)
+    fetch(`${API_URL}/api/galeri?limit=5`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.data && data.data.length > 0) {

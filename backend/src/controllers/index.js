@@ -6,7 +6,10 @@ import Settings from '../models/Settings.js';
 
 class GaleriController {
   async getAll(req, res) {
-    try { res.json({ success: true, data: await Galeri.getAll() }); }
+    try {
+      const limit = Math.min(Math.max(parseInt(req.query.limit || '0', 10) || 0, 0), 100);
+      res.json({ success: true, data: await Galeri.getAll({ limit }) });
+    }
     catch (error) { res.status(500).json({ success: false, message: error.message }); }
   }
   async create(req, res) {
@@ -24,7 +27,12 @@ class GaleriController {
 }
 
 class GuruController {
-  async getAll(req, res) { try { res.json({ success:true, data: await Guru.getAll({ activeOnly: true }) }); } catch (error) { res.status(500).json({ success:false, message:error.message }); } }
+  async getAll(req, res) {
+    try {
+      const limit = Math.min(Math.max(parseInt(req.query.limit || '0', 10) || 0, 0), 100);
+      res.json({ success:true, data: await Guru.getAll({ activeOnly: true, limit }) });
+    } catch (error) { res.status(500).json({ success:false, message:error.message }); }
+  }
   async create(req, res) { try { res.status(201).json({ success:true, data: await Guru.create(req.body) }); } catch (error) { res.status(500).json({ success:false, message:error.message }); } }
   async update(req, res) { try { const item = await Guru.update(req.params.id, req.body); if(!item) return res.status(404).json({ success:false, message:'Guru tidak ditemukan' }); res.json({ success:true, data:item }); } catch (error) { res.status(500).json({ success:false, message:error.message }); } }
   async delete(req, res) { try { const ok = await Guru.deleteById(req.params.id); if(!ok) return res.status(404).json({ success:false, message:'Guru tidak ditemukan' }); res.json({ success:true, message:'Guru berhasil dihapus' }); } catch (error) { res.status(500).json({ success:false, message:error.message }); } }
@@ -47,16 +55,18 @@ class SettingsController {
   async getStats(req, res) {
     try {
       const siswa = await Settings.getSetting('stats_siswa') || 1200;
+      const pendaftar = await Settings.getSetting('stats_pendaftar') || 0;
       const guru = await Settings.getSetting('stats_guru') || 85;
       const keahlian = await Settings.getSetting('stats_keahlian') || 15;
       const prestasi = await Settings.getSetting('stats_prestasi') || 50;
-      res.json({ success:true, data:{ siswa, guru, keahlian, prestasi } });
+      res.json({ success:true, data:{ siswa, pendaftar, guru, keahlian, prestasi } });
     } catch (error) { res.status(500).json({ success:false, message:error.message }); }
   }
   async updateStats(req, res) {
     try {
-      const { siswa, guru, keahlian, prestasi } = req.body;
+      const { siswa, pendaftar, guru, keahlian, prestasi } = req.body;
       if (siswa !== undefined) await Settings.setSetting('stats_siswa', siswa);
+      if (pendaftar !== undefined) await Settings.setSetting('stats_pendaftar', pendaftar);
       if (guru !== undefined) await Settings.setSetting('stats_guru', guru);
       if (keahlian !== undefined) await Settings.setSetting('stats_keahlian', keahlian);
       if (prestasi !== undefined) await Settings.setSetting('stats_prestasi', prestasi);
