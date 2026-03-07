@@ -93,18 +93,49 @@ export default async function BeritaDetailPage({ params }) {
   }
 
   const articleUrl = `https://darulmukhlisin.ponpes.id/berita/${params.slug}`;
+  const articleImage = berita.gambar
+    ? (berita.gambar.startsWith('http') ? berita.gambar : `${API_URL}${berita.gambar}`)
+    : `${API_URL}/uploads/masjid.JPG`;
+  const articleDescription = (berita.excerpt || berita.konten?.replace(/<[^>]*>/g, '').substring(0, 160) || '').trim();
   const relatedBerita = await getRelatedBerita(berita.kategori, berita.id);
 
   return (
     <>
       <Navbar />
       <main className="pt-20 min-h-screen bg-gray-50">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'NewsArticle',
+              headline: berita.judul,
+              description: articleDescription,
+              image: [articleImage],
+              datePublished: berita.createdAt,
+              dateModified: berita.updatedAt || berita.createdAt,
+              author: {
+                '@type': 'Person',
+                name: berita.author || 'Admin',
+              },
+              publisher: {
+                '@type': 'Organization',
+                name: 'Pondok Pesantren Modern Darul Mukhlisin',
+                logo: {
+                  '@type': 'ImageObject',
+                  url: 'https://darulmukhlisin.ponpes.id/images/LOGO%20DMU.png',
+                },
+              },
+              mainEntityOfPage: articleUrl,
+            }),
+          }}
+        />
         <article className="container mx-auto px-4 py-12 max-w-4xl">
           {/* Breadcrumb */}
           <nav className="mb-6 text-sm text-gray-600">
             <Link href="/" className="hover:text-blue-600">Beranda</Link>
             <span className="mx-2">/</span>
-            <Link href="/#berita" className="hover:text-blue-600">Berita</Link>
+            <Link href="/berita" className="hover:text-blue-600">Berita</Link>
             <span className="mx-2">/</span>
             <span className="text-gray-800">{berita.judul}</span>
           </nav>
@@ -231,7 +262,7 @@ export default async function BeritaDetailPage({ params }) {
           {/* Back Button */}
           <div className="text-center">
             <Link
-              href="/#berita"
+              href="/berita"
               className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
             >
               <i className="fas fa-arrow-left mr-2"></i>Kembali ke Berita
