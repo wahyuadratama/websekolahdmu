@@ -24,6 +24,9 @@ export const metadata = {
     index: true,
     follow: true,
   },
+  verification: {
+    google: 'CKmSPMcOFRaFPrO2PeJ_v_V4zARKF4Q_3R5BbGclFVs',
+  },
 }
 
 
