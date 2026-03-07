@@ -33,7 +33,6 @@ export function FalsafahPondokSection() {
         <div className="mb-8 sm:mb-10 text-center">
           <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">Falsafah Pondok</p>
           <h2 className="mt-3 text-2xl sm:text-3xl font-bold text-gray-900 md:text-4xl">Nilai yang Menjiwai Pendidikan</h2>
-          <p className="mx-auto mt-3 max-w-3xl text-sm sm:text-base text-gray-600">Klik setiap menu untuk melihat penjelasan lengkap falsafah Pondok Pesantren Darul Mukhlisin.</p>
         </div>
 
         <div className="grid gap-4 sm:gap-5 md:grid-cols-3 md:gap-6">
