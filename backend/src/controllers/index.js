@@ -75,8 +75,44 @@ class SettingsController {
   }
 }
 
+class TestimoniController {
+  async getAll(req, res) {
+    try {
+      const raw = await Settings.getSetting('testimonials');
+      let list = [];
+      if (typeof raw === 'string' && raw.trim()) {
+        try { list = JSON.parse(raw); } catch { list = []; }
+      }
+
+      const includeUnpublished = req.query.all === '1';
+      const data = includeUnpublished ? list : list.filter((item) => item?.isPublished !== false);
+      res.json({ success: true, data });
+    } catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+
+  async saveAll(req, res) {
+    try {
+      const incoming = Array.isArray(req.body?.items) ? req.body.items : [];
+      const normalized = incoming.map((item, idx) => ({
+        id: item.id || `tmn-${Date.now()}-${idx}`,
+        quote: String(item.quote || '').trim(),
+        name: String(item.name || '').trim(),
+        role: String(item.role || '').trim(),
+        source: String(item.source || '').trim(),
+        year: String(item.year || '').trim(),
+        isVerified: Boolean(item.isVerified),
+        isPublished: item.isPublished !== false,
+      })).filter((item) => item.quote && item.name && item.role);
+
+      await Settings.setSetting('testimonials', JSON.stringify(normalized), 'Daftar testimoni terverifikasi');
+      res.json({ success: true, message: 'Testimoni berhasil disimpan', data: normalized });
+    } catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+}
+
 export const galeriController = new GaleriController();
 export const guruController = new GuruController();
 export const pesanController = new PesanController();
 export const pendaftaranController = new PendaftaranController();
 export const settingsController = new SettingsController();
+export const testimoniController = new TestimoniController();

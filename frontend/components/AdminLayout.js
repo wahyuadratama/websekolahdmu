@@ -62,6 +62,7 @@ export default function AdminLayout({ children, title }) {
     { href: '/admin/guru', icon: 'fa-chalkboard-teacher', label: 'Guru' },
     { href: '/admin/pesan', icon: 'fa-envelope', label: 'Pesan' },
     { href: '/admin/pendaftaran', icon: 'fa-user-plus', label: 'Pendaftaran' },
+    { href: '/admin/testimoni', icon: 'fa-comments', label: 'Testimoni' },
     { href: '/admin/settings', icon: 'fa-cog', label: 'Pengaturan' },
   ];
 

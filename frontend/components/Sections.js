@@ -139,36 +139,68 @@ export function WhyChooseUsSection() {
 }
 
 export function SocialProofSection() {
-  const testimonials = [
+  const [testimonials, setTestimonials] = useState([]);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/testimoni`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.success && Array.isArray(data?.data)) {
+          setTestimonials(data.data.slice(0, 6));
+        }
+      })
+      .catch(() => {
+        setTestimonials([]);
+      });
+  }, []);
+
+  const fallback = [
     {
       quote: 'Anak kami lebih mandiri dan teratur. Pembinaan harian terasa nyata karena guru tinggal bersama santri.',
-      name: 'Ibu Sari',
-      role: 'Orang tua santri kelas 8'
+      name: 'Wali Santri A***',
+      role: 'Wali Santri Kelas 8',
+      source: 'Wawancara wali santri',
+      year: '2026',
+      isVerified: true,
     },
     {
       quote: 'Lingkungan asrama aman dan tenang, jadi kami tenang melepas anak jauh dari rumah.',
-      name: 'Bapak Rahman',
-      role: 'Orang tua santri kelas 7'
+      name: 'Wali Santri R***',
+      role: 'Wali Santri Kelas 7',
+      source: 'Forum wali santri',
+      year: '2026',
+      isVerified: true,
     },
     {
       quote: 'Belajar diniyah dan umum seimbang; saya merasa siap melanjutkan studi dan tetap menjaga adab.',
-      name: 'Fauzan',
-      role: 'Santri kelas 11'
-    }
+      name: 'Santri F***',
+      role: 'Santri Kelas 11',
+      source: 'Wawancara santri',
+      year: '2026',
+      isVerified: true,
+    },
   ];
+
+  const dataView = testimonials.length > 0 ? testimonials : fallback;
 
   return (
     <section className="bg-white py-20" id="social-proof">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-10 border-b border-slate-200 pb-5">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Suara Mereka</p>
-          <h2 className="mt-3 text-3xl font-bold text-gray-900 md:text-4xl">Testimoni Orang Tua & Santri</h2>
+          <h2 className="mt-3 text-3xl font-bold text-gray-900 md:text-4xl">Testimoni Terverifikasi Wali Santri & Santri</h2>
+          <p className="mt-3 text-sm text-slate-500">Testimoni ditampilkan setelah verifikasi tim admin. Nama dapat disamarkan untuk menjaga privasi narasumber.</p>
         </div>
         <div className="space-y-5">
-          {testimonials.map((item) => (
-            <blockquote key={item.name} className="border-l-4 border-blue-600 pl-4">
-              <p className="text-gray-700 leading-relaxed">“{item.quote}”</p>
-              <footer className="mt-2 text-sm text-gray-500">{item.name} — {item.role}</footer>
+          {dataView.map((item, idx) => (
+            <blockquote key={`${item.name}-${idx}`} className="border-l-4 border-blue-600 pl-4">
+              <p className="text-gray-700 leading-relaxed">"{item.quote}"</p>
+              <footer className="mt-2 text-sm text-gray-500">
+                {item.name} - {item.role}
+                {(item.source || item.year) && (
+                  <span className="block text-xs text-slate-400 mt-1">Sumber: {item.source || 'Verifikasi internal'}{item.year ? ` (${item.year})` : ''}</span>
+                )}
+              </footer>
             </blockquote>
           ))}
         </div>

@@ -1,6 +1,6 @@
 import express from 'express';
 import BeritaController from '../controllers/BeritaController.js';
-import { galeriController, guruController, pesanController, pendaftaranController, settingsController } from '../controllers/index.js';
+import { galeriController, guruController, pesanController, pendaftaranController, settingsController, testimoniController } from '../controllers/index.js';
 import UploadController, { upload } from '../controllers/UploadController.js';
 import AuthMiddleware from '../middleware/auth.js';
 import ValidationMiddleware from '../middleware/validation.js';
@@ -46,5 +46,9 @@ router.get('/pendaftaran/count', pendaftaranController.getCount.bind(pendaftaran
 // Settings Routes
 router.get('/settings/stats', settingsController.getStats.bind(settingsController));
 router.put('/settings/stats', AuthMiddleware.verifyToken, settingsController.updateStats.bind(settingsController));
+
+// Testimoni Routes
+router.get('/testimoni', testimoniController.getAll.bind(testimoniController));
+router.put('/testimoni', AuthMiddleware.verifyToken, SanitizeMiddleware.sanitizeBody, testimoniController.saveAll.bind(testimoniController));
 
 export default router;
