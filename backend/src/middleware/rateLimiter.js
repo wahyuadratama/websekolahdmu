@@ -7,13 +7,15 @@ class RateLimiter {
   limit(options = {}) {
     const {
       windowMs = 15 * 60 * 1000, // 15 minutes
-      max = 100, // limit each IP to 100 requests per windowMs
-      message = 'Terlalu banyak request, silakan coba lagi nanti'
+      max = 100, // limit each key to 100 requests per windowMs
+      message = 'Terlalu banyak request, silakan coba lagi nanti',
+      keyGenerator = null
     } = options;
 
     return (req, res, next) => {
       const clientIp = req.ip || req.connection.remoteAddress;
-      const key = req.user?.id ? `user:${req.user.id}` : `ip:${clientIp}`;
+      const defaultKey = req.user?.id ? `user:${req.user.id}` : `ip:${clientIp}`;
+      const key = typeof keyGenerator === 'function' ? keyGenerator(req, defaultKey) : defaultKey;
       const now = Date.now();
       
       if (!this.requests.has(key)) {
@@ -57,12 +59,16 @@ class RateLimiter {
     }
   }
 
-  // Stricter rate limit for auth endpoints
+  // Balanced rate limit for auth endpoints (per IP + username)
   authLimiter() {
     return this.limit({
       windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 5, // 5 requests per 15 minutes
-      message: 'Terlalu banyak percobaan login, silakan coba lagi dalam 15 menit'
+      max: 20, // 20 requests per 15 minutes per (IP + username)
+      message: 'Terlalu banyak percobaan login, silakan coba lagi dalam 15 menit',
+      keyGenerator: (req, defaultKey) => {
+        const username = String(req.body?.username || '').trim().toLowerCase();
+        return username ? `${defaultKey}:login:${username}` : `${defaultKey}:login:unknown`;
+      }
     });
   }
 
