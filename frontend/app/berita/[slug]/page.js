@@ -142,12 +142,15 @@ export default async function BeritaDetailPage({ params }) {
 
           {/* Header */}
           <header className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm font-semibold">
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              <span className="max-w-full bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs sm:text-sm font-semibold truncate">
                 {berita.kategori}
               </span>
               {berita.tags?.map((tag, idx) => (
-                <span key={idx} className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs">
+                <span
+                  key={idx}
+                  className="max-w-full bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-[11px] sm:text-xs break-words"
+                >
                   #{tag}
                 </span>
               ))}
