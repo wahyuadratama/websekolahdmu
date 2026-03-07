@@ -142,7 +142,7 @@ export function SocialProofSection() {
   const [testimonials, setTestimonials] = useState([]);
 
   useEffect(() => {
-    fetch(`${API_BASE}/testimoni`)
+    fetch(`${API_BASE}/testimoni?t=${Date.now()}`)
       .then((res) => res.json())
       .then((data) => {
         if (data?.success && Array.isArray(data?.data)) {
@@ -154,34 +154,7 @@ export function SocialProofSection() {
       });
   }, []);
 
-  const fallback = [
-    {
-      quote: 'Anak kami lebih mandiri dan teratur. Pembinaan harian terasa nyata karena guru tinggal bersama santri.',
-      name: 'Wali Santri A***',
-      role: 'Wali Santri Kelas 8',
-      source: 'Wawancara wali santri',
-      year: '2026',
-      isVerified: true,
-    },
-    {
-      quote: 'Lingkungan asrama aman dan tenang, jadi kami tenang melepas anak jauh dari rumah.',
-      name: 'Wali Santri R***',
-      role: 'Wali Santri Kelas 7',
-      source: 'Forum wali santri',
-      year: '2026',
-      isVerified: true,
-    },
-    {
-      quote: 'Belajar diniyah dan umum seimbang; saya merasa siap melanjutkan studi dan tetap menjaga adab.',
-      name: 'Santri F***',
-      role: 'Santri Kelas 11',
-      source: 'Wawancara santri',
-      year: '2026',
-      isVerified: true,
-    },
-  ];
-
-  const dataView = testimonials.length > 0 ? testimonials : fallback;
+  const dataView = testimonials;
 
   return (
     <section className="bg-white py-20" id="social-proof">
@@ -197,7 +170,9 @@ export function SocialProofSection() {
           </div>
         </div>
         <div className="space-y-5">
-          {dataView.map((item, idx) => (
+          {dataView.length === 0 ? (
+            <p className="text-sm text-slate-500">Belum ada testimoni yang dipublikasikan saat ini.</p>
+          ) : dataView.map((item, idx) => (
             <blockquote key={`${item.name}-${idx}`} className="border-l-4 border-blue-600 pl-4">
               <p className="text-gray-700 leading-relaxed">"{item.quote}"</p>
               <footer className="mt-2 text-sm text-gray-500">
