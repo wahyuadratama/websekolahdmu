@@ -232,17 +232,22 @@ export function BeritaSection() {
   const [first, ...rest] = curated;
 
   return (
-    <section id="berita" className="bg-white py-14 md:py-16 fade-in-up">
+    <section id="berita" className="bg-white py-10 sm:py-14 md:py-16 fade-in-up">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4">
-          <h2 className="text-2xl font-bold text-gray-900 md:text-3xl">Berita Terkini</h2>
-          <Link href="/berita" className="text-sm font-semibold text-blue-700 hover:text-blue-800">Lihat Semua Berita</Link>
+        <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 pb-4">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 md:text-3xl">Berita Terkini</h2>
+          <Link
+            href="/berita"
+            className="inline-flex w-full sm:w-auto items-center justify-center rounded-lg border border-blue-200 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50"
+          >
+            Lihat Semua Berita
+          </Link>
         </div>
 
         {curated.length === 0 ? (
           <p className="text-gray-600 text-center">Belum ada berita tersedia.</p>
         ) : (
-          <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+          <div className="grid gap-4 sm:gap-6 lg:grid-cols-[1.2fr_0.8fr]">
             <Link
               href={`/berita/${first.slug}`}
               className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
@@ -254,27 +259,31 @@ export function BeritaSection() {
                     alt={first.judul}
                     width={900}
                     height={460}
-                    className="h-64 w-full object-cover transition duration-500 group-hover:scale-[1.03] md:h-80"
+                    className="h-52 sm:h-64 md:h-80 w-full object-cover transition duration-500 group-hover:scale-[1.03]"
                   />
                 ) : (
-                  <div className="flex h-64 w-full items-center justify-center bg-slate-100 text-slate-400 md:h-80">
+                  <div className="flex h-52 sm:h-64 md:h-80 w-full items-center justify-center bg-slate-100 text-slate-400">
                     <i className="fas fa-newspaper text-4xl"></i>
                   </div>
                 )}
-                <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-blue-700">{first.kategori}</span>
+                <span className="absolute left-3 top-3 sm:left-4 sm:top-4 rounded-full bg-white/95 px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-semibold text-blue-700">
+                  {first.kategori}
+                </span>
               </div>
-              <div className="p-5 md:p-6">
+              <div className="p-4 sm:p-5 md:p-6">
                 <p className="mb-2 text-xs text-gray-500">{new Date(first.createdAt).toLocaleDateString('id-ID')}</p>
-                <h3 className="line-clamp-2 text-xl font-bold text-gray-900 md:text-2xl">{first.judul}</h3>
-                <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-gray-600">{first.excerpt || first.konten.substring(0, 180)}...</p>
+                <h3 className="line-clamp-2 text-lg sm:text-xl font-bold text-gray-900 md:text-2xl">{first.judul}</h3>
+                <p className="mt-2 sm:mt-3 line-clamp-2 sm:line-clamp-3 text-sm leading-relaxed text-gray-600">
+                  {first.excerpt || first.konten.substring(0, 180)}...
+                </p>
               </div>
             </Link>
 
             <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5">
-              <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-blue-700">Update Terbaru</p>
-              <div className="space-y-4">
+              <p className="mb-3 sm:mb-4 text-xs sm:text-sm font-semibold uppercase tracking-wider text-blue-700">Update Terbaru</p>
+              <div className="divide-y divide-slate-200">
                 {rest.map((item) => (
-                  <Link key={item.id} href={`/berita/${item.slug}`} className="block border-b border-slate-200 pb-3 last:border-none last:pb-0">
+                  <Link key={item.id} href={`/berita/${item.slug}`} className="block py-3 first:pt-0 last:pb-0">
                     <p className="line-clamp-2 text-sm font-semibold text-gray-900 hover:text-blue-700">{item.judul}</p>
                     <p className="mt-1 text-xs text-gray-500">{new Date(item.createdAt).toLocaleDateString('id-ID')}</p>
                   </Link>
