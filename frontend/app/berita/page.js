@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
@@ -42,33 +42,43 @@ export default function BeritaListPage() {
     }
   };
 
+  const itemListSchema = useMemo(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Daftar Berita Pondok Pesantren Modern Darul Mukhlisin',
+    itemListElement: filteredBerita.slice(0, 20).map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      url: `https://darulmukhlisin.ponpes.id/berita/${item.slug}`,
+      name: item.judul,
+    })),
+  }), [filteredBerita]);
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Beranda',
+        item: 'https://darulmukhlisin.ponpes.id/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Berita',
+        item: 'https://darulmukhlisin.ponpes.id/berita',
+      },
+    ],
+  };
+
   return (
     <>
       <Navbar />
       <main className="pt-16 sm:pt-20 min-h-screen bg-gray-50">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'BreadcrumbList',
-              itemListElement: [
-                {
-                  '@type': 'ListItem',
-                  position: 1,
-                  name: 'Beranda',
-                  item: 'https://darulmukhlisin.ponpes.id/',
-                },
-                {
-                  '@type': 'ListItem',
-                  position: 2,
-                  name: 'Berita',
-                  item: 'https://darulmukhlisin.ponpes.id/berita',
-                },
-              ],
-            }),
-          }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
         <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-10 sm:py-12 md:py-16">
           <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">Berita & Artikel</h1>

@@ -53,6 +53,17 @@ export default function Home() {
             }),
           }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: 'Pondok Pesantren Modern Darul Mukhlisin',
+              url: 'https://darulmukhlisin.ponpes.id/',
+            }),
+          }}
+        />
         <HeroSection />
         <BeritaSection />
         <FalsafahPondokSection />
