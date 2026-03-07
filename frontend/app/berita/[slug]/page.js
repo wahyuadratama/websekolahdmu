@@ -43,35 +43,56 @@ async function getRelatedBerita(kategori, currentId) {
 
 export async function generateMetadata({ params }) {
   const berita = await getBerita(params.slug);
-  
+  const articleUrl = `https://darulmukhlisin.ponpes.id/berita/${params.slug}`;
+
   if (!berita) {
     return {
       title: 'Berita Tidak Ditemukan',
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
+  const description = (berita.excerpt || berita.konten?.replace(/<[^>]*>/g, '').substring(0, 160) || '').trim();
+  const imageUrl = berita.gambar
+    ? (berita.gambar.startsWith('http') ? berita.gambar : `${API_URL}${berita.gambar}`)
+    : `${API_URL}/uploads/masjid.JPG`;
+
   return {
     title: `${berita.judul} - Ponpes Darul Mukhlisin`,
-    description: berita.excerpt || berita.konten.substring(0, 160),
+    description,
     keywords: berita.tags?.join(', ') || 'pondok pesantren, berita, darul mukhlisin',
+    alternates: {
+      canonical: articleUrl,
+    },
     openGraph: {
       title: berita.judul,
-      description: berita.excerpt || berita.konten.substring(0, 160),
-      images: berita.gambar ? [berita.gambar] : [],
+      description,
+      url: articleUrl,
+      images: [{ url: imageUrl }],
       type: 'article',
       publishedTime: berita.createdAt,
       authors: [berita.author || 'Admin'],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: berita.judul,
+      description,
+      images: [imageUrl],
     },
   };
 }
 
 export default async function BeritaDetailPage({ params }) {
   const berita = await getBerita(params.slug);
-  
+
   if (!berita) {
     notFound();
   }
 
+  const articleUrl = `https://darulmukhlisin.ponpes.id/berita/${params.slug}`;
   const relatedBerita = await getRelatedBerita(berita.kategori, berita.id);
 
   return (
@@ -148,9 +169,9 @@ export default async function BeritaDetailPage({ params }) {
           {/* Share Buttons */}
           <div className="border-t border-b py-6 mb-12">
             <h3 className="text-lg font-bold mb-4">Bagikan Artikel:</h3>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               <a
-                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
@@ -158,7 +179,7 @@ export default async function BeritaDetailPage({ params }) {
                 <i className="fab fa-facebook mr-2"></i>Facebook
               </a>
               <a
-                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&text=${encodeURIComponent(berita.judul)}`}
+                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(articleUrl)}&text=${encodeURIComponent(berita.judul)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-sky-500 text-white px-4 py-2 rounded-lg hover:bg-sky-600 transition"
@@ -166,7 +187,7 @@ export default async function BeritaDetailPage({ params }) {
                 <i className="fab fa-twitter mr-2"></i>Twitter
               </a>
               <a
-                href={`https://wa.me/?text=${encodeURIComponent(berita.judul + ' - ' + (typeof window !== 'undefined' ? window.location.href : ''))}`}
+                href={`https://wa.me/?text=${encodeURIComponent(`${berita.judul} - ${articleUrl}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
