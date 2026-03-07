@@ -20,6 +20,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 class Server {
   constructor() {
     this.app = express();
+    this.app.set('trust proxy', true);
     this.port = process.env.PORT || 5000;
     this.initializeMiddlewares();
     this.initializeRoutes();

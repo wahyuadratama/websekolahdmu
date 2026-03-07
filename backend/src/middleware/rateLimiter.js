@@ -12,7 +12,8 @@ class RateLimiter {
     } = options;
 
     return (req, res, next) => {
-      const key = req.ip || req.connection.remoteAddress;
+      const clientIp = req.ip || req.connection.remoteAddress;
+      const key = req.user?.id ? `user:${req.user.id}` : `ip:${clientIp}`;
       const now = Date.now();
       
       if (!this.requests.has(key)) {
@@ -69,17 +70,17 @@ class RateLimiter {
   apiLimiter() {
     return this.limit({
       windowMs: 5 * 60 * 1000, // 5 minutes
-      max: 600, // 600 requests per 5 minutes (lebih aman untuk dashboard polling)
+      max: 3000, // 3000 requests per 5 minutes per client
       message: 'Terlalu banyak request, silakan coba lagi nanti'
     });
   }
 
-  // Stricter rate limit for upload endpoints
+  // Balanced rate limit for upload endpoints (school/admin friendly)
   uploadLimiter() {
     return this.limit({
-      windowMs: 60 * 60 * 1000, // 1 hour
-      max: 20, // 20 uploads per hour
-      message: 'Terlalu banyak upload, silakan coba lagi dalam 1 jam'
+      windowMs: 10 * 60 * 1000, // 10 minutes
+      max: 60, // 60 uploads per 10 minutes per admin user
+      message: 'Upload terlalu sering. Tunggu sebentar lalu coba lagi.'
     });
   }
 }

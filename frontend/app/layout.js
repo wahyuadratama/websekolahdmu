@@ -4,14 +4,18 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
+  metadataBase: new URL('https://darulmukhlisin.ponpes.id'),
   title: 'Pondok Pesantren Modern Darul Mukhlisin',
   description: 'Membangun Generasi Unggul dengan Pendidikan Berkualitas dan Karakter Islami. Program KMI, Ihya Al-Quran, dan Life Skills.',
   keywords: 'pesantren, pondok pesantren, darul mukhlisin, pendidikan islam, KMI, tahfidz, bandung barat',
   authors: [{ name: 'Pondok Pesantren Modern Darul Mukhlisin' }],
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: 'Pondok Pesantren Modern Darul Mukhlisin',
     description: 'Membangun Generasi Unggul dengan Pendidikan Berkualitas dan Karakter Islami',
-    url: 'https://darulmukhlisin.sch.id',
+    url: 'https://darulmukhlisin.ponpes.id',
     siteName: 'Pondok Pesantren Modern Darul Mukhlisin',
     locale: 'id_ID',
     type: 'website',
@@ -21,6 +25,7 @@ export const metadata = {
     follow: true,
   },
 }
+
 
 export default function RootLayout({ children }) {
   return (
