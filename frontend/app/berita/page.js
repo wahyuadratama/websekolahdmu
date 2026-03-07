@@ -46,6 +46,29 @@ export default function BeritaListPage() {
     <>
       <Navbar />
       <main className="pt-16 sm:pt-20 min-h-screen bg-gray-50">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                {
+                  '@type': 'ListItem',
+                  position: 1,
+                  name: 'Beranda',
+                  item: 'https://darulmukhlisin.ponpes.id/',
+                },
+                {
+                  '@type': 'ListItem',
+                  position: 2,
+                  name: 'Berita',
+                  item: 'https://darulmukhlisin.ponpes.id/berita',
+                },
+              ],
+            }),
+          }}
+        />
         <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-10 sm:py-12 md:py-16">
           <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">Berita & Artikel</h1>
