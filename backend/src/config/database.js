@@ -139,6 +139,22 @@ class Database {
         description VARCHAR(255) NULL,
         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`,
+      `CREATE TABLE IF NOT EXISTS testimonials (
+        id VARCHAR(60) PRIMARY KEY,
+        name VARCHAR(140) NOT NULL,
+        role VARCHAR(140) NOT NULL,
+        quote TEXT NOT NULL,
+        source VARCHAR(140) NULL,
+        year VARCHAR(10) NULL,
+        status ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+        is_verified TINYINT(1) NOT NULL DEFAULT 0,
+        is_published TINYINT(1) NOT NULL DEFAULT 0,
+        submitted_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        reviewed_at DATETIME NULL,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX idx_testimonials_status_publish (status, is_published, created_at)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`
     ];
 
