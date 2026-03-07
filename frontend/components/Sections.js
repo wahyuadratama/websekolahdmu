@@ -189,7 +189,12 @@ export function SocialProofSection() {
         <div className="mb-10 border-b border-slate-200 pb-5">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Suara Mereka</p>
           <h2 className="mt-3 text-3xl font-bold text-gray-900 md:text-4xl">Testimoni Terverifikasi Wali Santri & Santri</h2>
-          <p className="mt-3 text-sm text-slate-500">Testimoni ditampilkan setelah verifikasi tim admin. Nama dapat disamarkan untuk menjaga privasi narasumber.</p>
+          <p className="mt-3 text-sm text-slate-500"></p>
+          <div className="mt-4">
+            <Link href="/testimoni/kirim" className="inline-flex items-center rounded-lg border border-blue-200 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50">
+              Kirim Testimoni
+            </Link>
+          </div>
         </div>
         <div className="space-y-5">
           {dataView.map((item, idx) => (

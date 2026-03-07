@@ -49,6 +49,8 @@ router.put('/settings/stats', AuthMiddleware.verifyToken, settingsController.upd
 
 // Testimoni Routes
 router.get('/testimoni', testimoniController.getAll.bind(testimoniController));
+router.post('/testimoni/submit', rateLimiter.limit({ windowMs: 15 * 60 * 1000, max: 5, message: 'Terlalu banyak pengiriman testimoni, coba lagi nanti.' }), SanitizeMiddleware.sanitizeBody, testimoniController.submit.bind(testimoniController));
 router.put('/testimoni', AuthMiddleware.verifyToken, SanitizeMiddleware.sanitizeBody, testimoniController.saveAll.bind(testimoniController));
+router.patch('/testimoni/:id/moderate', AuthMiddleware.verifyToken, SanitizeMiddleware.sanitizeBody, testimoniController.moderate.bind(testimoniController));
 
 export default router;

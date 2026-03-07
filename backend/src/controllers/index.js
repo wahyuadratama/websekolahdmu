@@ -76,16 +76,42 @@ class SettingsController {
 }
 
 class TestimoniController {
+  async _loadList() {
+    const raw = await Settings.getSetting('testimonials');
+    if (typeof raw === 'string' && raw.trim()) {
+      try { return JSON.parse(raw); } catch { return []; }
+    }
+    return [];
+  }
+
+  _normalizeItem(item, idx = 0) {
+    const status = String(item.status || '').toLowerCase();
+    return {
+      id: item.id || `tmn-${Date.now()}-${idx}`,
+      quote: String(item.quote || '').trim(),
+      name: String(item.name || '').trim(),
+      role: String(item.role || '').trim(),
+      source: String(item.source || '').trim(),
+      year: String(item.year || '').trim(),
+      isVerified: Boolean(item.isVerified),
+      isPublished: item.isPublished !== false,
+      status: ['pending', 'approved', 'rejected'].includes(status) ? status : 'approved',
+      submittedAt: item.submittedAt || new Date().toISOString(),
+      reviewedAt: item.reviewedAt || null,
+    };
+  }
+
+  async _saveList(list) {
+    await Settings.setSetting('testimonials', JSON.stringify(list), 'Daftar testimoni terverifikasi');
+  }
+
   async getAll(req, res) {
     try {
-      const raw = await Settings.getSetting('testimonials');
-      let list = [];
-      if (typeof raw === 'string' && raw.trim()) {
-        try { list = JSON.parse(raw); } catch { list = []; }
-      }
-
+      const list = await this._loadList();
       const includeUnpublished = req.query.all === '1';
-      const data = includeUnpublished ? list : list.filter((item) => item?.isPublished !== false);
+      const data = includeUnpublished
+        ? list
+        : list.filter((item) => item?.isPublished !== false && item?.status === 'approved');
       res.json({ success: true, data });
     } catch (error) { res.status(500).json({ success: false, message: error.message }); }
   }
@@ -93,19 +119,65 @@ class TestimoniController {
   async saveAll(req, res) {
     try {
       const incoming = Array.isArray(req.body?.items) ? req.body.items : [];
-      const normalized = incoming.map((item, idx) => ({
-        id: item.id || `tmn-${Date.now()}-${idx}`,
-        quote: String(item.quote || '').trim(),
-        name: String(item.name || '').trim(),
-        role: String(item.role || '').trim(),
-        source: String(item.source || '').trim(),
-        year: String(item.year || '').trim(),
-        isVerified: Boolean(item.isVerified),
-        isPublished: item.isPublished !== false,
-      })).filter((item) => item.quote && item.name && item.role);
+      const normalized = incoming
+        .map((item, idx) => this._normalizeItem(item, idx))
+        .filter((item) => item.quote && item.name && item.role);
 
-      await Settings.setSetting('testimonials', JSON.stringify(normalized), 'Daftar testimoni terverifikasi');
+      await this._saveList(normalized);
       res.json({ success: true, message: 'Testimoni berhasil disimpan', data: normalized });
+    } catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+
+  async submit(req, res) {
+    try {
+      const payload = this._normalizeItem({
+        quote: req.body?.quote,
+        name: req.body?.name,
+        role: req.body?.role,
+        source: req.body?.source || 'Form website',
+        year: req.body?.year,
+        isVerified: false,
+        isPublished: false,
+        status: 'pending',
+        submittedAt: new Date().toISOString(),
+      });
+
+      if (!payload.quote || !payload.name || !payload.role) {
+        return res.status(400).json({ success: false, message: 'Nama, peran, dan isi testimoni wajib diisi.' });
+      }
+
+      const list = await this._loadList();
+      list.unshift(payload);
+      await this._saveList(list);
+
+      res.status(201).json({ success: true, message: 'Testimoni berhasil dikirim dan menunggu verifikasi admin.' });
+    } catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+
+  async moderate(req, res) {
+    try {
+      const { id } = req.params;
+      const action = String(req.body?.action || '').toLowerCase();
+      if (!['approve', 'reject'].includes(action)) {
+        return res.status(400).json({ success: false, message: 'Action tidak valid.' });
+      }
+
+      const list = await this._loadList();
+      const idx = list.findIndex((item) => item.id === id);
+      if (idx === -1) return res.status(404).json({ success: false, message: 'Testimoni tidak ditemukan.' });
+
+      const current = this._normalizeItem(list[idx], idx);
+      const approved = action === 'approve';
+      list[idx] = {
+        ...current,
+        status: approved ? 'approved' : 'rejected',
+        isVerified: approved,
+        isPublished: approved,
+        reviewedAt: new Date().toISOString(),
+      };
+
+      await this._saveList(list);
+      res.json({ success: true, message: approved ? 'Testimoni disetujui.' : 'Testimoni ditolak.', data: list[idx] });
     } catch (error) { res.status(500).json({ success: false, message: error.message }); }
   }
 }
