@@ -78,13 +78,15 @@ export default function Navbar() {
 
       {mobileMenuOpen && (
         <div className="border-t border-slate-100 bg-white lg:hidden">
-          <div className="mx-auto w-full max-w-7xl max-h-[calc(100vh-72px)] overflow-y-auto space-y-1 px-4 py-3 sm:px-6">
-            <a href="/#home" className="mobile-link" onClick={closeMenus}>Beranda</a>
-            <a href="/#profil" className="mobile-link" onClick={closeMenus}>Profil</a>
-            <Link href="/ppsb" className="mobile-link" onClick={closeMenus}>PPSB/Pendaftaran</Link>
-            <Link href="/berita" className="mobile-link" onClick={closeMenus}>Berita</Link>
-            <a href="/#galeri" className="mobile-link" onClick={closeMenus}>Galeri</a>
-            <a href="/#guru" className="mobile-link" onClick={closeMenus}>Guru</a>
+          <div className="mx-auto w-full max-w-7xl max-h-[calc(100vh-72px)] overflow-y-auto px-4 py-3 sm:px-6">
+            <ul className="space-y-1">
+              <li><a href="/#home" className="mobile-link" onClick={closeMenus}>Beranda</a></li>
+              <li><a href="/#profil" className="mobile-link" onClick={closeMenus}>Profil</a></li>
+              <li><Link href="/ppsb" className="mobile-link" onClick={closeMenus}>PPSB/Pendaftaran</Link></li>
+              <li><Link href="/berita" className="mobile-link" onClick={closeMenus}>Berita</Link></li>
+              <li><a href="/#galeri" className="mobile-link" onClick={closeMenus}>Galeri</a></li>
+              <li><a href="/#guru" className="mobile-link" onClick={closeMenus}>Guru</a></li>
+            </ul>
 
             <div className="rounded-lg border border-slate-200 px-3 py-2">
               <button
