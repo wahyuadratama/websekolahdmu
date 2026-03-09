@@ -458,153 +458,100 @@ export function GuruSection() {
 }
 
 export function KontakSection() {
-  const [loading, setLoading] = useState(false);
+  const [showWa, setShowWa] = useState(false);
+  const waNumber = '6287825279426';
+  const waMessage = encodeURIComponent(
+    "Assalamu'alaikum Admin Pondok Pesantren Modern Darul Mukhlisin. Saya ingin mendapatkan informasi lebih lanjut terkait pendaftaran dan program pesantren."
+  );
+  const waLink = `https://wa.me/${waNumber}?text=${waMessage}`;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  useEffect(() => {
+    const el = document.getElementById('kontak');
+    if (!el) return;
 
-    const formData = {
-      nama: e.target.nama.value,
-      subjek: e.target.subjek.value,
-      pesan: e.target.pesan.value,
-      website: e.target.website?.value || '',
-    };
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowWa(entry.isIntersecting),
+      { threshold: 0.25 }
+    );
 
-    try {
-      const response = await fetch(`${API_BASE}/pesan`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        alert('Pesan Anda berhasil dikirim! Kami akan segera menghubungi Anda.');
-        e.target.reset();
-      } else {
-        alert('Gagal mengirim pesan: ' + data.message);
-      }
-    } catch (error) {
-      alert('Terjadi kesalahan: ' + error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <section id="kontak" className="py-20 bg-gradient-to-b from-gray-50 to-white fade-in-up">
+    <section id="kontak" className="py-16 sm:py-20 bg-gradient-to-b from-slate-50 to-white fade-in-up">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <div className="inline-block px-4 py-2 rounded-full mb-4" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)' }}>
-              <span className="font-bold text-sm text-blue-600 inline-flex items-center gap-2">
-                <Image src="https://img.icons8.com/ios-filled/24/2563eb/phone.png" alt="Kontak" width={16} height={16} className="w-4 h-4" />
-                KONTAK KAMI
-              </span>
+        <div className="text-center mb-10 sm:mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-4 bg-blue-50 text-blue-700 text-xs sm:text-sm font-bold tracking-wide uppercase">
+            <i className="fas fa-headset"></i>
+            Kontak Kami
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
-            Hubungi Kami
-          </h2>
-          <p className="text-gray-600 text-lg">Kami siap membantu Anda</p>
-          <div className="w-24 h-1 mx-auto rounded-full mt-4 bg-blue-500"></div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3">Hubungi Admin Pondok</h2>
+          <p className="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto">Silakan hubungi kami melalui WhatsApp untuk respon lebih cepat, atau kunjungi lokasi pondok secara langsung.</p>
         </div>
+
         <div className="grid gap-6 lg:grid-cols-2">
-          <div>
-            <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
-              <h3 className="text-xl font-bold mb-4 text-blue-500">
-                Informasi Kontak
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-start">
-                  <i className="fas fa-map-marker-alt text-blue-500 mt-1 mr-3"></i>
-                  <p className="text-gray-700">
-                    Kp.Kubang Sari RT/RW 02/05 Desa.Tenjolaut Kec.Cikalong Wetan
-                    Kab.Bandung Barat Jawa Barat 40395
-                  </p>
-                </div>
-                <div className="flex items-center">
-                  <i className="fas fa-phone text-blue-500 mr-3"></i>
-                  <p className="text-gray-700">(+62)87825279426 (Ahmad Saepudin)</p>
-                </div>
-                <div className="flex items-center">
-                  <i className="fas fa-envelope text-blue-500 mr-3"></i>
-                  <p className="text-gray-700">ponpesdarulmukhlisin15@gmail.com</p>
-                </div>
-                <div className="flex items-center">
-                  <i className="fas fa-clock text-blue-500 mr-3"></i>
-                  <p className="text-gray-700">Senin - Jumat: 07.00 - 16.00 WIB</p>
-                </div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
+            <h3 className="text-lg sm:text-xl font-bold mb-4 text-slate-900">Informasi Kontak</h3>
+            <div className="space-y-4 text-sm sm:text-base">
+              <div className="flex items-start gap-3">
+                <i className="fas fa-map-marker-alt text-blue-600 mt-1"></i>
+                <p className="text-gray-700">Kp. Kubang Sari RT/RW 02/05, Desa Tenjolaut, Kec. Cikalong Wetan, Kab. Bandung Barat, Jawa Barat 40395</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <i className="fas fa-phone text-blue-600"></i>
+                <p className="text-gray-700">(+62) 878-2527-9426 (Ahmad Saepudin)</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <i className="fas fa-envelope text-blue-600"></i>
+                <p className="text-gray-700">ponpesdarulmukhlisin15@gmail.com</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <i className="fas fa-clock text-blue-600"></i>
+                <p className="text-gray-700">Senin - Jumat: 07.00 - 16.00 WIB</p>
               </div>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              <h3 className="text-xl font-bold mb-4 text-blue-500">Lokasi Kami</h3>
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15842.434893826946!2d107.412406!3d-6.7102039!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6903143308c765%3A0x4264f530a5f72332!2sPondok%20Pesantren%20Modern%20Darul%20Mukhlisin!5e0!3m2!1sid!2sid!4v1702000000000!5m2!1sid!2sid"
-                width="100%"
-                height="300"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="rounded-lg"
-              ></iframe>
-              <a
-                href="https://maps.app.goo.gl/Wrjm7MmngSS7wQ9D6"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block mt-4 text-blue-500 hover:text-blue-600 font-semibold"
-              >
-                <i className="fas fa-external-link-alt mr-2"></i>Buka di Google Maps
+
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <a href={waLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-lg bg-green-600 px-4 py-3 text-white font-semibold hover:bg-green-700 transition">
+                <i className="fab fa-whatsapp mr-2"></i>Chat WhatsApp
+              </a>
+              <a href="https://maps.app.goo.gl/Wrjm7MmngSS7wQ9D6" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-lg border border-blue-200 bg-white px-4 py-3 text-blue-700 font-semibold hover:bg-blue-50 transition">
+                <i className="fas fa-map-marked-alt mr-2"></i>Lihat Lokasi
               </a>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h3 className="text-xl font-bold mb-4 text-blue-500">Kirim Pesan</h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <input type="text" name="website" tabIndex="-1" autoComplete="off" className="hidden" aria-hidden="true" />
-              <div>
-                <label className="block text-gray-700 mb-2">Nama Lengkap</label>
-                <input
-                  type="text"
-                  name="nama"
-                  required
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
 
-              <div>
-                <label className="block text-gray-700 mb-2">Subjek</label>
-                <input
-                  type="text"
-                  name="subjek"
-                  required
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 mb-2">Pesan</label>
-                <textarea
-                  name="pesan"
-                  rows="4"
-                  required
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                ></textarea>
-              </div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition font-semibold disabled:opacity-50"
-              >
-                {loading ? 'Mengirim...' : 'Kirim Pesan'}
-              </button>
-            </form>
+          <div className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-4 shadow-sm">
+            <h3 className="px-2 sm:px-3 text-lg sm:text-xl font-bold mb-3 text-slate-900">Lokasi Pondok</h3>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15842.434893826946!2d107.412406!3d-6.7102039!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6903143308c765%3A0x4264f530a5f72332!2sPondok%20Pesantren%20Modern%20Darul%20Mukhlisin!5e0!3m2!1sid!2sid!4v1702000000000!5m2!1sid!2sid"
+              width="100%"
+              height="320"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="rounded-xl"
+            ></iframe>
           </div>
         </div>
       </div>
+
+      {showWa && (
+        <a
+          href={waLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="fixed bottom-4 right-4 z-50 inline-flex items-center gap-2 rounded-full bg-green-600 px-4 py-3 text-white shadow-lg hover:bg-green-700 transition"
+          aria-label="Hubungi via WhatsApp"
+        >
+          <i className="fab fa-whatsapp text-lg"></i>
+          <span className="hidden sm:inline font-semibold">Hubungi Admin</span>
+        </a>
+      )}
     </section>
   );
 }
-
 
 
