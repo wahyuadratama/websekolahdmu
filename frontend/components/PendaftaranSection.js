@@ -2,12 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { API_BASE } from '@/lib/config';
 
 export default function PendaftaranSection() {
+  const waTemplate = encodeURIComponent(
+    "Assalamu'alaikum Admin PPSB Darul Mukhlisin.%0A%0ASaya ingin konsultasi terkait:%0A1) Alur PPSB%0A2) Biaya pendidikan%0A3) Program beasiswa%0A%0ANama wali: \nNama calon santri: \nAsal sekolah: "
+  );
+  const waPpsbUrl = `https://wa.me/6285320753796?text=${waTemplate}`;
   const [pendaftar, setPendaftar] = useState(0);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [fromPpsb, setFromPpsb] = useState(false);
 
   useEffect(() => {
     fetch(`${API_BASE}/pendaftaran/count`)
@@ -21,15 +27,27 @@ export default function PendaftaranSection() {
   }, []);
 
   useEffect(() => {
-    const checkHash = () => {
-      if (window.location.hash === '#pendaftaran') {
+    const checkEntry = () => {
+      const hashOk = window.location.hash.includes('pendaftaran-form') || window.location.hash.includes('pendaftaran');
+      const qs = new URLSearchParams(window.location.search);
+      const queryOk = qs.get('openPpsbForm') === '1';
+
+      if (hashOk || queryOk) {
         setIsOpen(true);
+        setFromPpsb(true);
+      } else {
+        setIsOpen(false);
+        setFromPpsb(false);
       }
     };
 
-    checkHash();
-    window.addEventListener('hashchange', checkHash);
-    return () => window.removeEventListener('hashchange', checkHash);
+    checkEntry();
+    window.addEventListener('hashchange', checkEntry);
+    window.addEventListener('popstate', checkEntry);
+    return () => {
+      window.removeEventListener('hashchange', checkEntry);
+      window.removeEventListener('popstate', checkEntry);
+    };
   }, []);
 
   const handleSubmit = async (e) => {
@@ -47,6 +65,7 @@ export default function PendaftaranSection() {
       nama_ortu: e.target.nama_ortu.value,
       telepon: e.target.telepon.value,
       email: e.target.email.value || '',
+      website: e.target.website?.value || '',
     };
 
     try {
@@ -83,24 +102,21 @@ export default function PendaftaranSection() {
             </span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-800">
-            Pendaftaran Siswa Baru
+            PPSB (Penerimaan dan Pendaftaran Santri Baru)
           </h2>
-          <p className="text-xl text-gray-600">Tahun Ajaran 2026/2027</p>
         </div>
 
         <div className="mx-auto max-w-7xl">
           {!isOpen ? (
             <div className="mx-auto max-w-3xl rounded-2xl border border-blue-100 bg-white p-6 text-center shadow-sm md:p-8">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsOpen(true);
-                  setTimeout(() => document.getElementById('pendaftaran')?.scrollIntoView({ behavior: 'smooth' }), 50);
-                }}
-                className="mt-4 inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
-              >
-                <i className="fas fa-user-plus mr-2"></i>Buka Form Pendaftaran
-              </button>
+              <p className="text-gray-700 leading-relaxed">
+                Untuk melanjutkan pendaftaran, silakan baca informasi lengkap terlebih dahulu pada halaman PPSB.
+              </p>
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+                <Link href="/ppsb" className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700">
+                  <i className="fas fa-circle-info mr-2"></i>Lihat Halaman PPSB
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="grid gap-8 lg:grid-cols-5">
@@ -126,17 +142,30 @@ export default function PendaftaranSection() {
                 </div>
 
                 <div className="rounded-2xl bg-white p-6 shadow-lg">
-                  <h4 className="mb-4 flex items-center gap-2 text-xl font-bold text-gray-800"><i className="fas fa-check-circle text-blue-500"></i>Keuntungan Mendaftar</h4>
-                  <ul className="space-y-3">
-                    <li className="flex items-start gap-3"><i className="fas fa-star mt-1 text-yellow-500"></i><span className="text-gray-700">Bebas biaya pendaftaran</span></li>
-                    <li className="flex items-start gap-3"><i className="fas fa-star mt-1 text-yellow-500"></i><span className="text-gray-700">Tes masuk gratis</span></li>
-                    <li className="flex items-start gap-3"><i className="fas fa-star mt-1 text-yellow-500"></i><span className="text-gray-700">Beasiswa prestasi tersedia</span></li>
-                    <li className="flex items-start gap-3"><i className="fas fa-star mt-1 text-yellow-500"></i><span className="text-gray-700">Fasilitas lengkap & modern</span></li>
-                  </ul>
+                  <h4 className="mb-4 flex items-center gap-2 text-xl font-bold text-gray-800"><i className="fas fa-list-check text-blue-500"></i>Alur PPSB</h4>
+                  <ol className="space-y-3 text-sm md:text-base">
+                    <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-blue-700 font-bold">1</span><span className="text-gray-700"><strong>Isi formulir online</strong> dengan data calon santri.</span></li>
+                    <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-blue-700 font-bold">2</span><span className="text-gray-700"><strong>Verifikasi berkas</strong> oleh admin.</span></li>
+                    <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-blue-700 font-bold">3</span><span className="text-gray-700"><strong>Seleksi</strong> (tes akademik/wawancara) sesuai jadwal.</span></li>
+                    <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-blue-700 font-bold">4</span><span className="text-gray-700"><strong>Pengumuman hasil</strong> dan <strong>daftar ulang</strong>.</span></li>
+                  </ol>
+                  <div className="mt-5 rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-gray-700">
+                    <p><strong>Syarat:</strong> NISN, KK/KTP orang tua, akta/ijazah terakhir (sesuai ketentuan admin).</p>
+                    <p className="mt-2"><strong>Biaya:</strong> informasi biaya dan skema beasiswa disampaikan saat verifikasi admin.</p>
+                    <p className="mt-2"><strong>Jadwal:</strong> seleksi & daftar ulang diinformasikan melalui WhatsApp resmi.</p>
+                  </div>
+                  <a href={waPpsbUrl} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-green-600 px-4 py-2.5 text-white font-semibold hover:bg-green-700 transition">
+                    <i className="fab fa-whatsapp mr-2"></i> Tanya Admin PPSB
+                  </a>
                 </div>
               </div>
 
               <div className="lg:col-span-3">
+                {fromPpsb && (
+                  <div className="mb-4 inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                    <i className="fas fa-circle-check mr-2"></i>Anda datang dari halaman PPSB
+                  </div>
+                )}
                 <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-xl">
                   <div className="mb-6 flex items-center justify-between border-b pb-6">
                     <div className="flex items-center gap-3">
@@ -147,6 +176,7 @@ export default function PendaftaranSection() {
                   </div>
 
                   <form onSubmit={handleSubmit} className="space-y-5">
+                    <input type="text" name="website" tabIndex="-1" autoComplete="off" className="hidden" aria-hidden="true" />
                     <div className="grid gap-4 md:grid-cols-2">
                       <div><label className="mb-2 block text-sm font-medium text-gray-700">Nama Lengkap <span className="text-red-500">*</span></label><input type="text" name="nama" required placeholder="Masukkan nama lengkap" className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
                       <div><label className="mb-2 block text-sm font-medium text-gray-700">NISN <span className="text-red-500">*</span></label><input type="text" name="nisn" required placeholder="Nomor Induk Siswa Nasional" className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
@@ -177,6 +207,18 @@ export default function PendaftaranSection() {
                       </button>
                     </div>
                   </form>
+                </div>
+
+                <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-lg">
+                  <h4 className="text-lg font-bold text-gray-800 mb-3">FAQ PPSB</h4>
+                  <div className="space-y-3 text-sm text-gray-700">
+                    <div><p className="font-semibold">Apakah pendaftaran dapat dilakukan secara online?</p><p>Pendaftaran awal dapat dilakukan melalui formulir pada website resmi. Tim administrasi akan melakukan verifikasi dan menghubungi wali calon santri untuk tahapan selanjutnya.</p></div>
+                    <div><p className="font-semibold">Bagaimana informasi biaya pendidikan disampaikan?</p><p>Rincian biaya pendidikan, daftar ulang, dan ketentuan administrasi disampaikan secara resmi oleh admin PPSB setelah proses verifikasi data.</p></div>
+                    <div><p className="font-semibold">Apakah tersedia program beasiswa?</p><p>Tersedia program beasiswa dengan ketentuan tertentu, mengikuti kebijakan pondok serta hasil seleksi akademik dan non-akademik.</p></div>
+                  </div>
+                  <Link href="/ppsb" className="mt-4 inline-flex items-center text-blue-700 font-semibold hover:text-blue-800">
+                    Lihat panduan PPSB lengkap <i className="fas fa-arrow-right ml-2 text-xs"></i>
+                  </Link>
                 </div>
               </div>
             </div>

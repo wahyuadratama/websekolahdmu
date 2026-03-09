@@ -74,6 +74,81 @@ class SettingsController {
       res.json({ success:true, message:'Statistik berhasil diupdate' });
     } catch (error) { res.status(500).json({ success:false, message:error.message }); }
   }
+
+  async getPpsb(req, res) {
+    try {
+      const raw = await Settings.getSetting('ppsb_config');
+      let parsed = null;
+      if (typeof raw === 'string') {
+        try { parsed = JSON.parse(raw); } catch { parsed = null; }
+      }
+      if (!parsed || typeof parsed !== 'object') {
+        parsed = {
+          timeline: [
+            { tanggal: '1 November 2025', nama: 'Pembukaan Pendaftaran Santri Baru', status: 'Buka' },
+            { tanggal: '8 Februari 2026', nama: 'Ujian Masuk Gelombang Pertama', status: 'Buka' },
+            { tanggal: '7 Juni 2026', nama: 'Ujian Masuk Gelombang Kedua', status: 'Buka' },
+            { tanggal: '12 Juli 2026', nama: 'Penutupan Pendaftaran', status: 'Segera' }
+          ],
+          biayaUjian: 'Rp150.000',
+          biaya: {
+            awalItems: [
+              'Uang pangkal masuk KMI: Rp1.500.000', 'Uang makan bulanan: Rp400.000', 'Iuran sekolah dan asrama bulanan: Rp200.000',
+              'Uang kesehatan (tahunan): Rp150.000', 'Sewa almari (tahunan): Rp300.000', 'Kasur: Rp550.000',
+              'Kegiatan ekstrakurikuler (tahunan): Rp150.000', 'Buku paket: Rp650.000', 'Iuran Pramuka (tahunan): Rp100.000', 'Iuran kertas (tahunan): Rp100.000'
+            ],
+            awalTotal: 'Rp4.100.000',
+            putraItems: ['Kaos olahraga: Rp200.000', 'Seragam Tapak Suci: Rp160.000', '3 kemeja: Rp480.000'],
+            putraTotal: 'Rp840.000',
+            putriItems: ['Kaos olahraga: Rp220.000', 'Seragam Tapak Suci: Rp160.000', 'Jubah toska: Rp190.000', 'Jubah biru: Rp160.000', 'Jilbab putih & coklat: Rp110.000'],
+            putriTotal: 'Rp840.000',
+            catatan: 'Catatan: Harga sewaktu-waktu dapat berubah.'
+          }
+        };
+      }
+      res.json({ success: true, data: parsed });
+    } catch (error) { res.status(500).json({ success:false, message:error.message }); }
+  }
+
+  async updatePpsb(req, res) {
+    try {
+      const { timeline, biayaUjian, biaya } = req.body || {};
+      const normalizedTimeline = Array.isArray(timeline)
+        ? timeline.slice(0, 8).map((t) => ({
+            tanggal: String(t?.tanggal || '').trim(),
+            nama: String(t?.nama || '').trim(),
+            status: String(t?.status || 'Buka').trim() || 'Buka'
+          })).filter((t) => t.tanggal && t.nama)
+        : [];
+
+      const normList = (arr, fallback=[]) => Array.isArray(arr) ? arr.map((x) => String(x || '').trim()).filter(Boolean) : fallback;
+      const payload = {
+        timeline: normalizedTimeline.length ? normalizedTimeline : [
+          { tanggal: '1 November 2025', nama: 'Pembukaan Pendaftaran Santri Baru', status: 'Buka' },
+          { tanggal: '8 Februari 2026', nama: 'Ujian Masuk Gelombang Pertama', status: 'Buka' },
+          { tanggal: '7 Juni 2026', nama: 'Ujian Masuk Gelombang Kedua', status: 'Buka' },
+          { tanggal: '12 Juli 2026', nama: 'Penutupan Pendaftaran', status: 'Segera' }
+        ],
+        biayaUjian: String(biayaUjian || 'Rp150.000').trim() || 'Rp150.000',
+        biaya: {
+          awalItems: normList(biaya?.awalItems, [
+            'Uang pangkal masuk KMI: Rp1.500.000', 'Uang makan bulanan: Rp400.000', 'Iuran sekolah dan asrama bulanan: Rp200.000',
+            'Uang kesehatan (tahunan): Rp150.000', 'Sewa almari (tahunan): Rp300.000', 'Kasur: Rp550.000',
+            'Kegiatan ekstrakurikuler (tahunan): Rp150.000', 'Buku paket: Rp650.000', 'Iuran Pramuka (tahunan): Rp100.000', 'Iuran kertas (tahunan): Rp100.000'
+          ]),
+          awalTotal: String(biaya?.awalTotal || 'Rp4.100.000').trim() || 'Rp4.100.000',
+          putraItems: normList(biaya?.putraItems, ['Kaos olahraga: Rp200.000', 'Seragam Tapak Suci: Rp160.000', '3 kemeja: Rp480.000']),
+          putraTotal: String(biaya?.putraTotal || 'Rp840.000').trim() || 'Rp840.000',
+          putriItems: normList(biaya?.putriItems, ['Kaos olahraga: Rp220.000', 'Seragam Tapak Suci: Rp160.000', 'Jubah toska: Rp190.000', 'Jubah biru: Rp160.000', 'Jilbab putih & coklat: Rp110.000']),
+          putriTotal: String(biaya?.putriTotal || 'Rp840.000').trim() || 'Rp840.000',
+          catatan: String(biaya?.catatan || 'Catatan: Harga sewaktu-waktu dapat berubah.').trim() || 'Catatan: Harga sewaktu-waktu dapat berubah.'
+        }
+      };
+
+      await Settings.setSetting('ppsb_config', JSON.stringify(payload), 'Konfigurasi dinamis PPSB (timeline, status gelombang, biaya ujian)');
+      res.json({ success: true, message: 'Pengaturan PPSB berhasil diupdate' });
+    } catch (error) { res.status(500).json({ success:false, message:error.message }); }
+  }
 }
 
 class TestimoniController {

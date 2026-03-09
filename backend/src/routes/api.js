@@ -34,18 +34,20 @@ router.delete('/guru/:id', AuthMiddleware.verifyToken, guruController.delete.bin
 
 // Pesan Routes
 router.get('/pesan', AuthMiddleware.verifyToken, pesanController.getAll.bind(pesanController));
-router.post('/pesan', SanitizeMiddleware.sanitizeBody, ValidationMiddleware.pesanValidation, pesanController.create.bind(pesanController));
+router.post('/pesan', rateLimiter.limit({ windowMs: 10 * 60 * 1000, max: 8, message: 'Terlalu banyak kirim pesan, coba lagi beberapa menit.' }), SanitizeMiddleware.sanitizeBody, ValidationMiddleware.pesanValidation, pesanController.create.bind(pesanController));
 router.put('/pesan/:id/read', AuthMiddleware.verifyToken, pesanController.markAsRead.bind(pesanController));
 router.delete('/pesan/:id', AuthMiddleware.verifyToken, pesanController.delete.bind(pesanController));
 
 // Pendaftaran Routes
 router.get('/pendaftaran', AuthMiddleware.verifyToken, pendaftaranController.getAll.bind(pendaftaranController));
-router.post('/pendaftaran', ValidationMiddleware.pendaftaranValidation, pendaftaranController.create.bind(pendaftaranController));
+router.post('/pendaftaran', rateLimiter.limit({ windowMs: 15 * 60 * 1000, max: 5, message: 'Terlalu banyak percobaan pendaftaran. Silakan coba lagi nanti.' }), ValidationMiddleware.pendaftaranValidation, pendaftaranController.create.bind(pendaftaranController));
 router.get('/pendaftaran/count', pendaftaranController.getCount.bind(pendaftaranController));
 
 // Settings Routes
 router.get('/settings/stats', settingsController.getStats.bind(settingsController));
 router.put('/settings/stats', AuthMiddleware.verifyToken, settingsController.updateStats.bind(settingsController));
+router.get('/settings/ppsb', settingsController.getPpsb.bind(settingsController));
+router.put('/settings/ppsb', AuthMiddleware.verifyToken, settingsController.updatePpsb.bind(settingsController));
 
 // Testimoni Routes
 router.get('/testimoni', testimoniController.getAll.bind(testimoniController));
