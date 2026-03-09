@@ -40,7 +40,7 @@ export default function Navbar() {
           <div className="hidden items-center gap-5 lg:flex">
             <a href="/#home" className="nav-link text-slate-700 hover:text-primary-500">Beranda</a>
             <a href="/#profil" className="nav-link text-slate-700 hover:text-primary-500">Profil</a>
-            <a href="/#pendaftaran" className="nav-link text-slate-700 hover:text-primary-500">Pendaftaran</a>
+            <Link href="/ppsb" className="nav-link text-slate-700 hover:text-primary-500">PPSB/Pendaftaran</Link>
             <Link href="/berita" className="nav-link text-slate-700 hover:text-primary-500">Berita</Link>
             <a href="/#galeri" className="nav-link text-slate-700 hover:text-primary-500">Galeri</a>
             <a href="/#guru" className="nav-link text-slate-700 hover:text-primary-500">Guru</a>
@@ -81,7 +81,7 @@ export default function Navbar() {
           <div className="mx-auto w-full max-w-7xl space-y-1 px-4 py-3 sm:px-6">
             <a href="/#home" className="mobile-link" onClick={closeMenus}>Beranda</a>
             <a href="/#profil" className="mobile-link" onClick={closeMenus}>Profil</a>
-            <a href="/#pendaftaran" className="mobile-link" onClick={closeMenus}>Pendaftaran</a>
+            <Link href="/ppsb" className="mobile-link" onClick={closeMenus}>PPSB/Pendaftaran</Link>
             <Link href="/berita" className="mobile-link" onClick={closeMenus}>Berita</Link>
             <a href="/#galeri" className="mobile-link" onClick={closeMenus}>Galeri</a>
             <a href="/#guru" className="mobile-link" onClick={closeMenus}>Guru</a>

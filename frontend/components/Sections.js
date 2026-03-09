@@ -468,6 +468,7 @@ export function KontakSection() {
       nama: e.target.nama.value,
       subjek: e.target.subjek.value,
       pesan: e.target.pesan.value,
+      website: e.target.website?.value || '',
     };
 
     try {
@@ -528,7 +529,7 @@ export function KontakSection() {
                 </div>
                 <div className="flex items-center">
                   <i className="fas fa-envelope text-blue-500 mr-3"></i>
-                  <p className="text-gray-700">info@darulmukhlisin.sch.id</p>
+                  <p className="text-gray-700">ponpesdarulmukhlisin15@gmail.com</p>
                 </div>
                 <div className="flex items-center">
                   <i className="fas fa-clock text-blue-500 mr-3"></i>
@@ -561,6 +562,7 @@ export function KontakSection() {
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-bold mb-4 text-blue-500">Kirim Pesan</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
+              <input type="text" name="website" tabIndex="-1" autoComplete="off" className="hidden" aria-hidden="true" />
               <div>
                 <label className="block text-gray-700 mb-2">Nama Lengkap</label>
                 <input

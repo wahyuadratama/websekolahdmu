@@ -12,6 +12,7 @@ export default function BeritaListPage() {
   const [filteredBerita, setFilteredBerita] = useState([]);
   const [selectedKategori, setSelectedKategori] = useState('Semua');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const kategoris = ['Semua', 'Akademik', 'Prestasi', 'Kegiatan', 'Pengumuman', 'Info', 'Beasiswa'];
 
@@ -29,14 +30,33 @@ export default function BeritaListPage() {
 
   const loadBerita = async () => {
     try {
-      const res = await fetch(`${API_BASE}/berita?status=published`);
+      setError('');
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 12000);
+
+      const res = await fetch(`${API_BASE}/berita?status=published`, {
+        signal: controller.signal,
+        cache: 'no-store',
+      });
+      clearTimeout(timeout);
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
       const data = await res.json();
       if (data.success) {
-        setBerita(data.data);
-        setFilteredBerita(data.data);
+        setBerita(data.data || []);
+        setFilteredBerita(data.data || []);
+      } else {
+        setBerita([]);
+        setFilteredBerita([]);
       }
     } catch (error) {
       console.error('Error:', error);
+      setError('Gagal memuat berita. Silakan coba lagi.');
+      setBerita([]);
+      setFilteredBerita([]);
     } finally {
       setLoading(false);
     }
@@ -113,6 +133,20 @@ export default function BeritaListPage() {
             <div className="text-center py-12">
               <i className="fas fa-spinner fa-spin text-4xl text-blue-600"></i>
               <p className="mt-4 text-gray-600">Memuat berita...</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <i className="fas fa-triangle-exclamation text-5xl sm:text-6xl text-amber-500 mb-4"></i>
+              <p className="text-gray-700 mb-4">{error}</p>
+              <button
+                onClick={() => {
+                  setLoading(true);
+                  loadBerita();
+                }}
+                className="px-5 py-2.5 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
+              >
+                Coba Lagi
+              </button>
             </div>
           ) : filteredBerita.length === 0 ? (
             <div className="text-center py-12">

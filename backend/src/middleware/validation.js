@@ -106,6 +106,7 @@ class ValidationMiddleware {
 
   // Pesan validation
   static pesanValidation = [
+    body('website').optional({ checkFalsy: true }).isEmpty().withMessage('Spam terdeteksi'),
     body('nama')
       .trim()
       .notEmpty().withMessage('Nama harus diisi')
@@ -123,6 +124,7 @@ class ValidationMiddleware {
 
   // Pendaftaran validation
   static pendaftaranValidation = [
+    body('website').optional({ checkFalsy: true }).isEmpty().withMessage('Spam terdeteksi'),
     body('nama')
       .trim()
       .notEmpty().withMessage('Nama harus diisi')

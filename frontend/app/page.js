@@ -41,7 +41,7 @@ export default function Home() {
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
-              '@type': 'Organization',
+              '@type': 'EducationalOrganization',
               name: 'Pondok Pesantren Modern Darul Mukhlisin',
               url: 'https://darulmukhlisin.ponpes.id',
               logo: 'https://darulmukhlisin.ponpes.id/images/LOGO%20DMU.png',
@@ -61,6 +61,41 @@ export default function Home() {
               '@type': 'WebSite',
               name: 'Pondok Pesantren Modern Darul Mukhlisin',
               url: 'https://darulmukhlisin.ponpes.id/',
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'FAQPage',
+              mainEntity: [
+                {
+                  '@type': 'Question',
+                  name: 'Apakah bisa daftar PPSB secara online?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'Bisa. Calon santri dapat mengisi formulir PPSB online melalui website resmi pondok.',
+                  },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Bagaimana informasi biaya masuk?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'Informasi biaya masuk disampaikan resmi oleh admin pondok pada tahap verifikasi pendaftaran.',
+                  },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Apakah tersedia jalur beasiswa?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'Tersedia jalur beasiswa sesuai kebijakan pondok dan hasil seleksi calon santri.',
+                  },
+                },
+              ],
             }),
           }}
         />

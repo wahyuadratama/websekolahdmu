@@ -1,44 +1,120 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { API_BASE } from '@/lib/config';
+
+const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+function CountUp({ value, started, duration = 1200, instant = false }) {
+  const [display, setDisplay] = useState(0);
+  const rafRef = useRef(null);
+
+  useEffect(() => {
+    if (!started) return;
+
+    const target = Number.isFinite(Number(value)) ? Math.max(0, Number(value)) : 0;
+
+    if (instant) {
+      setDisplay(Math.round(target));
+      return;
+    }
+
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setDisplay(Math.round(target));
+      return;
+    }
+
+    const start = performance.now();
+
+    const tick = (now) => {
+      const elapsed = now - start;
+      const progress = Math.min(1, elapsed / duration);
+      const eased = easeOutCubic(progress);
+      setDisplay(Math.round(target * eased));
+
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(tick);
+      }
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [value, started, duration, instant]);
+
+  return <>{display.toLocaleString('id-ID')}</>;
+}
 
 export default function StatsSection() {
   const [stats, setStats] = useState({ siswa: 1200, pendaftar: 0, guru: 85, keahlian: 15, prestasi: 50 });
   const [animated, setAnimated] = useState(false);
+  const [countStarted, setCountStarted] = useState(false);
+  const [playedInSession, setPlayedInSession] = useState(false);
+  const sectionRef = useRef(null);
 
   useEffect(() => {
     setAnimated(true);
-    
-    fetch(`${API_BASE}/settings/stats`)
-      .then(res => res.json())
-      .then(data => {
 
+    fetch(`${API_BASE}/settings/stats`)
+      .then((res) => res.json())
+      .then((data) => {
         if (data.success && data.data) {
           setStats(data.data);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('Error fetching stats:', err);
-        // Keep default values if API fails
       });
   }, []);
 
-  const items = [
-    { label: 'Santri Aktif', value: stats.siswa, icon: 'fas fa-users' },
-    { label: 'Pendaftar Baru', value: stats.pendaftar, icon: 'fas fa-user-plus' },
-    { label: 'Asatidz/Asatidzah', value: stats.guru, icon: 'fas fa-chalkboard-teacher' },
-    { label: 'Program Unggulan', value: stats.keahlian, icon: 'fas fa-book' },
-    { label: 'Prestasi', value: stats.prestasi, icon: 'fas fa-trophy' },
-  ];
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const seen = window.sessionStorage.getItem('dmu_stats_count_seen') === '1';
+    if (seen) {
+      setPlayedInSession(true);
+      setCountStarted(true);
+      return;
+    }
+
+    const node = sectionRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setCountStarted(true);
+          window.sessionStorage.setItem('dmu_stats_count_seen', '1');
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.25 }
+    );
+
+    observer.observe(node);
+
+    return () => observer.disconnect();
+  }, []);
+
+  const items = useMemo(
+    () => [
+      { label: 'Santri Aktif', value: stats.siswa, icon: 'fas fa-users' },
+      { label: 'Pendaftar Baru', value: stats.pendaftar, icon: 'fas fa-user-plus' },
+      { label: 'Asatidz/Asatidzah', value: stats.guru, icon: 'fas fa-chalkboard-teacher' },
+      { label: 'Program Unggulan', value: stats.keahlian, icon: 'fas fa-book' },
+      { label: 'Prestasi', value: stats.prestasi, icon: 'fas fa-trophy' },
+    ],
+    [stats]
+  );
 
   return (
-    <section id="stats-section" className="py-12 md:py-16 bg-white relative overflow-hidden">
+    <section id="stats-section" ref={sectionRef} className="py-12 md:py-16 bg-white relative overflow-hidden">
       <div className="absolute inset-0 opacity-[0.03]">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-500 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary-500 rounded-full blur-3xl"></div>
       </div>
-      
+
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-8 xl:grid-cols-5 xl:gap-12">
@@ -54,8 +130,8 @@ export default function StatsSection() {
                   <div className="text-primary-600/30 group-hover:text-primary-600/50 transition-colors duration-300">
                     <i className={`${item.icon} text-xl md:text-3xl`}></i>
                   </div>
-                  <div className="text-2xl md:text-5xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors duration-300">
-                    {item.value}
+                  <div className="text-2xl md:text-5xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors duration-300 tabular-nums">
+                    <CountUp value={item.value} started={countStarted} instant={playedInSession} duration={1100 + index * 120} />
                   </div>
                   <div className="text-[10px] md:text-sm font-semibold text-gray-600 uppercase tracking-wide">{item.label}</div>
                   <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-primary-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
