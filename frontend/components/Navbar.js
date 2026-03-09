@@ -18,10 +18,10 @@ export default function Navbar() {
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-3 lg:py-4">
           <Link href="/" className="flex min-w-0 items-center gap-2 sm:gap-3">
-            <Image src="/images/LOGO DMU.png" alt="Logo DMU" width={44} height={44} className="shrink-0 object-contain sm:h-12 sm:w-12" />
-            <div className="min-w-0">
+            <Image src="/images/LOGO DMU.png" alt="Logo DMU" width={44} height={44} className="h-10 w-10 shrink-0 object-contain sm:h-12 sm:w-12" />
+            <div className="min-w-0 max-w-[74vw] sm:max-w-none">
               <span
-                className="line-clamp-1 block text-sm font-bold leading-tight sm:text-base lg:text-xl"
+                className="hidden sm:line-clamp-1 sm:block text-sm font-bold leading-tight sm:text-base lg:text-xl"
                 style={{
                   fontFamily: "'Aref Ruqaa', 'Traditional Arabic', serif",
                   direction: 'rtl',
@@ -31,7 +31,7 @@ export default function Navbar() {
               >
                 معهد دار المخلصين لتربية الإسلامية الحديثة
               </span>
-              <span className="line-clamp-1 text-[10px] font-medium text-slate-600 sm:text-xs lg:text-sm">
+              <span className="line-clamp-2 text-[11px] font-semibold text-slate-700 sm:line-clamp-1 sm:text-xs lg:text-sm">
                 Pondok Pesantren Modern Darul Mukhlisin
               </span>
             </div>
@@ -78,13 +78,13 @@ export default function Navbar() {
 
       {mobileMenuOpen && (
         <div className="border-t border-slate-100 bg-white lg:hidden">
-          <div className="mx-auto w-full max-w-7xl space-y-1 px-4 py-3 sm:px-6">
-            <a href="/#home" className="mobile-link" onClick={closeMenus}>Beranda</a>
-            <a href="/#profil" className="mobile-link" onClick={closeMenus}>Profil</a>
-            <Link href="/ppsb" className="mobile-link" onClick={closeMenus}>PPSB/Pendaftaran</Link>
-            <Link href="/berita" className="mobile-link" onClick={closeMenus}>Berita</Link>
-            <a href="/#galeri" className="mobile-link" onClick={closeMenus}>Galeri</a>
-            <a href="/#guru" className="mobile-link" onClick={closeMenus}>Guru</a>
+          <div className="mx-auto w-full max-w-7xl max-h-[calc(100vh-72px)] overflow-y-auto space-y-1 px-4 py-3 sm:px-6">
+            <a href="/#home" className="mobile-link block w-full" onClick={closeMenus}>Beranda</a>
+            <a href="/#profil" className="mobile-link block w-full" onClick={closeMenus}>Profil</a>
+            <Link href="/ppsb" className="mobile-link block w-full" onClick={closeMenus}>PPSB/Pendaftaran</Link>
+            <Link href="/berita" className="mobile-link block w-full" onClick={closeMenus}>Berita</Link>
+            <a href="/#galeri" className="mobile-link block w-full" onClick={closeMenus}>Galeri</a>
+            <a href="/#guru" className="mobile-link block w-full" onClick={closeMenus}>Guru</a>
 
             <div className="rounded-lg border border-slate-200 px-3 py-2">
               <button
