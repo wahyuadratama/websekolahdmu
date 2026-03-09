@@ -19,19 +19,20 @@ export default function Navbar() {
         <div className="flex items-center justify-between py-3 lg:py-4">
           <Link href="/" className="flex min-w-0 items-center gap-2 sm:gap-3">
             <Image src="/images/LOGO DMU.png" alt="Logo DMU" width={44} height={44} className="h-10 w-10 shrink-0 object-contain sm:h-12 sm:w-12" />
-            <div className="min-w-0 max-w-[74vw] sm:max-w-none">
+            <div className="min-w-0">
               <span
-                className="line-clamp-1 block text-[10px] font-bold leading-tight sm:text-base lg:text-xl"
+                className="line-clamp-1 block font-bold leading-tight"
                 style={{
                   fontFamily: "'Aref Ruqaa', 'Traditional Arabic', serif",
                   direction: 'rtl',
                   letterSpacing: '0.3px',
-                  color: 'var(--primary)'
+                  color: 'var(--primary)',
+                  fontSize: 'clamp(11px, 2.1vw, 20px)'
                 }}
               >
                 معهد دار المخلصين لتربية الإسلامية الحديثة
               </span>
-              <span className="line-clamp-2 text-[11px] font-semibold text-slate-700 sm:line-clamp-1 sm:text-xs lg:text-sm">
+              <span className="line-clamp-2 font-semibold text-slate-700 sm:line-clamp-1" style={{ fontSize: 'clamp(10px, 1.65vw, 14px)' }}>
                 Pondok Pesantren Modern Darul Mukhlisin
               </span>
             </div>
