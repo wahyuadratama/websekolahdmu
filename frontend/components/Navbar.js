@@ -21,7 +21,7 @@ export default function Navbar() {
             <Image src="/images/LOGO DMU.png" alt="Logo DMU" width={44} height={44} className="h-10 w-10 shrink-0 object-contain sm:h-12 sm:w-12" />
             <div className="min-w-0">
               <span
-                className="line-clamp-1 block text-[13px] font-bold leading-tight sm:text-base lg:text-xl"
+                className="line-clamp-1 block text-[15px] font-bold leading-tight sm:text-base lg:text-xl"
                 style={{
                   fontFamily: "'Aref Ruqaa', 'Traditional Arabic', serif",
                   direction: 'rtl',
@@ -31,7 +31,7 @@ export default function Navbar() {
               >
                 معهد دار المخلصين لتربية الإسلامية الحديثة
               </span>
-              <span className="line-clamp-2 text-[12px] font-semibold text-slate-700 sm:line-clamp-1 sm:text-xs lg:text-sm">
+              <span className="line-clamp-2 text-[10px] font-medium text-slate-700 sm:line-clamp-1 sm:text-xs lg:text-sm">
                 Pondok Pesantren Modern Darul Mukhlisin
               </span>
             </div>
@@ -79,12 +79,12 @@ export default function Navbar() {
       {mobileMenuOpen && (
         <div className="border-t border-slate-100 bg-white lg:hidden">
           <div className="mx-auto w-full max-w-7xl max-h-[calc(100vh-72px)] overflow-y-auto space-y-1 px-4 py-3 sm:px-6">
-            <div><a href="/#home" className="mobile-link" onClick={closeMenus}>Beranda</a></div>
-            <div><a href="/#profil" className="mobile-link" onClick={closeMenus}>Profil</a></div>
-            <div><Link href="/ppsb" className="mobile-link" onClick={closeMenus}>PPSB/Pendaftaran</Link></div>
-            <div><Link href="/berita" className="mobile-link" onClick={closeMenus}>Berita</Link></div>
-            <div><a href="/#galeri" className="mobile-link" onClick={closeMenus}>Galeri</a></div>
-            <div><a href="/#guru" className="mobile-link" onClick={closeMenus}>Guru</a></div>
+            <a href="/#home" className="mobile-link" onClick={closeMenus}>Beranda</a>
+            <a href="/#profil" className="mobile-link" onClick={closeMenus}>Profil</a>
+            <Link href="/ppsb" className="mobile-link" onClick={closeMenus}>PPSB/Pendaftaran</Link>
+            <Link href="/berita" className="mobile-link" onClick={closeMenus}>Berita</Link>
+            <a href="/#galeri" className="mobile-link" onClick={closeMenus}>Galeri</a>
+            <a href="/#guru" className="mobile-link" onClick={closeMenus}>Guru</a>
 
             <div className="rounded-lg border border-slate-200 px-3 py-2">
               <button
@@ -133,7 +133,9 @@ export default function Navbar() {
           width: 100%;
         }
         .mobile-link {
-          display: block;
+          display: flex;
+          width: 100%;
+          align-items: center;
           border-radius: 0.6rem;
           padding: 0.62rem 0.75rem;
           font-weight: 500;
