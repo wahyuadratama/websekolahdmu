@@ -156,42 +156,32 @@ export default function ProfilSection() {
         </div>
 
         {/* Visi & Misi */}
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-3xl p-8 md:p-10 text-white shadow-xl">
-            <div className="space-y-4">
-              <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                <i className="fas fa-eye text-3xl"></i>
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 md:p-10 shadow-xl">
+          <div className="grid md:grid-cols-12 gap-8">
+            <div className="md:col-span-5 bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl p-6 md:p-8 text-white">
+              <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center mb-4">
+                <i className="fas fa-eye text-2xl"></i>
               </div>
-              <h3 className="text-3xl font-bold">Visi</h3>
-              <p className="leading-relaxed text-white/95 text-lg">
-                Menjadi pesantren modern yang unggul, melahirkan pemimpin berkarakter Islami, berintegritas, dan bertanggung jawab untuk kemaslahatan masyarakat.
+              <h3 className="text-2xl md:text-3xl font-bold mb-3">Visi</h3>
+              <p className="leading-relaxed text-white/95">
+                “Menjadi pesantren yang unggul, menghasilkan pemimpin yang berkarakter, berintegritas, ikhlas, dan bertanggung jawab demi terwujudnya masyarakat Indonesia yang islami.”
               </p>
             </div>
-          </div>
-          <div className="bg-white rounded-3xl p-8 md:p-10 shadow-xl">
-            <div className="space-y-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center">
-                <i className="fas fa-bullseye text-white text-3xl"></i>
+
+            <div className="md:col-span-7">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+                  <i className="fas fa-bullseye text-white text-2xl"></i>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold text-gray-900">Misi</h3>
               </div>
-              <h3 className="text-3xl font-bold text-gray-900">Misi</h3>
-              <ul className="space-y-3 text-gray-700 leading-relaxed">
-                <li className="flex items-start gap-3">
-                  <i className="fas fa-check-circle text-primary-600 mt-1 flex-shrink-0"></i>
-                  <span>Pendidikan terpadu diniyah, umum, dan life skills.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <i className="fas fa-check-circle text-primary-600 mt-1 flex-shrink-0"></i>
-                  <span>Menanamkan akhlak, kepemimpinan, dan kedisiplinan.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <i className="fas fa-check-circle text-primary-600 mt-1 flex-shrink-0"></i>
-                  <span>Menguatkan tahfidz serta bahasa Arab dan Inggris.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <i className="fas fa-check-circle text-primary-600 mt-1 flex-shrink-0"></i>
-                  <span>Berkolaborasi dengan orang tua dan masyarakat.</span>
-                </li>
-              </ul>
+              <ol className="space-y-3 text-gray-700 leading-relaxed">
+                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary-100 text-primary-700 text-xs font-bold">1</span><span>Membentuk santri menjadi pemimpin berkarakter Islami serta bermanfaat bagi manusia dan lingkungannya.</span></li>
+                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary-100 text-primary-700 text-xs font-bold">2</span><span>Membentuk santri yang menguasai ilmu pengetahuan dan teknologi.</span></li>
+                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary-100 text-primary-700 text-xs font-bold">3</span><span>Membentuk santri yang mampu membaca, menghafal, memahami, dan mengamalkan Al-Qur’an dan Sunnah.</span></li>
+                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary-100 text-primary-700 text-xs font-bold">4</span><span>Menyelenggarakan pendidikan berstandar modern dan Islami.</span></li>
+                <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary-100 text-primary-700 text-xs font-bold">5</span><span>Membentuk santri yang berakhlak mulia, ikhlas, dan bertanggung jawab.</span></li>
+              </ol>
             </div>
           </div>
         </div>
