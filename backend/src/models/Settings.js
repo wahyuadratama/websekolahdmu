@@ -93,7 +93,7 @@ class Settings {
           { label: 'Berita', url: '/berita', visible: true },
           { label: 'Galeri', url: '/#galeri', visible: true },
           { label: 'Guru', url: '/#guru', visible: true },
-          { label: 'Alumni', url: '', visible: true, children: [{ label: 'IKADM', url: 'https://wahyuadratama.github.io/website-ikadm/', visible: true }] },
+          { label: 'Alumni', url: '', visible: true, children: [{ label: 'IKADM', url: 'https://ikadm.darulmukhlisin.ponpes.id', visible: true }] },
           { label: 'Kontak', url: '/#kontak', visible: true }
         ]),
         description: 'Item navigasi utama (label, url, tampil/sembunyi, submenu)'
