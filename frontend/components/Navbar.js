@@ -1,16 +1,97 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { DEFAULT_SITE_SETTINGS, getSiteSettings, resolveSiteImage } from '@/lib/siteSettings';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [alumniDropdownOpen, setAlumniDropdownOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [settings, setSettings] = useState(DEFAULT_SITE_SETTINGS);
+
+  useEffect(() => {
+    let cancelled = false;
+    getSiteSettings().then((s) => { if (!cancelled) setSettings(s); });
+    return () => { cancelled = true; };
+  }, []);
 
   const closeMenus = () => {
     setMobileMenuOpen(false);
-    setAlumniDropdownOpen(false);
+    setOpenDropdown(null);
+  };
+
+  const { identity, navigation } = settings;
+  const logoSrc = resolveSiteImage(identity.logoUrl, '/images/LOGO DMU.png');
+  const navItems = (navigation || []).filter((item) => item.visible !== false);
+
+  const renderLink = (item, isMobile = false) => {
+    const hasChildren = Array.isArray(item.children) && item.children.filter((c) => c.visible !== false).length > 0;
+    if (!hasChildren) {
+      const cls = isMobile ? 'mobile-link' : 'nav-link text-slate-700 hover:text-primary-500';
+      const isAnchor = item.url.startsWith('/#') || item.url.startsWith('#');
+      return isAnchor ? (
+        <a key={item.label} href={item.url} className={cls} onClick={isMobile ? closeMenus : undefined}>{item.label}</a>
+      ) : (
+        <Link key={item.label} href={item.url || '/'} className={cls} onClick={isMobile ? closeMenus : undefined}>{item.label}</Link>
+      );
+    }
+    // Item dengan submenu (dropdown)
+    const key = `nav-${item.label}`;
+    const children = item.children.filter((c) => c.visible !== false);
+    if (isMobile) {
+      const open = openDropdown === key;
+      return (
+        <div key={item.label} className="rounded-lg border border-slate-200 px-3 py-2">
+          <button
+            onClick={() => setOpenDropdown(open ? null : key)}
+            className="flex w-full items-center justify-between text-left font-medium text-slate-700"
+          >
+            {item.label}
+            <i className={`fas fa-chevron-down text-xs transition-transform ${open ? 'rotate-180' : ''}`}></i>
+          </button>
+          {open && children.map((child) => (
+            <a
+              key={child.label}
+              href={child.url}
+              target={child.url.startsWith('http') ? '_blank' : undefined}
+              rel={child.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+              className="mt-2 block rounded-md bg-slate-50 px-3 py-2 text-sm text-slate-700"
+              onClick={closeMenus}
+            >
+              <i className="fas fa-users mr-2"></i>{child.label}
+            </a>
+          ))}
+        </div>
+      );
+    }
+    return (
+      <div
+        key={item.label}
+        className="relative"
+        onMouseEnter={() => setOpenDropdown(key)}
+        onMouseLeave={() => setOpenDropdown(null)}
+      >
+        <button className="nav-link flex items-center gap-1 text-slate-700 hover:text-primary-500">
+          {item.label} <i className="fas fa-chevron-down text-[10px]"></i>
+        </button>
+        {openDropdown === key && (
+          <div className="absolute right-0 mt-2 w-44 rounded-xl border border-slate-100 bg-white py-2 shadow-xl">
+            {children.map((child) => (
+              <a
+                key={child.label}
+                href={child.url}
+                target={child.url.startsWith('http') ? '_blank' : undefined}
+                rel={child.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                className="block px-4 py-2 text-sm text-slate-700 transition hover:bg-slate-50 hover:text-primary-500"
+              >
+                <i className="fas fa-users mr-2"></i>{child.label}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -18,7 +99,7 @@ export default function Navbar() {
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-3 lg:py-4">
           <Link href="/" className="flex min-w-0 items-center gap-2 sm:gap-3">
-            <Image src="/images/LOGO DMU.png" alt="Logo DMU" width={44} height={44} className="h-10 w-10 shrink-0 object-contain sm:h-12 sm:w-12" />
+            <Image src={logoSrc} alt={`Logo ${identity.siteName}`} width={44} height={44} className="h-10 w-10 shrink-0 object-contain sm:h-12 sm:w-12" />
             <div className="min-w-0">
               <span
                 className="line-clamp-1 block text-[15px] font-bold leading-tight sm:text-base lg:text-xl"
@@ -29,41 +110,16 @@ export default function Navbar() {
                   color: 'var(--primary)'
                 }}
               >
-                معهد دار المخلصين لتربية الإسلامية الحديثة
+                {identity.siteNameArabic}
               </span>
               <span className="line-clamp-2 text-[10px] font-medium text-slate-700 sm:line-clamp-1 sm:text-xs lg:text-sm">
-                Pondok Pesantren Modern Darul Mukhlisin
+                {identity.siteName}
               </span>
             </div>
           </Link>
 
           <div className="hidden items-center gap-5 lg:flex">
-            <a href="/#home" className="nav-link text-slate-700 hover:text-primary-500">Beranda</a>
-            <a href="/#profil" className="nav-link text-slate-700 hover:text-primary-500">Profil</a>
-            <Link href="/ppsb" className="nav-link text-slate-700 hover:text-primary-500">PPSB/Pendaftaran</Link>
-            <Link href="/berita" className="nav-link text-slate-700 hover:text-primary-500">Berita</Link>
-            <a href="/#galeri" className="nav-link text-slate-700 hover:text-primary-500">Galeri</a>
-            <a href="/#guru" className="nav-link text-slate-700 hover:text-primary-500">Guru</a>
-
-            <div className="relative" onMouseEnter={() => setAlumniDropdownOpen(true)} onMouseLeave={() => setAlumniDropdownOpen(false)}>
-              <button className="nav-link flex items-center gap-1 text-slate-700 hover:text-primary-500">
-                Alumni <i className="fas fa-chevron-down text-[10px]"></i>
-              </button>
-              {alumniDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-44 rounded-xl border border-slate-100 bg-white py-2 shadow-xl">
-                  <a
-                    href="https://wahyuadratama.github.io/website-ikadm/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-slate-700 transition hover:bg-slate-50 hover:text-primary-500"
-                  >
-                    <i className="fas fa-users mr-2"></i>IKADM
-                  </a>
-                </div>
-              )}
-            </div>
-
-            <a href="/#kontak" className="nav-link text-slate-700 hover:text-primary-500">Kontak</a>
+            {navItems.map((item) => renderLink(item, false))}
           </div>
 
           <button
@@ -80,36 +136,10 @@ export default function Navbar() {
         <div className="border-t border-slate-100 bg-white lg:hidden">
           <div className="mx-auto w-full max-w-7xl max-h-[calc(100vh-72px)] overflow-y-auto px-4 py-3 sm:px-6">
             <ul className="space-y-1">
-              <li><a href="/#home" className="mobile-link" onClick={closeMenus}>Beranda</a></li>
-              <li><a href="/#profil" className="mobile-link" onClick={closeMenus}>Profil</a></li>
-              <li><Link href="/ppsb" className="mobile-link" onClick={closeMenus}>PPSB/Pendaftaran</Link></li>
-              <li><Link href="/berita" className="mobile-link" onClick={closeMenus}>Berita</Link></li>
-              <li><a href="/#galeri" className="mobile-link" onClick={closeMenus}>Galeri</a></li>
-              <li><a href="/#guru" className="mobile-link" onClick={closeMenus}>Guru</a></li>
+              {navItems.map((item) => (
+                <li key={item.label}>{renderLink(item, true)}</li>
+              ))}
             </ul>
-
-            <div className="rounded-lg border border-slate-200 px-3 py-2">
-              <button
-                onClick={() => setAlumniDropdownOpen((prev) => !prev)}
-                className="flex w-full items-center justify-between text-left font-medium text-slate-700"
-              >
-                Alumni
-                <i className={`fas fa-chevron-down text-xs transition-transform ${alumniDropdownOpen ? 'rotate-180' : ''}`}></i>
-              </button>
-              {alumniDropdownOpen && (
-                <a
-                  href="https://wahyuadratama.github.io/website-ikadm/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-2 block rounded-md bg-slate-50 px-3 py-2 text-sm text-slate-700"
-                  onClick={closeMenus}
-                >
-                  <i className="fas fa-users mr-2"></i>IKADM
-                </a>
-              )}
-            </div>
-
-            <a href="/#kontak" className="mobile-link" onClick={closeMenus}>Kontak</a>
           </div>
         </div>
       )}

@@ -40,9 +40,16 @@ export default function GaleriPage() {
           </div>
 
           {loading ? (
-            <div className="text-center py-20">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-              <p className="mt-4 text-gray-600">Memuat galeri...</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6" aria-label="Memuat galeri">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="bg-white rounded-xl shadow-sm overflow-hidden">
+                  <div className="h-64 bg-slate-200 animate-pulse" />
+                  <div className="p-4 space-y-2">
+                    <div className="h-4 w-3/4 bg-slate-200 rounded animate-pulse" />
+                    <div className="h-3 w-1/2 bg-slate-100 rounded animate-pulse" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : galeri.length === 0 ? (
             <div className="text-center py-20">

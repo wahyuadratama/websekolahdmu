@@ -2,11 +2,25 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { API_URL } from '@/lib/config';
+import { DEFAULT_SITE_SETTINGS, getSiteSettings } from '@/lib/siteSettings';
+
+function resolveSlideImage(img) {
+  if (!img) return '';
+  if (/^https?:\/\//i.test(img)) return img;
+  if (img.startsWith('/images/')) return img;
+  if (img.startsWith('/')) return `${API_URL}${img}`;
+  return img;
+}
 
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [images, setImages] = useState([]);
+  const [slides, setSlides] = useState([]);
+  const [welcome, setWelcome] = useState({
+    title: DEFAULT_SITE_SETTINGS.homepage.welcomeTitle,
+    text: DEFAULT_SITE_SETTINGS.homepage.welcomeText,
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,33 +32,44 @@ export default function HeroSection() {
       `${API_URL}/uploads/poto 4.jpg`
     ];
 
-    fetch(`${API_URL}/api/galeri?limit=5`)
-      .then((res) => res.json())
-      .then((data) => {
+    const loadGaleriFallback = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/galeri?limit=5`);
+        const data = await res.json();
         if (data.success && data.data && data.data.length > 0) {
-          const heroImages = data.data.slice(0, 5).map((item) => `${API_URL}${item.url}`);
-          setImages(heroImages);
-        } else {
-          setImages(fallbackImages);
+          return data.data.slice(0, 5).map((item) => ({ image: `${API_URL}${item.url}`, title: item.judul || '' }));
         }
+      } catch { /* abaikan, pakai fallback statis */ }
+      return fallbackImages.map((image) => ({ image, title: '' }));
+    };
+
+    (async () => {
+      try {
+        const [site, galeriSlides] = await Promise.all([getSiteSettings(), loadGaleriFallback()]);
+        setWelcome({
+          title: site.homepage.welcomeTitle || DEFAULT_SITE_SETTINGS.homepage.welcomeTitle,
+          text: site.homepage.welcomeText || DEFAULT_SITE_SETTINGS.homepage.welcomeText,
+        });
+        const custom = (site.homepage.heroSlides || []).filter((s) => s.image);
+        setSlides(custom.length > 0 ? custom : galeriSlides);
+      } catch {
+        setSlides(fallbackImages.map((image) => ({ image, title: '' })));
+      } finally {
         setLoading(false);
-      })
-      .catch(() => {
-        setImages(fallbackImages);
-        setLoading(false);
-      });
+      }
+    })();
   }, []);
 
   useEffect(() => {
-    if (images.length === 0) return;
+    if (slides.length === 0) return;
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % images.length);
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, [images.length]);
+  }, [slides.length]);
 
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % images.length);
-  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
 
   return (
     <section
@@ -64,13 +89,23 @@ export default function HeroSection() {
               Website Resmi Pondok Pesantren
             </div>
 
-            <h1 className="text-2xl font-bold leading-tight sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
-              Selamat Datang di Pondok Pesantren Modern Darul Mukhlisin
-            </h1>
+            {loading ? (
+              <div className="space-y-3">
+                <div className="h-10 animate-pulse rounded-lg bg-white/20 sm:h-12" />
+                <div className="h-10 animate-pulse rounded-lg bg-white/20 sm:h-12" />
+                <div className="mx-auto h-5 w-3/4 animate-pulse rounded bg-white/15 lg:mx-0" />
+              </div>
+            ) : (
+              <>
+                <h1 className="text-2xl font-bold leading-tight sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
+                  {welcome.title}
+                </h1>
 
-            <p className="mx-auto max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg md:text-xl lg:mx-0 lg:text-xl">
-              Membangun generasi berilmu, berakhlak, dan siap menghadapi tantangan zaman melalui pendidikan Islam yang terarah.
-            </p>
+                <p className="mx-auto max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg md:text-xl lg:mx-0 lg:text-xl">
+                  {welcome.text}
+                </p>
+              </>
+            )}
 
             <div className="flex flex-col gap-3 pt-3 sm:flex-row sm:justify-center lg:justify-start">
               <a
@@ -93,46 +128,66 @@ export default function HeroSection() {
 
           <div className="relative">
             <div className="relative h-[250px] w-full overflow-hidden rounded-2xl shadow-2xl sm:h-[320px] md:h-[420px] lg:h-[500px]">
-              {!loading && images.length > 0 ? (
-                images.map((img, index) => (
+              {loading ? (
+                <div className="h-full w-full animate-pulse bg-white/15" />
+              ) : slides.length > 0 ? (
+                slides.map((slide, index) => (
                   <div
                     key={index}
                     className={`absolute inset-0 transition-opacity duration-700 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
                   >
-                    <Image src={img} alt={`Kegiatan Pesantren ${index + 1}`} fill className="object-cover" priority={index === 0} />
+                    <Image src={resolveSlideImage(slide.image)} alt={slide.title || `Kegiatan Pesantren ${index + 1}`} fill className="object-cover" priority={index === 0} />
+                    {(slide.title || slide.subtitle || slide.ctaText) && (
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 pt-10 sm:p-5">
+                        {slide.title && <p className="font-bold text-white text-sm sm:text-base">{slide.title}</p>}
+                        {slide.subtitle && <p className="text-white/85 text-xs sm:text-sm mt-1">{slide.subtitle}</p>}
+                        {slide.ctaText && (
+                          <Link
+                            href={slide.ctaUrl || '#'}
+                            className="mt-2 inline-block rounded-lg bg-white px-4 py-1.5 text-xs sm:text-sm font-bold text-slate-900 hover:bg-slate-100"
+                          >
+                            {slide.ctaText}
+                          </Link>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))
               ) : (
                 <div className="grid h-full place-items-center bg-white/10">
-                  <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-white"></div>
+                  <i className="fas fa-image text-4xl text-white/40"></i>
                 </div>
               )}
 
-              <button
-                onClick={prevSlide}
-                className="absolute left-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/30 backdrop-blur-sm transition hover:bg-white/50 sm:left-3 sm:h-11 sm:w-11"
-                aria-label="Previous slide"
-              >
-                <i className="fas fa-chevron-left text-sm text-white sm:text-base"></i>
-              </button>
-              <button
-                onClick={nextSlide}
-                className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/30 backdrop-blur-sm transition hover:bg-white/50 sm:right-3 sm:h-11 sm:w-11"
-                aria-label="Next slide"
-              >
-                <i className="fas fa-chevron-right text-sm text-white sm:text-base"></i>
-              </button>
-
-              <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2 sm:bottom-4">
-                {images.map((_, index) => (
+              {!loading && slides.length > 1 && (
+                <>
                   <button
-                    key={index}
-                    onClick={() => setCurrentSlide(index)}
-                    className={`h-2 rounded-full transition-all ${index === currentSlide ? 'w-6 bg-white sm:w-8' : 'w-2 bg-white/50'}`}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
-                ))}
-              </div>
+                    onClick={prevSlide}
+                    className="absolute left-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/30 backdrop-blur-sm transition hover:bg-white/50 sm:left-3 sm:h-11 sm:w-11"
+                    aria-label="Previous slide"
+                  >
+                    <i className="fas fa-chevron-left text-sm text-white sm:text-base"></i>
+                  </button>
+                  <button
+                    onClick={nextSlide}
+                    className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/30 backdrop-blur-sm transition hover:bg-white/50 sm:right-3 sm:h-11 sm:w-11"
+                    aria-label="Next slide"
+                  >
+                    <i className="fas fa-chevron-right text-sm text-white sm:text-base"></i>
+                  </button>
+
+                  <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2 sm:bottom-4">
+                    {slides.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentSlide(index)}
+                        className={`h-2 rounded-full transition-all ${index === currentSlide ? 'w-6 bg-white sm:w-8' : 'w-2 bg-white/50'}`}
+                        aria-label={`Go to slide ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -140,4 +195,3 @@ export default function HeroSection() {
     </section>
   );
 }
-

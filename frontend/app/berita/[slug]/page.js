@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { API_BASE, API_URL } from '@/lib/config';
 import { sanitizeHtml } from '@/lib/sanitize';
+import { formatTanggalID } from '@/lib/format';
 
 async function getBerita(slug) {
   try {
@@ -167,11 +168,7 @@ export default async function BeritaDetailPage({ params }) {
               </div>
               <div className="flex items-center gap-2">
                 <i className="fas fa-calendar"></i>
-                <span>{new Date(berita.createdAt).toLocaleDateString('id-ID', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric'
-                })}</span>
+                <span>{formatTanggalID(berita.createdAt)}</span>
               </div>
               <div className="flex items-center gap-2">
                 <i className="fas fa-eye"></i>

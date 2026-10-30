@@ -1,40 +1,50 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
+import { getSiteSettings, resolveSiteImage } from '@/lib/siteSettings'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata = {
-  metadataBase: new URL('https://darulmukhlisin.ponpes.id'),
-  title: 'Pondok Pesantren Modern Darul Mukhlisin',
-  description: 'Membangun Generasi Unggul dengan Pendidikan Berkualitas dan Karakter Islami. Program KMI, Ihya Al-Quran, dan Life Skills.',
-  keywords: 'pesantren, pondok pesantren, darul mukhlisin, pendidikan islam, KMI, tahfidz, bandung barat',
-  authors: [{ name: 'Pondok Pesantren Modern Darul Mukhlisin' }],
-  alternates: {
-    canonical: '/',
-  },
-  openGraph: {
-    title: 'Pondok Pesantren Modern Darul Mukhlisin',
-    description: 'Membangun Generasi Unggul dengan Pendidikan Berkualitas dan Karakter Islami',
-    url: 'https://darulmukhlisin.ponpes.id',
-    siteName: 'Pondok Pesantren Modern Darul Mukhlisin',
-    locale: 'id_ID',
-    type: 'website',
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-  verification: {
-    google: 'CKmSPMcOFRaFPrO2PeJ_v_V4zARKF4Q_3R5BbGclFVs',
-  },
+export async function generateMetadata() {
+  const settings = await getSiteSettings();
+  const { identity, seo } = settings;
+  const title = seo.defaultTitle || identity.siteName;
+  const description = seo.defaultDescription || identity.tagline;
+
+  return {
+    metadataBase: new URL('https://darulmukhlisin.ponpes.id'),
+    title,
+    description,
+    keywords: seo.keywords,
+    authors: [{ name: identity.siteName }],
+    alternates: {
+      canonical: '/',
+    },
+    openGraph: {
+      title,
+      description,
+      url: 'https://darulmukhlisin.ponpes.id',
+      siteName: identity.siteName,
+      locale: 'id_ID',
+      type: 'website',
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+    verification: {
+      google: 'CKmSPMcOFRaFPrO2PeJ_v_V4zARKF4Q_3R5BbGclFVs',
+    },
+  };
 }
 
+export default async function RootLayout({ children }) {
+  const settings = await getSiteSettings();
+  const favicon = resolveSiteImage(settings.identity.faviconUrl, '/images/LOGO DMU.png');
 
-export default function RootLayout({ children }) {
   return (
     <html lang="id">
       <head>
-        <link rel="icon" href="/images/LOGO DMU.png" />
+        <link rel="icon" href={favicon} />
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"

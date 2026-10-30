@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { API_BASE, API_URL } from '@/lib/config';
+import { formatTanggalID } from '@/lib/format';
 
 export default function BeritaListPage() {
   const [berita, setBerita] = useState([]);
@@ -130,9 +131,19 @@ export default function BeritaListPage() {
           <div className="mb-4 sm:mb-6 text-sm sm:text-base text-gray-600">Menampilkan {filteredBerita.length} berita</div>
 
           {loading ? (
-            <div className="text-center py-12">
-              <i className="fas fa-spinner fa-spin text-4xl text-blue-600"></i>
-              <p className="mt-4 text-gray-600">Memuat berita...</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6" aria-label="Memuat berita">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="bg-white rounded-xl shadow-sm overflow-hidden">
+                  <div className="aspect-[16/9] bg-slate-200 animate-pulse" />
+                  <div className="p-4 sm:p-5 space-y-3">
+                    <div className="h-4 w-1/3 bg-slate-200 rounded animate-pulse" />
+                    <div className="h-5 bg-slate-200 rounded animate-pulse" />
+                    <div className="h-5 w-5/6 bg-slate-200 rounded animate-pulse" />
+                    <div className="h-4 bg-slate-100 rounded animate-pulse" />
+                    <div className="h-4 w-2/3 bg-slate-100 rounded animate-pulse" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : error ? (
             <div className="text-center py-12">
@@ -201,7 +212,7 @@ export default function BeritaListPage() {
                       </div>
                       <div className="flex items-center gap-2 whitespace-nowrap">
                         <i className="fas fa-calendar text-xs"></i>
-                        <span>{new Date(item.createdAt).toLocaleDateString('id-ID')}</span>
+                        <span>{formatTanggalID(item.createdAt)}</span>
                       </div>
                     </div>
 

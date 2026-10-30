@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { API_BASE, API_URL } from '@/lib/config';
+import { DEFAULT_SITE_SETTINGS, getSiteSettings } from '@/lib/siteSettings';
+import { formatTanggalID } from '@/lib/format';
 
 export function FalsafahPondokSection() {
   const items = [
@@ -232,9 +234,27 @@ export function BeritaSection() {
 
   if (loading) {
     return (
-      <section id="berita" className="py-20 bg-white">
-        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <section id="berita" className="py-10 sm:py-14 md:py-16 bg-white">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-6 h-8 w-48 animate-pulse rounded bg-slate-200" />
+          <div className="grid gap-4 sm:gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="overflow-hidden rounded-2xl border border-slate-200">
+              <div className="h-52 sm:h-64 md:h-80 w-full animate-pulse bg-slate-200" />
+              <div className="p-4 sm:p-5 md:p-6 space-y-3">
+                <div className="h-4 w-24 animate-pulse rounded bg-slate-200" />
+                <div className="h-6 animate-pulse rounded bg-slate-200" />
+                <div className="h-4 w-5/6 animate-pulse rounded bg-slate-100" />
+              </div>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5 space-y-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="space-y-2">
+                  <div className="h-4 animate-pulse rounded bg-slate-200" />
+                  <div className="h-3 w-1/3 animate-pulse rounded bg-slate-100" />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     );
@@ -282,7 +302,7 @@ export function BeritaSection() {
                 </span>
               </div>
               <div className="p-4 sm:p-5 md:p-6">
-                <p className="mb-2 text-xs text-gray-500">{new Date(first.createdAt).toLocaleDateString('id-ID')}</p>
+                <p className="mb-2 text-xs text-gray-500">{formatTanggalID(first.createdAt)}</p>
                 <h3 className="line-clamp-2 text-lg sm:text-xl font-bold text-gray-900 md:text-2xl">{first.judul}</h3>
                 <p className="mt-2 sm:mt-3 line-clamp-2 sm:line-clamp-3 text-sm leading-relaxed text-gray-600">
                   {first.excerpt || first.konten.substring(0, 180)}...
@@ -296,7 +316,7 @@ export function BeritaSection() {
                 {rest.map((item) => (
                   <Link key={item.id} href={`/berita/${item.slug}`} className="block py-3 first:pt-0 last:pb-0">
                     <p className="line-clamp-2 text-sm font-semibold text-gray-900 hover:text-blue-700">{item.judul}</p>
-                    <p className="mt-1 text-xs text-gray-500">{new Date(item.createdAt).toLocaleDateString('id-ID')}</p>
+                    <p className="mt-1 text-xs text-gray-500">{formatTanggalID(item.createdAt)}</p>
                   </Link>
                 ))}
               </div>
@@ -459,7 +479,16 @@ export function GuruSection() {
 
 export function KontakSection() {
   const [showWa, setShowWa] = useState(false);
-  const waNumber = '6287825279426';
+  const [settings, setSettings] = useState(DEFAULT_SITE_SETTINGS);
+
+  useEffect(() => {
+    let cancelled = false;
+    getSiteSettings().then((s) => { if (!cancelled) setSettings(s); });
+    return () => { cancelled = true; };
+  }, []);
+
+  const { contact, social } = settings;
+  const waNumber = (social.whatsapp || '').replace(/\D/g, '') || '6287825279426';
   const waMessage = encodeURIComponent(
     "Assalamu'alaikum Admin Pondok Pesantren Modern Darul Mukhlisin. Saya ingin mendapatkan informasi lebih lanjut terkait pendaftaran dan program pesantren."
   );
@@ -496,19 +525,19 @@ export function KontakSection() {
             <div className="space-y-4 text-sm sm:text-base">
               <div className="flex items-start gap-3">
                 <i className="fas fa-map-marker-alt text-blue-600 mt-1"></i>
-                <p className="text-gray-700">Kp. Kubang Sari RT/RW 02/05, Desa Tenjolaut, Kec. Cikalong Wetan, Kab. Bandung Barat, Jawa Barat 40395</p>
+                <p className="text-gray-700">{contact.address}</p>
               </div>
               <div className="flex items-center gap-3">
                 <i className="fas fa-phone text-blue-600"></i>
-                <p className="text-gray-700">(+62) 878-2527-9426 (Ahmad Saepudin)</p>
+                <p className="text-gray-700">{contact.phone}{contact.phoneLabel ? ` (${contact.phoneLabel})` : ''}</p>
               </div>
               <div className="flex items-center gap-3">
                 <i className="fas fa-envelope text-blue-600"></i>
-                <p className="text-gray-700">ponpesdarulmukhlisin15@gmail.com</p>
+                <p className="text-gray-700">{contact.email}</p>
               </div>
               <div className="flex items-center gap-3">
                 <i className="fas fa-clock text-blue-600"></i>
-                <p className="text-gray-700">Senin - Jumat: 07.00 - 16.00 WIB</p>
+                <p className="text-gray-700">{contact.hours}</p>
               </div>
             </div>
 
@@ -516,7 +545,7 @@ export function KontakSection() {
               <a href={waLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-lg bg-green-600 px-4 py-3 text-white font-semibold hover:bg-green-700 transition">
                 <i className="fab fa-whatsapp mr-2"></i>Chat WhatsApp
               </a>
-              <a href="https://maps.app.goo.gl/Wrjm7MmngSS7wQ9D6" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-lg border border-blue-200 bg-white px-4 py-3 text-blue-700 font-semibold hover:bg-blue-50 transition">
+              <a href={contact.mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-lg border border-blue-200 bg-white px-4 py-3 text-blue-700 font-semibold hover:bg-blue-50 transition">
                 <i className="fas fa-map-marked-alt mr-2"></i>Lihat Lokasi
               </a>
             </div>
@@ -525,7 +554,7 @@ export function KontakSection() {
           <div className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-4 shadow-sm">
             <h3 className="px-2 sm:px-3 text-lg sm:text-xl font-bold mb-3 text-slate-900">Lokasi Pondok</h3>
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15842.434893826946!2d107.412406!3d-6.7102039!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6903143308c765%3A0x4264f530a5f72332!2sPondok%20Pesantren%20Modern%20Darul%20Mukhlisin!5e0!3m2!1sid!2sid!4v1702000000000!5m2!1sid!2sid"
+              src={contact.mapsEmbed}
               width="100%"
               height="320"
               style={{ border: 0 }}

@@ -1,6 +1,28 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Image from "next/image";
+import { DEFAULT_SITE_SETTINGS, getSiteSettings, resolveSiteImage } from '@/lib/siteSettings';
 
 export default function Footer() {
+  const [settings, setSettings] = useState(DEFAULT_SITE_SETTINGS);
+
+  useEffect(() => {
+    let cancelled = false;
+    getSiteSettings().then((s) => { if (!cancelled) setSettings(s); });
+    return () => { cancelled = true; };
+  }, []);
+
+  const { identity, social } = settings;
+  const logoSrc = resolveSiteImage(identity.logoUrl, '/images/LOGO DMU.png');
+
+  const socialLinks = [
+    { key: 'facebook', icon: 'fab fa-facebook-f', label: 'Facebook' },
+    { key: 'instagram', icon: 'fab fa-instagram', label: 'Instagram' },
+    { key: 'youtube', icon: 'fab fa-youtube', label: 'YouTube' },
+    { key: 'whatsapp', icon: 'fab fa-whatsapp', label: 'WhatsApp', isWa: true },
+  ].filter((s) => social[s.key]);
+
   return (
     <footer className="relative overflow-hidden mt-8 text-slate-100">
       <div className="absolute inset-0 bg-slate-900" />
@@ -11,7 +33,7 @@ export default function Footer() {
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 rounded-xl bg-white grid place-items-center">
                 <Image
-                  src="/images/LOGO DMU.png"
+                  src={logoSrc}
                   alt="Logo"
                   width={34}
                   height={34}
@@ -19,12 +41,11 @@ export default function Footer() {
                 />
               </div>
               <h3 className="text-base font-semibold leading-snug">
-                Pondok Pesantren Modern Darul Mukhlisin
+                {identity.siteName}
               </h3>
             </div>
             <p className="text-slate-300 leading-relaxed text-sm">
-              Membangun generasi unggul: beradab, berilmu, dan siap menghadapi
-              tantangan zaman.
+              {identity.tagline}
             </p>
           </div>
 
@@ -73,45 +94,28 @@ export default function Footer() {
               Terhubung
             </h3>
             <div className="flex gap-3 text-lg">
-              <a
-                href="https://www.facebook.com/darulmukhlisin5715"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="grid h-10 w-10 place-items-center rounded-lg bg-white/10 transition hover:bg-white/20 hover:-translate-y-0.5"
-              >
-                <i className="fab fa-facebook-f"></i>
-              </a>
-              <a
-                href="https://www.instagram.com/darulmukhlisin.dmu/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="grid h-10 w-10 place-items-center rounded-lg bg-white/10 transition hover:bg-white/20 hover:-translate-y-0.5"
-              >
-                <i className="fab fa-instagram"></i>
-              </a>
-              <a
-                href="https://youtube.com/channel/UC-5X6CUlwlG9J6jJSA8sAIw"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="grid h-10 w-10 place-items-center rounded-lg bg-white/10 transition hover:bg-white/20 hover:-translate-y-0.5"
-              >
-                <i className="fab fa-youtube"></i>
-              </a>
-              <a
-                href="https://wa.me/6287825279426"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="grid h-10 w-10 place-items-center rounded-lg bg-white/10 transition hover:bg-white/20 hover:-translate-y-0.5"
-              >
-                <i className="fab fa-whatsapp"></i>
-              </a>
+              {socialLinks.map((s) => {
+                const href = s.isWa ? `https://wa.me/${social[s.key]}` : social[s.key];
+                return (
+                  <a
+                    key={s.key}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={s.label}
+                    className="grid h-10 w-10 place-items-center rounded-lg bg-white/10 transition hover:bg-white/20 hover:-translate-y-0.5"
+                  >
+                    <i className={s.icon}></i>
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>
 
         <div className="flex flex-col items-center justify-between gap-3 border-t border-white/15 pt-6 text-center text-sm text-slate-300 md:flex-row md:text-left">
           <p>
-            ©2026 Pondok Pesantren Modern Darul Mukhlisin. All rights reserved.
+            {identity.footerText}
           </p>
           <p className="text-slate-400">
             Designed for a modern, professional digital presence.
