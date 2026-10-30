@@ -3,6 +3,16 @@ import database from '../config/database.js';
 class Testimonial {
   static migrated = false;
 
+  static toMysqlDatetime(v) {
+    // MySQL DATETIME tidak terima format ISO ('2026-03-07T16:44:31.472Z') —
+    // konversi ke 'YYYY-MM-DD HH:MM:SS'
+    if (!v) return null;
+    const d = v instanceof Date ? v : new Date(v);
+    if (Number.isNaN(d.getTime())) return null;
+    const p = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+  }
+
   static async migrateFromSettingsIfNeeded() {
     if (this.migrated) return;
 
@@ -46,8 +56,8 @@ class Testimonial {
           ['pending', 'approved', 'rejected'].includes(item.status) ? item.status : 'approved',
           item.isVerified ? 1 : 0,
           item.isPublished !== false ? 1 : 0,
-          item.submittedAt || new Date(),
-          item.reviewedAt || null,
+          this.toMysqlDatetime(item.submittedAt) || this.toMysqlDatetime(new Date()),
+          this.toMysqlDatetime(item.reviewedAt),
         ]
       );
     }
@@ -102,8 +112,8 @@ class Testimonial {
           ['pending', 'approved', 'rejected'].includes(item.status) ? item.status : 'approved',
           item.isVerified ? 1 : 0,
           item.isPublished !== false ? 1 : 0,
-          item.submittedAt || new Date(),
-          item.reviewedAt || null,
+          this.toMysqlDatetime(item.submittedAt) || this.toMysqlDatetime(new Date()),
+          this.toMysqlDatetime(item.reviewedAt),
         ]
       );
     }
@@ -118,7 +128,7 @@ class Testimonial {
     await database.query(
       `INSERT INTO testimonials (id, name, role, quote, source, year, status, is_verified, is_published, submitted_at)
        VALUES (?, ?, ?, ?, ?, ?, 'pending', 0, 0, ?)`,
-      [id, payload.name, payload.role, payload.quote, payload.source || 'Form website', payload.year || '', new Date()]
+      [id, payload.name, payload.role, payload.quote, payload.source || 'Form website', payload.year || '', this.toMysqlDatetime(new Date())]
     );
 
     const rows = await database.query('SELECT * FROM testimonials WHERE id = ? LIMIT 1', [id]);
