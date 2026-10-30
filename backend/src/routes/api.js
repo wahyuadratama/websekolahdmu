@@ -48,6 +48,8 @@ router.get('/settings/stats', settingsController.getStats.bind(settingsControlle
 router.put('/settings/stats', AuthMiddleware.verifyToken, settingsController.updateStats.bind(settingsController));
 router.get('/settings/ppsb', settingsController.getPpsb.bind(settingsController));
 router.put('/settings/ppsb', AuthMiddleware.verifyToken, settingsController.updatePpsb.bind(settingsController));
+router.get('/settings/site', settingsController.getSite.bind(settingsController));
+router.put('/settings/site', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, settingsController.updateSite.bind(settingsController));
 
 // Testimoni Routes
 router.get('/testimoni', testimoniController.getAll.bind(testimoniController));

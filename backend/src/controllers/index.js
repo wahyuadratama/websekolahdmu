@@ -149,6 +149,89 @@ class SettingsController {
       res.json({ success: true, message: 'Pengaturan PPSB berhasil diupdate' });
     } catch (error) { res.status(500).json({ success:false, message:error.message }); }
   }
+
+  // Kunci pengaturan situs yang boleh dibaca publik & diubah admin
+  static siteKeys() {
+    return ['site_identity', 'site_contact', 'site_social', 'site_seo', 'homepage', 'maintenance', 'navigation'];
+  }
+
+  static parseSiteValue(raw) {
+    if (raw === null || raw === undefined) return null;
+    if (typeof raw !== 'string') return raw;
+    try { return JSON.parse(raw); } catch { return raw; }
+  }
+
+  // PUBLIK: semua pengaturan situs (termasuk status maintenance)
+  async getSite(req, res) {
+    try {
+      const data = {};
+      for (const key of SettingsController.siteKeys()) {
+        const section = key.replace(/^site_/, '');
+        data[section] = SettingsController.parseSiteValue(await Settings.getSetting(key));
+      }
+      res.json({ success: true, data });
+    } catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+
+  // ADMIN: update parsial per section, mis. { identity: {...}, maintenance: {...} }
+  async updateSite(req, res) {
+    try {
+      const body = req.body || {};
+      const allowed = {
+        identity: 'site_identity',
+        contact: 'site_contact',
+        social: 'site_social',
+        seo: 'site_seo',
+        homepage: 'homepage',
+        maintenance: 'maintenance',
+        navigation: 'navigation',
+      };
+      const descriptions = {
+        identity: 'Identitas situs (nama, tagline, logo, favicon, teks footer)',
+        contact: 'Informasi kontak situs (alamat, telepon, email, jam, maps)',
+        social: 'Tautan media sosial (facebook, instagram, youtube, whatsapp)',
+        seo: 'Pengaturan SEO dasar situs',
+        homepage: 'Konten homepage (slide hero kustom, judul & teks sambutan)',
+        maintenance: 'Mode maintenance situs',
+        navigation: 'Item navigasi utama (label, url, tampil/sembunyi, submenu)',
+      };
+      let updated = 0;
+      for (const [section, key] of Object.entries(allowed)) {
+        if (body[section] === undefined) continue;
+        const val = body[section];
+        if (val === null || typeof val !== 'object' || Array.isArray(val) && section !== 'navigation') {
+          // navigation boleh array; section lain harus object
+          if (!(section === 'navigation' && Array.isArray(val))) {
+            return res.status(400).json({ success: false, message: `Format section "${section}" tidak valid` });
+          }
+        }
+        if (section === 'maintenance') {
+          const norm = {
+            enabled: Boolean(val.enabled),
+            message: String(val.message || 'Website sedang dalam pemeliharaan. Silakan kembali lagi beberapa saat lagi.').trim(),
+          };
+          await Settings.setSetting(key, JSON.stringify(norm), descriptions[section]);
+        } else if (section === 'navigation') {
+          const norm = val.slice(0, 12).map((item) => ({
+            label: String(item?.label || '').trim().slice(0, 60),
+            url: String(item?.url || '').trim().slice(0, 300),
+            visible: item?.visible !== false,
+            children: Array.isArray(item?.children) ? item.children.slice(0, 6).map((c) => ({
+              label: String(c?.label || '').trim().slice(0, 60),
+              url: String(c?.url || '').trim().slice(0, 300),
+              visible: c?.visible !== false,
+            })).filter((c) => c.label) : [],
+          })).filter((item) => item.label);
+          await Settings.setSetting(key, JSON.stringify(norm), descriptions[section]);
+        } else {
+          await Settings.setSetting(key, JSON.stringify(val), descriptions[section]);
+        }
+        updated++;
+      }
+      if (!updated) return res.status(400).json({ success: false, message: 'Tidak ada section yang diupdate' });
+      res.json({ success: true, message: 'Pengaturan situs berhasil diupdate' });
+    } catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
 }
 
 class TestimoniController {
