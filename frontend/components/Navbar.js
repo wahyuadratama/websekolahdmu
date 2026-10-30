@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { DEFAULT_SITE_SETTINGS, getSiteSettings, resolveSiteImage } from '@/lib/siteSettings';
@@ -8,7 +8,9 @@ import { DEFAULT_SITE_SETTINGS, getSiteSettings, resolveSiteImage } from '@/lib/
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [pinnedDropdown, setPinnedDropdown] = useState(null); // dropdown dibuka via klik -> tetap terbuka
   const [settings, setSettings] = useState(DEFAULT_SITE_SETTINGS);
+  const navRef = useRef(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -16,9 +18,22 @@ export default function Navbar() {
     return () => { cancelled = true; };
   }, []);
 
+  // Klik di luar navbar menutup dropdown yang di-pin
+  useEffect(() => {
+    const onDown = (e) => {
+      if (navRef.current && !navRef.current.contains(e.target)) {
+        setOpenDropdown(null);
+        setPinnedDropdown(null);
+      }
+    };
+    document.addEventListener('mousedown', onDown);
+    return () => document.removeEventListener('mousedown', onDown);
+  }, []);
+
   const closeMenus = () => {
     setMobileMenuOpen(false);
     setOpenDropdown(null);
+    setPinnedDropdown(null);
   };
 
   const { identity, navigation } = settings;
@@ -70,13 +85,27 @@ export default function Navbar() {
         key={item.label}
         className="relative"
         onMouseEnter={() => setOpenDropdown(key)}
-        onMouseLeave={() => setOpenDropdown(null)}
+        onMouseLeave={() => { if (pinnedDropdown !== key) setOpenDropdown(null); }}
       >
-        <button className="nav-link flex items-center gap-1 text-slate-700 hover:text-primary-500">
-          {item.label} <i className="fas fa-chevron-down text-[10px]"></i>
+        <button
+          className="nav-link flex items-center gap-1 text-slate-700 hover:text-primary-500"
+          aria-expanded={openDropdown === key}
+          aria-haspopup="true"
+          onClick={() => {
+            if (pinnedDropdown === key) {
+              setPinnedDropdown(null);
+              setOpenDropdown(null);
+            } else {
+              setPinnedDropdown(key);
+              setOpenDropdown(key);
+            }
+          }}
+        >
+          {item.label} <i className={`fas fa-chevron-down text-[10px] transition-transform ${openDropdown === key ? 'rotate-180' : ''}`}></i>
         </button>
         {openDropdown === key && (
-          <div className="absolute right-0 mt-2 w-44 rounded-xl border border-slate-100 bg-white py-2 shadow-xl">
+          <div className="absolute right-0 top-full w-44 pt-2">
+            <div className="rounded-xl border border-slate-100 bg-white py-2 shadow-xl">
             {children.map((child) => (
               <a
                 key={child.label}
@@ -84,10 +113,12 @@ export default function Navbar() {
                 target={child.url.startsWith('http') ? '_blank' : undefined}
                 rel={child.url.startsWith('http') ? 'noopener noreferrer' : undefined}
                 className="block px-4 py-2 text-sm text-slate-700 transition hover:bg-slate-50 hover:text-primary-500"
+                onClick={closeMenus}
               >
                 <i className="fas fa-users mr-2"></i>{child.label}
               </a>
             ))}
+            </div>
           </div>
         )}
       </div>
@@ -95,7 +126,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 z-50 w-full border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
+    <nav ref={navRef} className="fixed top-0 z-50 w-full border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-3 lg:py-4">
           <Link href="/" className="flex min-w-0 items-center gap-2 sm:gap-3">
