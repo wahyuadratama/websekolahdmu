@@ -249,8 +249,7 @@ class ValidationMiddleware {
   ];
 
   // Fasilitas validation
-  static fasilitasValidation = [
-    body('nama')
+  static fasilitasValidation = [    body('nama')
       .trim()
       .notEmpty().withMessage('Nama harus diisi')
       .isLength({ min: 3, max: 160 }).withMessage('Nama harus 3-160 karakter'),
@@ -265,6 +264,19 @@ class ValidationMiddleware {
     body('urutan')
       .optional({ checkFalsy: true })
       .isInt({ min: 0 }).withMessage('Urutan harus angka >= 0'),
+    ValidationMiddleware.handleValidationErrors
+  ];
+
+  // Komentar berita validation
+  static komentarBeritaValidation = [
+    body('nama')
+      .trim()
+      .notEmpty().withMessage('Nama harus diisi')
+      .isLength({ min: 3, max: 100 }).withMessage('Nama harus 3-100 karakter'),
+    body('isi')
+      .trim()
+      .notEmpty().withMessage('Komentar harus diisi')
+      .isLength({ min: 3, max: 1000 }).withMessage('Komentar harus 3-1000 karakter'),
     ValidationMiddleware.handleValidationErrors
   ];
 }

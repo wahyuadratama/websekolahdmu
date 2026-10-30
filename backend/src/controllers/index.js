@@ -8,6 +8,8 @@ import Program from '../models/Program.js';
 import Prestasi from '../models/Prestasi.js';
 import Pimpinan from '../models/Pimpinan.js';
 import Fasilitas from '../models/Fasilitas.js';
+import KomentarBerita from '../models/KomentarBerita.js';
+import Berita from '../models/Berita.js';
 
 class GaleriController {
   async getAll(req, res) {
@@ -387,3 +389,59 @@ export const programController = new ProgramController();
 export const prestasiController = new PrestasiController();
 export const pimpinanController = new PimpinanController();
 export const fasilitasController = new FasilitasController();
+
+class KomentarBeritaController {
+  async _getBeritaIdBySlug(slug) {
+    const berita = await Berita.findBySlug(slug);
+    return berita ? berita.id : null;
+  }
+
+  // Publik: daftar komentar yang sudah disetujui
+  async getBySlug(req, res) {
+    try {
+      const beritaId = await this._getBeritaIdBySlug(req.params.slug);
+      if (!beritaId) return res.status(404).json({ success: false, message: 'Berita tidak ditemukan' });
+      const data = await KomentarBerita.getApproved(beritaId);
+      res.json({ success: true, data });
+    } catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+
+  // Publik: kirim komentar (selalu pending)
+  async submit(req, res) {
+    try {
+      const beritaId = await this._getBeritaIdBySlug(req.params.slug);
+      if (!beritaId) return res.status(404).json({ success: false, message: 'Berita tidak ditemukan' });
+      const nama = String(req.body?.nama || '').trim();
+      const isi = String(req.body?.isi || '').trim();
+      const data = await KomentarBerita.createPending({ beritaId, nama, isi });
+      res.status(201).json({ success: true, message: 'Komentar terkirim dan menunggu moderasi admin.', data });
+    } catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+
+  async getAllAdmin(req, res) {
+    try { res.json({ success: true, data: await KomentarBerita.getAllAdmin() }); }
+    catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+
+  async moderate(req, res) {
+    try {
+      const { id } = req.params;
+      const action = String(req.body?.action || '').toLowerCase();
+      if (!['approve', 'reject'].includes(action)) {
+        return res.status(400).json({ success: false, message: 'Action tidak valid.' });
+      }
+      const data = await KomentarBerita.moderate(id, action);
+      if (!data) return res.status(404).json({ success: false, message: 'Komentar tidak ditemukan.' });
+      res.json({ success: true, message: action === 'approve' ? 'Komentar disetujui.' : 'Komentar ditolak.', data });
+    } catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+
+  async delete(req, res) {
+    try {
+      await KomentarBerita.deleteById(req.params.id);
+      res.json({ success: true, message: 'Komentar berhasil dihapus' });
+    } catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+}
+
+export const komentarBeritaController = new KomentarBeritaController();

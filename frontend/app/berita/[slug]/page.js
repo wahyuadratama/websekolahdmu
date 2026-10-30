@@ -6,6 +6,8 @@ import Footer from '@/components/Footer';
 import { API_BASE, API_URL } from '@/lib/config';
 import { sanitizeHtml } from '@/lib/sanitize';
 import { formatTanggalID } from '@/lib/format';
+import SukaButton from './SukaButton';
+import KomentarSection from './KomentarSection';
 
 async function getBerita(slug) {
   try {
@@ -198,9 +200,9 @@ export default async function BeritaDetailPage({ params }) {
           />
 
           {/* Share Buttons */}
-          <div className="border-t border-b py-6 mb-12">
+          <div className="border-t border-b py-6 mb-8">
             <h3 className="text-lg font-bold mb-4">Bagikan Artikel:</h3>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <a
                 href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}`}
                 target="_blank"
@@ -225,8 +227,12 @@ export default async function BeritaDetailPage({ params }) {
               >
                 <i className="fab fa-whatsapp mr-2"></i>WhatsApp
               </a>
+              <SukaButton slug={params.slug} initialCount={berita.suka || 0} />
             </div>
           </div>
+
+          {/* Komentar */}
+          <KomentarSection slug={params.slug} />
 
           {/* Related Posts */}
           {relatedBerita.length > 0 && (

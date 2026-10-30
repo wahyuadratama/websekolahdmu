@@ -1,6 +1,6 @@
 import express from 'express';
 import BeritaController from '../controllers/BeritaController.js';
-import { galeriController, guruController, pesanController, pendaftaranController, settingsController, testimoniController, programController, prestasiController, pimpinanController, fasilitasController } from '../controllers/index.js';
+import { galeriController, guruController, pesanController, pendaftaranController, settingsController, testimoniController, programController, prestasiController, pimpinanController, fasilitasController, komentarBeritaController } from '../controllers/index.js';
 import UploadController, { upload } from '../controllers/UploadController.js';
 import AuthMiddleware from '../middleware/auth.js';
 import ValidationMiddleware from '../middleware/validation.js';
@@ -16,6 +16,10 @@ router.post('/upload', AuthMiddleware.verifyToken, rateLimiter.uploadLimiter(), 
 router.get('/berita', BeritaController.getAll);
 router.get('/berita/slug/:slug', BeritaController.getBySlug);
 router.get('/berita/:id', BeritaController.getById);
+router.get('/berita/:slug/suka', BeritaController.getSukaCount);
+router.post('/berita/:slug/suka', rateLimiter.limit({ windowMs: 15 * 60 * 1000, max: 30, message: 'Terlalu banyak permintaan, coba lagi nanti.' }), BeritaController.toggleSuka);
+router.get('/berita/:slug/komentar', komentarBeritaController.getBySlug.bind(komentarBeritaController));
+router.post('/berita/:slug/komentar', rateLimiter.limit({ windowMs: 15 * 60 * 1000, max: 20, message: 'Terlalu banyak pengiriman komentar, coba lagi nanti.' }), SanitizeMiddleware.sanitizeBody, ValidationMiddleware.komentarBeritaValidation, komentarBeritaController.submit.bind(komentarBeritaController));
 router.post('/berita', AuthMiddleware.verifyToken, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.beritaValidation, BeritaController.create);
 router.put('/berita/:id', AuthMiddleware.verifyToken, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.beritaValidation, BeritaController.update);
 router.delete('/berita/:id', AuthMiddleware.verifyToken, BeritaController.delete);
@@ -56,6 +60,11 @@ router.get('/testimoni', testimoniController.getAll.bind(testimoniController));
 router.post('/testimoni/submit', rateLimiter.limit({ windowMs: 15 * 60 * 1000, max: 20, message: 'Terlalu banyak pengiriman testimoni, coba lagi nanti.' }), SanitizeMiddleware.sanitizeBody, testimoniController.submit.bind(testimoniController));
 router.put('/testimoni', AuthMiddleware.verifyToken, SanitizeMiddleware.sanitizeBody, testimoniController.saveAll.bind(testimoniController));
 router.patch('/testimoni/:id/moderate', AuthMiddleware.verifyToken, SanitizeMiddleware.sanitizeBody, testimoniController.moderate.bind(testimoniController));
+
+// Komentar Berita Routes (admin)
+router.get('/komentar-berita/admin', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, komentarBeritaController.getAllAdmin.bind(komentarBeritaController));
+router.put('/komentar-berita/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, komentarBeritaController.moderate.bind(komentarBeritaController));
+router.delete('/komentar-berita/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, komentarBeritaController.delete.bind(komentarBeritaController));
 
 // Program Routes (publik: hanya yang published)
 router.get('/program', programController.getAll.bind(programController));

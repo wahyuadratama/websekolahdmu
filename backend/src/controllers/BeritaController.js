@@ -1,4 +1,5 @@
 import Berita from '../models/Berita.js';
+import BeritaSuka from '../models/BeritaSuka.js';
 
 class BeritaController {
   async getAll(req, res) {
@@ -29,7 +30,31 @@ class BeritaController {
       const berita = await Berita.findBySlug(req.params.slug);
       if (!berita) return res.status(404).json({ success: false, message: 'Berita tidak ditemukan' });
       await Berita.incrementViews(berita.id);
-      res.json({ success: true, data: { ...berita, views: berita.views + 1 } });
+      const suka = await BeritaSuka.countByBerita(berita.id);
+      res.json({ success: true, data: { ...berita, views: berita.views + 1, suka } });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Terjadi kesalahan server', error: error.message });
+    }
+  }
+
+  async getSukaCount(req, res) {
+    try {
+      const berita = await Berita.findBySlug(req.params.slug);
+      if (!berita) return res.status(404).json({ success: false, message: 'Berita tidak ditemukan' });
+      const count = await BeritaSuka.countByBerita(berita.id);
+      res.json({ success: true, data: { count } });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Terjadi kesalahan server', error: error.message });
+    }
+  }
+
+  async toggleSuka(req, res) {
+    try {
+      const berita = await Berita.findBySlug(req.params.slug);
+      if (!berita) return res.status(404).json({ success: false, message: 'Berita tidak ditemukan' });
+      const ip = BeritaSuka.getClientIp(req);
+      const { count } = await BeritaSuka.toggle(berita.id, ip);
+      res.json({ success: true, data: { count } });
     } catch (error) {
       res.status(500).json({ success: false, message: 'Terjadi kesalahan server', error: error.message });
     }

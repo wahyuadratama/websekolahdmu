@@ -198,6 +198,23 @@ class Database {
         is_published TINYINT(1) NOT NULL DEFAULT 1,
         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`,
+      `CREATE TABLE IF NOT EXISTS berita_suka (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        berita_id BIGINT NOT NULL,
+        ip_hash VARCHAR(64) NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE KEY uq_berita_suka (berita_id, ip_hash),
+        INDEX idx_berita_suka_berita (berita_id)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`,
+      `CREATE TABLE IF NOT EXISTS komentar_berita (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        berita_id BIGINT NOT NULL,
+        nama VARCHAR(100) NOT NULL,
+        isi TEXT NOT NULL,
+        status ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_komentar_berita (berita_id, status, created_at)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`
     ];
 
