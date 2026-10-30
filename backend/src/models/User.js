@@ -36,6 +36,26 @@ class User {
     return result.affectedRows > 0;
   }
 
+  static async updateById(id, { fullName, email, status, role }) {
+    const fields = [];
+    const params = [];
+    if (fullName !== undefined) { fields.push('full_name = ?'); params.push(String(fullName).trim()); }
+    if (email !== undefined) { fields.push('email = ?'); params.push(String(email).trim().toLowerCase()); }
+    if (status !== undefined) { fields.push('status = ?'); params.push(status); }
+    if (role !== undefined) { fields.push('role = ?'); params.push(role); }
+    if (!fields.length) return this.findById(id);
+    params.push(id);
+    await database.query(`UPDATE users SET ${fields.join(', ')} WHERE id = ?`, params);
+    return this.findById(id);
+  }
+
+  static async updatePassword(id, newPassword) {
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(newPassword, salt);
+    await database.query('UPDATE users SET password = ? WHERE id = ?', [hashed, id]);
+    return true;
+  }
+
   static async updateLastLogin(id) {
     await database.query('UPDATE users SET last_login = NOW() WHERE id = ?', [id]);
   }

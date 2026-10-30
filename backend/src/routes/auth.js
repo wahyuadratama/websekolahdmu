@@ -2,6 +2,7 @@ import express from 'express';
 import AuthController from '../controllers/AuthController.js';
 import AuthMiddleware from '../middleware/auth.js';
 import ValidationMiddleware from '../middleware/validation.js';
+import SanitizeMiddleware from '../middleware/sanitize.js';
 import rateLimiter from '../middleware/rateLimiter.js';
 
 const router = express.Router();
@@ -14,6 +15,8 @@ router.post('/logout', AuthController.logout);
 router.get('/me', AuthMiddleware.verifyToken, AuthController.getCurrentUser);
 router.get('/users', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, AuthController.getAllUsers);
 router.post('/register', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, ValidationMiddleware.registerValidation, AuthController.register);
+router.put('/users/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, AuthController.updateUser);
+router.patch('/users/:id/password', AuthMiddleware.verifyToken, AuthController.changePassword);
 router.delete('/users/:id', AuthMiddleware.verifyToken, AuthMiddleware.isSuperAdmin, AuthController.deleteUser);
 
 export default router;

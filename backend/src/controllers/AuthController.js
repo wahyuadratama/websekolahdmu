@@ -73,6 +73,84 @@ class AuthController {
     }
   }
 
+  async updateUser(req, res) {
+    try {
+      const { id } = req.params;
+      const { fullName, email, status, role } = req.body || {};
+      const target = await User.findById(id);
+      if (!target) return res.status(404).json({ success: false, message: 'User tidak ditemukan' });
+
+      // Tidak boleh menonaktifkan/menurunkan diri sendiri atau superadmin
+      if (String(target.id) === String(req.user.id) && (status === 'inactive' || (role && role !== target.role))) {
+        return res.status(403).json({ success: false, message: 'Tidak dapat mengubah status/role akun sendiri' });
+      }
+      if (target.role === 'superadmin' && String(target.id) !== String(req.user.id)) {
+        return res.status(403).json({ success: false, message: 'Tidak dapat mengubah akun superadmin lain' });
+      }
+      // Perubahan role hanya boleh oleh superadmin
+      if (role && role !== target.role && req.user.role !== 'superadmin') {
+        return res.status(403).json({ success: false, message: 'Hanya superadmin yang dapat mengubah role' });
+      }
+      if (role && !['superadmin', 'admin', 'staff'].includes(role)) {
+        return res.status(400).json({ success: false, message: 'Role tidak valid' });
+      }
+      if (status && !['active', 'inactive'].includes(status)) {
+        return res.status(400).json({ success: false, message: 'Status tidak valid' });
+      }
+      if (email && email.toLowerCase() !== target.email.toLowerCase()) {
+        const existing = await User.findByEmail(email);
+        if (existing && String(existing.id) !== String(id)) {
+          return res.status(400).json({ success: false, message: 'Email sudah digunakan' });
+        }
+      }
+
+      const updated = await User.updateById(id, { fullName, email, status, role });
+      res.json({
+        success: true, message: 'User berhasil diupdate',
+        data: { id: updated.id, username: updated.username, fullName: updated.full_name, email: updated.email, role: updated.role, status: updated.status }
+      });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Terjadi kesalahan server', error: error.message });
+    }
+  }
+
+  async changePassword(req, res) {
+    try {
+      const { id } = req.params;
+      const { oldPassword, newPassword } = req.body || {};
+      const target = await User.findById(id);
+      if (!target) return res.status(404).json({ success: false, message: 'User tidak ditemukan' });
+
+      const isSelf = String(target.id) === String(req.user.id);
+      const isPrivileged = ['superadmin', 'admin'].includes(req.user.role);
+
+      if (!isSelf && !isPrivileged) {
+        return res.status(403).json({ success: false, message: 'Akses ditolak' });
+      }
+      // Admin tidak boleh me-reset password superadmin
+      if (target.role === 'superadmin' && !isSelf && req.user.role !== 'superadmin') {
+        return res.status(403).json({ success: false, message: 'Akses ditolak' });
+      }
+      // Ganti password sendiri wajib menyertakan password lama
+      if (isSelf) {
+        if (!oldPassword) return res.status(400).json({ success: false, message: 'Password lama harus diisi' });
+        const match = await User.comparePassword(oldPassword, target.password);
+        if (!match) return res.status(400).json({ success: false, message: 'Password lama salah' });
+      }
+      if (!newPassword || String(newPassword).length < 6) {
+        return res.status(400).json({ success: false, message: 'Password baru minimal 6 karakter' });
+      }
+      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(String(newPassword))) {
+        return res.status(400).json({ success: false, message: 'Password harus mengandung huruf besar, kecil, dan angka' });
+      }
+
+      await User.updatePassword(id, newPassword);
+      res.json({ success: true, message: 'Password berhasil diubah' });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Terjadi kesalahan server', error: error.message });
+    }
+  }
+
   async logout(req, res) {
     try {
       const cookieName = process.env.JWT_COOKIE_NAME || 'token';
