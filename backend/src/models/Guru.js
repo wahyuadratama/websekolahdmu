@@ -12,7 +12,8 @@ class Guru {
 
   static async create(payload) {
     const foto = payload.foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(payload.nama)}&size=200&background=random&color=fff`;
-    const result = await database.query('INSERT INTO guru (nama,nip,mapel,pendidikan,foto,status) VALUES (?,?,?,?,?,?)', [payload.nama, payload.nip, payload.mapel, payload.pendidikan || null, foto, payload.status || 'aktif']);
+    const nip = payload.nip && String(payload.nip).trim() ? String(payload.nip).trim() : null;
+    const result = await database.query('INSERT INTO guru (nama,nip,mapel,pendidikan,foto,status) VALUES (?,?,?,?,?,?)', [payload.nama, nip, payload.mapel, payload.pendidikan || null, foto, payload.status || 'aktif']);
     return this.findById(result.insertId);
   }
 
@@ -24,7 +25,8 @@ class Guru {
   static async update(id, payload) {
     const current = await this.findById(id);
     if (!current) return null;
-    await database.query('UPDATE guru SET nama=?, nip=?, mapel=?, pendidikan=?, foto=?, status=? WHERE id=?', [payload.nama ?? current.nama, payload.nip ?? current.nip, payload.mapel ?? current.mapel, payload.pendidikan ?? current.pendidikan, payload.foto ?? current.foto, payload.status ?? current.status, id]);
+    const nip = payload.nip === undefined ? current.nip : (payload.nip && String(payload.nip).trim() ? String(payload.nip).trim() : null);
+    await database.query('UPDATE guru SET nama=?, nip=?, mapel=?, pendidikan=?, foto=?, status=? WHERE id=?', [payload.nama ?? current.nama, nip, payload.mapel ?? current.mapel, payload.pendidikan ?? current.pendidikan, payload.foto ?? current.foto, payload.status ?? current.status, id]);
     return this.findById(id);
   }
 

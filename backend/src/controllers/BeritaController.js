@@ -3,10 +3,10 @@ import Berita from '../models/Berita.js';
 class BeritaController {
   async getAll(req, res) {
     try {
-      const { status } = req.query;
+      const { status, q, kategori } = req.query;
       const limit = Math.min(parseInt(req.query.limit) || 100, 100);
       const skip = Math.max(parseInt(req.query.skip) || 0, 0);
-      const [berita, total] = await Promise.all([Berita.list({ status, limit, skip }), Berita.count({ status })]);
+      const [berita, total] = await Promise.all([Berita.list({ status, limit, skip, q, kategori }), Berita.count({ status, q, kategori })]);
       res.json({ success: true, data: berita, total, limit, skip });
     } catch (error) {
       res.status(500).json({ success: false, message: 'Terjadi kesalahan server', error: error.message });

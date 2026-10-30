@@ -8,16 +8,25 @@ function toSafeInt(value, fallback = 0) {
 }
 
 class Berita {
-  static async list({ status, limit = 100, skip = 0 }) {
+  static async list({ status, limit = 100, skip = 0, q, kategori }) {
     const safeLimit = Math.min(Math.max(toSafeInt(limit, 100), 1), 100);
     const safeSkip = Math.max(toSafeInt(skip, 0), 0);
 
     const params = [];
-    let where = '';
+    const conds = [];
     if (status) {
-      where = 'WHERE status = ?';
+      conds.push('status = ?');
       params.push(status);
     }
+    if (kategori) {
+      conds.push('kategori = ?');
+      params.push(kategori);
+    }
+    if (q) {
+      conds.push('judul LIKE ?');
+      params.push(`%${String(q).slice(0, 100)}%`);
+    }
+    const where = conds.length ? `WHERE ${conds.join(' AND ')}` : '';
 
     const sqlSnake = `SELECT id, judul, slug, kategori, status, author, excerpt, konten, gambar, tags, views, created_at, updated_at FROM berita ${where} ORDER BY created_at DESC LIMIT ${safeLimit} OFFSET ${safeSkip}`;
     const sqlCamel = `SELECT id, judul, slug, kategori, status, author, excerpt, konten, gambar, tags, views, createdAt AS created_at, updatedAt AS updated_at FROM berita ${where} ORDER BY createdAt DESC LIMIT ${safeLimit} OFFSET ${safeSkip}`;
@@ -31,13 +40,22 @@ class Berita {
     }
   }
 
-  static async count({ status }) {
+  static async count({ status, q, kategori }) {
     const params = [];
-    let where = '';
+    const conds = [];
     if (status) {
-      where = 'WHERE status = ?';
+      conds.push('status = ?');
       params.push(status);
     }
+    if (kategori) {
+      conds.push('kategori = ?');
+      params.push(kategori);
+    }
+    if (q) {
+      conds.push('judul LIKE ?');
+      params.push(`%${String(q).slice(0, 100)}%`);
+    }
+    const where = conds.length ? `WHERE ${conds.join(' AND ')}` : '';
     const rows = await database.query(`SELECT COUNT(*) AS total FROM berita ${where}`, params);
     return rows[0]?.total || 0;
   }

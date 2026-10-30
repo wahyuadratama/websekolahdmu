@@ -92,8 +92,8 @@ class ValidationMiddleware {
       .notEmpty().withMessage('Nama harus diisi')
       .isLength({ min: 3 }).withMessage('Nama minimal 3 karakter'),
     body('nip')
+      .optional({ checkFalsy: true })
       .trim()
-      .notEmpty().withMessage('NIP harus diisi')
       .isLength({ min: 5 }).withMessage('NIP minimal 5 karakter'),
     body('mapel')
       .trim()
