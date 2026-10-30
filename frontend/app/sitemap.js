@@ -33,6 +33,10 @@ export default async function sitemap() {
     { url: `${base}/program/kmi`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${base}/program/ihya-alquran`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${base}/program/life-skills`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${base}/program`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${base}/prestasi`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${base}/pimpinan`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${base}/fasilitas`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
   ];
 
   const beritaList = await getPublishedBerita();

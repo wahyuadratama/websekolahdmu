@@ -179,6 +179,94 @@ class ValidationMiddleware {
       .trim(),
     ValidationMiddleware.handleValidationErrors
   ];
+
+  // Program validation
+  static programValidation = [
+    body('judul')
+      .trim()
+      .notEmpty().withMessage('Judul harus diisi')
+      .isLength({ min: 3, max: 200 }).withMessage('Judul harus 3-200 karakter'),
+    body('deskripsi')
+      .optional({ checkFalsy: true })
+      .trim()
+      .isLength({ max: 5000 }).withMessage('Deskripsi maksimal 5000 karakter'),
+    body('foto')
+      .optional({ checkFalsy: true })
+      .trim()
+      .isLength({ max: 255 }).withMessage('Foto maksimal 255 karakter'),
+    body('urutan')
+      .optional({ checkFalsy: true })
+      .isInt({ min: 0 }).withMessage('Urutan harus angka >= 0'),
+    ValidationMiddleware.handleValidationErrors
+  ];
+
+  // Prestasi validation
+  static prestasiValidation = [
+    body('judul')
+      .trim()
+      .notEmpty().withMessage('Judul harus diisi')
+      .isLength({ min: 3, max: 200 }).withMessage('Judul harus 3-200 karakter'),
+    body('deskripsi')
+      .optional({ checkFalsy: true })
+      .trim()
+      .isLength({ max: 5000 }).withMessage('Deskripsi maksimal 5000 karakter'),
+    body('tahun')
+      .optional({ checkFalsy: true })
+      .trim()
+      .matches(/^[0-9]{4}$/).withMessage('Tahun harus 4 digit, contoh: 2026'),
+    body('tingkat')
+      .optional({ checkFalsy: true })
+      .isIn(['sekolah', 'kabupaten', 'provinsi', 'nasional', 'internasional']).withMessage('Tingkat tidak valid'),
+    body('foto')
+      .optional({ checkFalsy: true })
+      .trim()
+      .isLength({ max: 255 }).withMessage('Foto maksimal 255 karakter'),
+    ValidationMiddleware.handleValidationErrors
+  ];
+
+  // Pimpinan validation
+  static pimpinanValidation = [
+    body('nama')
+      .trim()
+      .notEmpty().withMessage('Nama harus diisi')
+      .isLength({ min: 3, max: 160 }).withMessage('Nama harus 3-160 karakter'),
+    body('jabatan')
+      .trim()
+      .notEmpty().withMessage('Jabatan harus diisi')
+      .isLength({ min: 3, max: 160 }).withMessage('Jabatan harus 3-160 karakter'),
+    body('foto')
+      .optional({ checkFalsy: true })
+      .trim()
+      .isLength({ max: 255 }).withMessage('Foto maksimal 255 karakter'),
+    body('bio_singkat')
+      .optional({ checkFalsy: true })
+      .trim()
+      .isLength({ max: 2000 }).withMessage('Bio singkat maksimal 2000 karakter'),
+    body('urutan')
+      .optional({ checkFalsy: true })
+      .isInt({ min: 0 }).withMessage('Urutan harus angka >= 0'),
+    ValidationMiddleware.handleValidationErrors
+  ];
+
+  // Fasilitas validation
+  static fasilitasValidation = [
+    body('nama')
+      .trim()
+      .notEmpty().withMessage('Nama harus diisi')
+      .isLength({ min: 3, max: 160 }).withMessage('Nama harus 3-160 karakter'),
+    body('deskripsi')
+      .optional({ checkFalsy: true })
+      .trim()
+      .isLength({ max: 5000 }).withMessage('Deskripsi maksimal 5000 karakter'),
+    body('foto')
+      .optional({ checkFalsy: true })
+      .trim()
+      .isLength({ max: 255 }).withMessage('Foto maksimal 255 karakter'),
+    body('urutan')
+      .optional({ checkFalsy: true })
+      .isInt({ min: 0 }).withMessage('Urutan harus angka >= 0'),
+    ValidationMiddleware.handleValidationErrors
+  ];
 }
 
 export default ValidationMiddleware;

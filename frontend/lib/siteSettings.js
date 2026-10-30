@@ -42,7 +42,12 @@ export const DEFAULT_SITE_SETTINGS = {
   },
   navigation: [
     { label: 'Beranda', url: '/#home', visible: true },
-    { label: 'Profil', url: '/#profil', visible: true },
+    { label: 'Profil', url: '/#profil', visible: true, children: [
+      { label: 'Program Unggulan', url: '/program', visible: true },
+      { label: 'Prestasi', url: '/prestasi', visible: true },
+      { label: 'Pimpinan', url: '/pimpinan', visible: true },
+      { label: 'Fasilitas', url: '/fasilitas', visible: true },
+    ] },
     { label: 'PPSB/Pendaftaran', url: '/ppsb', visible: true },
     { label: 'Berita', url: '/berita', visible: true },
     { label: 'Galeri', url: '/#galeri', visible: true },
