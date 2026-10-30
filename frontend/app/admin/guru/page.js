@@ -137,15 +137,14 @@ export default function GuruPage() {
               </div>
               <div>
                 <label className="block text-gray-700 mb-2 font-semibold">
-                  NIP <span className="text-red-500">*</span>
+                  NIP <span className="text-slate-400 text-sm font-normal">(opsional)</span>
                 </label>
                 <input
                   type="text"
-                  required
                   value={form.nip}
                   onChange={(e) => setForm({ ...form, nip: e.target.value })}
                   className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500"
-                  placeholder="Nomor Induk Pegawai"
+                  placeholder="Nomor Induk Pegawai (boleh dikosongkan)"
                 />
               </div>
             </div>
@@ -221,7 +220,7 @@ export default function GuruPage() {
               guru.map((item) => (
                 <div key={item.id} className="rounded-lg border border-slate-200 p-4">
                   <p className="font-semibold text-slate-800">{item.nama}</p>
-                  <p className="text-sm text-slate-500">NIP: {item.nip}</p>
+                  <p className="text-sm text-slate-500">NIP: {item.nip || '-'}</p>
                   <p className="mt-1 text-sm text-slate-600">{item.mapel} • {item.pendidikan}</p>
                   <div className="mt-3 space-x-1 text-right">
                     <button onClick={() => handleEdit(item)} className="rounded-md px-2 py-1 text-blue-600 hover:bg-blue-50" title="Edit"><i className="fas fa-edit"></i></button>
@@ -250,7 +249,7 @@ export default function GuruPage() {
                   guru.map((item) => (
                     <tr key={item.id} className="border-b hover:bg-gray-50">
                       <td className="px-4 py-3">{item.nama}</td>
-                      <td className="px-4 py-3">{item.nip}</td>
+                      <td className="px-4 py-3">{item.nip || '-'}</td>
                       <td className="px-4 py-3">{item.mapel}</td>
                       <td className="px-4 py-3">{item.pendidikan}</td>
                       <td className="px-4 py-3 text-center space-x-2">

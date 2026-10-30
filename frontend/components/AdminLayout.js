@@ -64,6 +64,8 @@ export default function AdminLayout({ children, title }) {
     { href: '/admin/pendaftaran', icon: 'fa-user-plus', label: 'Pendaftaran' },
     { href: '/admin/testimoni', icon: 'fa-comments', label: 'Testimoni' },
     { href: '/admin/ppsb', icon: 'fa-calendar-check', label: 'PPSB' },
+    { href: '/admin/pengaturan-situs', icon: 'fa-sliders-h', label: 'Pengaturan Situs' },
+    { href: '/admin/pengguna', icon: 'fa-users-cog', label: 'Pengguna' },
     { href: '/admin/settings', icon: 'fa-cog', label: 'Pengaturan' },
   ];
 

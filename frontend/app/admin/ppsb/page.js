@@ -5,6 +5,26 @@ import AdminLayout from '@/components/AdminLayout';
 import { showError, showSuccess } from '@/lib/sweetalert';
 import { API_URL } from '@/lib/config';
 
+const BULAN_ID = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+// "1 November 2025" -> "2025-11-01" (untuk input type="date")
+function indoToISO(s) {
+  const m = String(s || '').trim().match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/);
+  if (!m) return '';
+  const bi = BULAN_ID.findIndex((b) => b.toLowerCase() === m[2].toLowerCase());
+  if (bi < 0) return '';
+  return `${m[3]}-${String(bi + 1).padStart(2, '0')}-${String(m[1]).padStart(2, '0')}`;
+}
+
+// "2025-11-01" -> "1 November 2025" (format simpan yang dipakai situs)
+function isoToIndo(iso) {
+  const m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return iso;
+  const bi = parseInt(m[2], 10) - 1;
+  if (bi < 0 || bi > 11) return iso;
+  return `${parseInt(m[3], 10)} ${BULAN_ID[bi]} ${m[1]}`;
+}
+
 export default function AdminPpsbPage() {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -144,7 +164,18 @@ export default function AdminPpsbPage() {
             <div className="space-y-3">
               {ppsb.timeline.map((item, idx) => (
                 <div key={idx} className="rounded-lg border border-slate-200 p-3 grid gap-3 md:grid-cols-3">
-                  <input type="text" value={item.tanggal || ''} onChange={(e) => updateTimelineItem(idx, 'tanggal', e.target.value)} className="rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Tanggal" />
+                  <div>
+                    <input
+                      type="date"
+                      value={indoToISO(item.tanggal)}
+                      onChange={(e) => updateTimelineItem(idx, 'tanggal', e.target.value ? isoToIndo(e.target.value) : '')}
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                      aria-label="Tanggal tahapan"
+                    />
+                    {item.tanggal && !indoToISO(item.tanggal) && (
+                      <p className="mt-1 text-xs text-amber-600">Format lama: "{item.tanggal}" — pilih tanggal untuk menyeragamkan.</p>
+                    )}
+                  </div>
                   <input type="text" value={item.nama || ''} onChange={(e) => updateTimelineItem(idx, 'nama', e.target.value)} className="rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Nama tahapan" />
                   <select value={item.status || 'Buka'} onChange={(e) => updateTimelineItem(idx, 'status', e.target.value)} className="rounded-lg border border-slate-300 px-3 py-2 text-sm">
                     <option value="Buka">Buka</option><option value="Tutup">Tutup</option><option value="Segera">Segera</option>

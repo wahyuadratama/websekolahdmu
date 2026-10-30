@@ -167,24 +167,24 @@ export default function PendaftaranPage() {
           <div className="mb-4 flex flex-col gap-3">
             <h3 className="text-lg sm:text-xl font-bold">Data Pendaftaran Santri Baru ({filteredData.length})</h3>
 
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-5">
-              <select value={genderFilter} onChange={(e) => setGenderFilter(e.target.value)} className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm">
+            <div className="flex flex-wrap gap-2">
+              <select value={genderFilter} onChange={(e) => setGenderFilter(e.target.value)} className="flex-1 min-w-[170px] rounded-lg border border-slate-300 px-3 py-2 text-sm">
                 <option value="all">Semua Gender</option>
                 <option value="Laki-laki">Laki-laki</option>
                 <option value="Perempuan">Perempuan</option>
               </select>
 
-              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm">
+              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="flex-1 min-w-[170px] rounded-lg border border-slate-300 px-3 py-2 text-sm">
                 <option value="all">Semua Status</option>
                 <option value="pending">Pending</option>
                 <option value="verified">Verified</option>
                 <option value="rejected">Rejected</option>
               </select>
 
-              <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-              <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+              <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="flex-1 min-w-[150px] rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+              <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="flex-1 min-w-[150px] rounded-lg border border-slate-300 px-3 py-2 text-sm" />
 
-              <button onClick={() => { setGenderFilter('all'); setStatusFilter('all'); setDateFrom(''); setDateTo(''); }} className="rounded-lg bg-slate-200 px-3 py-2 text-sm text-slate-700 hover:bg-slate-300">Reset Filter</button>
+              <button onClick={() => { setGenderFilter('all'); setStatusFilter('all'); setDateFrom(''); setDateTo(''); }} className="flex-1 min-w-[130px] rounded-lg bg-slate-200 px-3 py-2 text-sm text-slate-700 hover:bg-slate-300">Reset Filter</button>
             </div>
 
             <div className="flex w-full flex-wrap gap-2">

@@ -12,6 +12,9 @@ export default function BeritaPage() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const pageSize = 10;
+  const [search, setSearch] = useState('');
+  const [kategoriFilter, setKategoriFilter] = useState('all');
+  const KATEGORI_LIST = ['Akademik', 'Prestasi', 'Kegiatan', 'Pengumuman', 'Info', 'Beasiswa'];
   const [form, setForm] = useState({
     judul: '',
     kategori: 'Akademik',
@@ -29,10 +32,13 @@ export default function BeritaPage() {
     loadBerita(page);
   }, [page]);
 
-  const loadBerita = async (pageNumber = 1) => {
+  const loadBerita = async (pageNumber = 1, q = search, kategori = kategoriFilter) => {
     try {
       const skip = (pageNumber - 1) * pageSize;
-      const res = await fetch(`${API_URL}/api/berita?limit=${pageSize}&skip=${skip}`);
+      const params = new URLSearchParams({ limit: String(pageSize), skip: String(skip) });
+      if (q && q.trim()) params.set('q', q.trim());
+      if (kategori && kategori !== 'all') params.set('kategori', kategori);
+      const res = await fetch(`${API_URL}/api/berita?${params.toString()}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       if (data.success) {
@@ -43,6 +49,11 @@ export default function BeritaPage() {
     } catch (error) {
       showError('Gagal memuat data berita: ' + error.message);
     }
+  };
+
+  const applyFilter = (newSearch = search, newKategori = kategoriFilter) => {
+    setPage(1);
+    loadBerita(1, newSearch, newKategori);
   };
 
   const handleSubmit = async (e) => {
@@ -330,6 +341,33 @@ export default function BeritaPage() {
         {/* List Section */}
         <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
           <h3 className="text-lg sm:text-xl font-bold mb-4">Daftar Berita ({berita.length})</h3>
+          <div className="mb-4 grid gap-2 sm:grid-cols-[1fr_200px_auto]">
+            <div className="relative">
+              <i className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => { setSearch(e.target.value); }}
+                onKeyDown={(e) => { if (e.key === 'Enter') applyFilter(e.target.value, kategoriFilter); }}
+                placeholder="Cari judul berita... (Enter)"
+                className="w-full rounded-lg border border-slate-300 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500"
+              />
+            </div>
+            <select
+              value={kategoriFilter}
+              onChange={(e) => { setKategoriFilter(e.target.value); applyFilter(search, e.target.value); }}
+              className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+            >
+              <option value="all">Semua Kategori</option>
+              {KATEGORI_LIST.map((k) => <option key={k} value={k}>{k}</option>)}
+            </select>
+            <button
+              onClick={() => applyFilter(search, kategoriFilter)}
+              className="rounded-lg bg-cyan-600 px-4 py-2 text-sm text-white hover:bg-cyan-700"
+            >
+              <i className="fas fa-search mr-2"></i>Cari
+            </button>
+          </div>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3 text-sm text-gray-600">
             <span>Total: {total || berita.length}</span>
             <div className="flex items-center gap-2">
