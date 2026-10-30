@@ -4,6 +4,10 @@ import Pesan from '../models/Pesan.js';
 import Pendaftaran from '../models/Pendaftaran.js';
 import Settings from '../models/Settings.js';
 import Testimonial from '../models/Testimonial.js';
+import Program from '../models/Program.js';
+import Prestasi from '../models/Prestasi.js';
+import Pimpinan from '../models/Pimpinan.js';
+import Fasilitas from '../models/Fasilitas.js';
 
 class GaleriController {
   async getAll(req, res) {
@@ -313,3 +317,73 @@ export const pesanController = new PesanController();
 export const pendaftaranController = new PendaftaranController();
 export const settingsController = new SettingsController();
 export const testimoniController = new TestimoniController();
+
+class ProgramController {
+  async getAll(req, res) {
+    try {
+      const limit = Math.min(Math.max(parseInt(req.query.limit || '0', 10) || 0, 0), 100);
+      res.json({ success: true, data: await Program.getAll({ publishedOnly: true, limit }) });
+    } catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+  async getAllAdmin(req, res) {
+    try { res.json({ success: true, data: await Program.getAll({}) }); }
+    catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+  async create(req, res) { try { res.status(201).json({ success: true, data: await Program.create(req.body) }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+  async update(req, res) { try { const item = await Program.update(req.params.id, req.body); if (!item) return res.status(404).json({ success: false, message: 'Program tidak ditemukan' }); res.json({ success: true, data: item }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+  async delete(req, res) { try { const ok = await Program.deleteById(req.params.id); if (!ok) return res.status(404).json({ success: false, message: 'Program tidak ditemukan' }); res.json({ success: true, message: 'Program berhasil dihapus' }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+}
+
+class PrestasiController {
+  async getAll(req, res) {
+    try {
+      const tahun = String(req.query.tahun || '').trim();
+      const tingkat = String(req.query.tingkat || '').trim();
+      res.json({ success: true, data: await Prestasi.getAll({ publishedOnly: true, tahun, tingkat }) });
+    } catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+  async getAllAdmin(req, res) {
+    try { res.json({ success: true, data: await Prestasi.getAll({}) }); }
+    catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+  async create(req, res) { try { res.status(201).json({ success: true, data: await Prestasi.create(req.body) }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+  async update(req, res) { try { const item = await Prestasi.update(req.params.id, req.body); if (!item) return res.status(404).json({ success: false, message: 'Prestasi tidak ditemukan' }); res.json({ success: true, data: item }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+  async delete(req, res) { try { const ok = await Prestasi.deleteById(req.params.id); if (!ok) return res.status(404).json({ success: false, message: 'Prestasi tidak ditemukan' }); res.json({ success: true, message: 'Prestasi berhasil dihapus' }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+}
+
+class PimpinanController {
+  async getAll(req, res) {
+    try {
+      const limit = Math.min(Math.max(parseInt(req.query.limit || '0', 10) || 0, 0), 100);
+      res.json({ success: true, data: await Pimpinan.getAll({ publishedOnly: true, limit }) });
+    } catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+  async getAllAdmin(req, res) {
+    try { res.json({ success: true, data: await Pimpinan.getAll({}) }); }
+    catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+  async create(req, res) { try { res.status(201).json({ success: true, data: await Pimpinan.create(req.body) }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+  async update(req, res) { try { const item = await Pimpinan.update(req.params.id, req.body); if (!item) return res.status(404).json({ success: false, message: 'Data pimpinan tidak ditemukan' }); res.json({ success: true, data: item }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+  async delete(req, res) { try { const ok = await Pimpinan.deleteById(req.params.id); if (!ok) return res.status(404).json({ success: false, message: 'Data pimpinan tidak ditemukan' }); res.json({ success: true, message: 'Data pimpinan berhasil dihapus' }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+}
+
+class FasilitasController {
+  async getAll(req, res) {
+    try {
+      const limit = Math.min(Math.max(parseInt(req.query.limit || '0', 10) || 0, 0), 100);
+      res.json({ success: true, data: await Fasilitas.getAll({ publishedOnly: true, limit }) });
+    } catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+  async getAllAdmin(req, res) {
+    try { res.json({ success: true, data: await Fasilitas.getAll({}) }); }
+    catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+  async create(req, res) { try { res.status(201).json({ success: true, data: await Fasilitas.create(req.body) }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+  async update(req, res) { try { const item = await Fasilitas.update(req.params.id, req.body); if (!item) return res.status(404).json({ success: false, message: 'Fasilitas tidak ditemukan' }); res.json({ success: true, data: item }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+  async delete(req, res) { try { const ok = await Fasilitas.deleteById(req.params.id); if (!ok) return res.status(404).json({ success: false, message: 'Fasilitas tidak ditemukan' }); res.json({ success: true, message: 'Fasilitas berhasil dihapus' }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+}
+
+export const programController = new ProgramController();
+export const prestasiController = new PrestasiController();
+export const pimpinanController = new PimpinanController();
+export const fasilitasController = new FasilitasController();

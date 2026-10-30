@@ -155,6 +155,49 @@ class Database {
         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         INDEX idx_testimonials_status_publish (status, is_published, created_at)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`,
+      `CREATE TABLE IF NOT EXISTS program (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        judul VARCHAR(200) NOT NULL,
+        deskripsi TEXT NULL,
+        foto VARCHAR(255) NOT NULL DEFAULT '',
+        urutan INT NOT NULL DEFAULT 0,
+        is_published TINYINT(1) NOT NULL DEFAULT 1,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`,
+      `CREATE TABLE IF NOT EXISTS prestasi (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        judul VARCHAR(200) NOT NULL,
+        deskripsi TEXT NULL,
+        tahun VARCHAR(10) NULL,
+        tingkat ENUM('sekolah','kabupaten','provinsi','nasional','internasional') NOT NULL DEFAULT 'sekolah',
+        foto VARCHAR(255) NOT NULL DEFAULT '',
+        is_published TINYINT(1) NOT NULL DEFAULT 1,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX idx_prestasi_tingkat_tahun (tingkat, tahun)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`,
+      `CREATE TABLE IF NOT EXISTS pimpinan (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        nama VARCHAR(160) NOT NULL,
+        jabatan VARCHAR(160) NOT NULL,
+        foto VARCHAR(255) NOT NULL DEFAULT '',
+        bio_singkat TEXT NULL,
+        urutan INT NOT NULL DEFAULT 0,
+        is_published TINYINT(1) NOT NULL DEFAULT 1,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`,
+      `CREATE TABLE IF NOT EXISTS fasilitas (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        nama VARCHAR(160) NOT NULL,
+        deskripsi TEXT NULL,
+        foto VARCHAR(255) NOT NULL DEFAULT '',
+        urutan INT NOT NULL DEFAULT 0,
+        is_published TINYINT(1) NOT NULL DEFAULT 1,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`
     ];
 

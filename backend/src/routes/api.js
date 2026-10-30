@@ -1,6 +1,6 @@
 import express from 'express';
 import BeritaController from '../controllers/BeritaController.js';
-import { galeriController, guruController, pesanController, pendaftaranController, settingsController, testimoniController } from '../controllers/index.js';
+import { galeriController, guruController, pesanController, pendaftaranController, settingsController, testimoniController, programController, prestasiController, pimpinanController, fasilitasController } from '../controllers/index.js';
 import UploadController, { upload } from '../controllers/UploadController.js';
 import AuthMiddleware from '../middleware/auth.js';
 import ValidationMiddleware from '../middleware/validation.js';
@@ -56,5 +56,33 @@ router.get('/testimoni', testimoniController.getAll.bind(testimoniController));
 router.post('/testimoni/submit', rateLimiter.limit({ windowMs: 15 * 60 * 1000, max: 20, message: 'Terlalu banyak pengiriman testimoni, coba lagi nanti.' }), SanitizeMiddleware.sanitizeBody, testimoniController.submit.bind(testimoniController));
 router.put('/testimoni', AuthMiddleware.verifyToken, SanitizeMiddleware.sanitizeBody, testimoniController.saveAll.bind(testimoniController));
 router.patch('/testimoni/:id/moderate', AuthMiddleware.verifyToken, SanitizeMiddleware.sanitizeBody, testimoniController.moderate.bind(testimoniController));
+
+// Program Routes (publik: hanya yang published)
+router.get('/program', programController.getAll.bind(programController));
+router.get('/program/admin', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, programController.getAllAdmin.bind(programController));
+router.post('/program', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.programValidation, programController.create.bind(programController));
+router.put('/program/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.programValidation, programController.update.bind(programController));
+router.delete('/program/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, programController.delete.bind(programController));
+
+// Prestasi Routes (publik: hanya yang published, dukung filter ?tahun= & ?tingkat=)
+router.get('/prestasi', prestasiController.getAll.bind(prestasiController));
+router.get('/prestasi/admin', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, prestasiController.getAllAdmin.bind(prestasiController));
+router.post('/prestasi', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.prestasiValidation, prestasiController.create.bind(prestasiController));
+router.put('/prestasi/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.prestasiValidation, prestasiController.update.bind(prestasiController));
+router.delete('/prestasi/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, prestasiController.delete.bind(prestasiController));
+
+// Pimpinan Routes (publik: hanya yang published)
+router.get('/pimpinan', pimpinanController.getAll.bind(pimpinanController));
+router.get('/pimpinan/admin', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, pimpinanController.getAllAdmin.bind(pimpinanController));
+router.post('/pimpinan', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.pimpinanValidation, pimpinanController.create.bind(pimpinanController));
+router.put('/pimpinan/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.pimpinanValidation, pimpinanController.update.bind(pimpinanController));
+router.delete('/pimpinan/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, pimpinanController.delete.bind(pimpinanController));
+
+// Fasilitas Routes (publik: hanya yang published)
+router.get('/fasilitas', fasilitasController.getAll.bind(fasilitasController));
+router.get('/fasilitas/admin', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, fasilitasController.getAllAdmin.bind(fasilitasController));
+router.post('/fasilitas', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.fasilitasValidation, fasilitasController.create.bind(fasilitasController));
+router.put('/fasilitas/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.fasilitasValidation, fasilitasController.update.bind(fasilitasController));
+router.delete('/fasilitas/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, fasilitasController.delete.bind(fasilitasController));
 
 export default router;
