@@ -8,6 +8,8 @@ import Program from '../models/Program.js';
 import Prestasi from '../models/Prestasi.js';
 import Pimpinan from '../models/Pimpinan.js';
 import Fasilitas from '../models/Fasilitas.js';
+import Unduhan from '../models/Unduhan.js';
+import Faq from '../models/Faq.js';
 import KomentarBerita from '../models/KomentarBerita.js';
 import Berita from '../models/Berita.js';
 
@@ -389,6 +391,37 @@ export const programController = new ProgramController();
 export const prestasiController = new PrestasiController();
 export const pimpinanController = new PimpinanController();
 export const fasilitasController = new FasilitasController();
+
+class UnduhanController {
+  async getAll(req, res) {
+    try { res.json({ success: true, data: await Unduhan.getAll({ publishedOnly: true }) }); }
+    catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+  async getAllAdmin(req, res) {
+    try { res.json({ success: true, data: await Unduhan.getAll({}) }); }
+    catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+  async create(req, res) { try { res.status(201).json({ success: true, data: await Unduhan.create(req.body) }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+  async update(req, res) { try { const item = await Unduhan.update(req.params.id, req.body); if (!item) return res.status(404).json({ success: false, message: 'Unduhan tidak ditemukan' }); res.json({ success: true, data: item }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+  async delete(req, res) { try { const ok = await Unduhan.deleteById(req.params.id); if (!ok) return res.status(404).json({ success: false, message: 'Unduhan tidak ditemukan' }); res.json({ success: true, message: 'Unduhan berhasil dihapus' }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+}
+
+class FaqController {
+  async getAll(req, res) {
+    try { res.json({ success: true, data: await Faq.getAll({ publishedOnly: true }) }); }
+    catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+  async getAllAdmin(req, res) {
+    try { res.json({ success: true, data: await Faq.getAll({}) }); }
+    catch (error) { res.status(500).json({ success: false, message: error.message }); }
+  }
+  async create(req, res) { try { res.status(201).json({ success: true, data: await Faq.create(req.body) }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+  async update(req, res) { try { const item = await Faq.update(req.params.id, req.body); if (!item) return res.status(404).json({ success: false, message: 'FAQ tidak ditemukan' }); res.json({ success: true, data: item }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+  async delete(req, res) { try { const ok = await Faq.deleteById(req.params.id); if (!ok) return res.status(404).json({ success: false, message: 'FAQ tidak ditemukan' }); res.json({ success: true, message: 'FAQ berhasil dihapus' }); } catch (error) { res.status(500).json({ success: false, message: error.message }); } }
+}
+
+export const unduhanController = new UnduhanController();
+export const faqController = new FaqController();
 
 class KomentarBeritaController {
   async _getBeritaIdBySlug(slug) {

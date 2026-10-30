@@ -1,7 +1,7 @@
 import express from 'express';
 import BeritaController from '../controllers/BeritaController.js';
-import { galeriController, guruController, pesanController, pendaftaranController, settingsController, testimoniController, programController, prestasiController, pimpinanController, fasilitasController, komentarBeritaController } from '../controllers/index.js';
-import UploadController, { upload } from '../controllers/UploadController.js';
+import { galeriController, guruController, pesanController, pendaftaranController, settingsController, testimoniController, programController, prestasiController, pimpinanController, fasilitasController, komentarBeritaController, unduhanController, faqController } from '../controllers/index.js';
+import UploadController, { upload, dokumenUpload } from '../controllers/UploadController.js';
 import AuthMiddleware from '../middleware/auth.js';
 import ValidationMiddleware from '../middleware/validation.js';
 import SanitizeMiddleware from '../middleware/sanitize.js';
@@ -11,6 +11,9 @@ const router = express.Router();
 
 // Upload Route with rate limiting
 router.post('/upload', AuthMiddleware.verifyToken, rateLimiter.uploadLimiter(), upload.single('image'), UploadController.uploadImage.bind(UploadController));
+
+// Upload dokumen (brosur, formulir, dll) — hanya admin
+router.post('/upload/dokumen', AuthMiddleware.verifyToken, rateLimiter.uploadLimiter(), dokumenUpload.single('file'), UploadController.uploadDokumen.bind(UploadController));
 
 // Berita Routes
 router.get('/berita', BeritaController.getAll);
@@ -93,5 +96,19 @@ router.get('/fasilitas/admin', AuthMiddleware.verifyToken, AuthMiddleware.isAdmi
 router.post('/fasilitas', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.fasilitasValidation, fasilitasController.create.bind(fasilitasController));
 router.put('/fasilitas/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.fasilitasValidation, fasilitasController.update.bind(fasilitasController));
 router.delete('/fasilitas/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, fasilitasController.delete.bind(fasilitasController));
+
+// Unduhan Routes (publik: hanya yang published)
+router.get('/unduhan', unduhanController.getAll.bind(unduhanController));
+router.get('/unduhan/admin', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, unduhanController.getAllAdmin.bind(unduhanController));
+router.post('/unduhan', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.unduhanValidation, unduhanController.create.bind(unduhanController));
+router.put('/unduhan/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.unduhanValidation, unduhanController.update.bind(unduhanController));
+router.delete('/unduhan/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, unduhanController.delete.bind(unduhanController));
+
+// FAQ Routes (publik: hanya yang published)
+router.get('/faq', faqController.getAll.bind(faqController));
+router.get('/faq/admin', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, faqController.getAllAdmin.bind(faqController));
+router.post('/faq', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.faqValidation, faqController.create.bind(faqController));
+router.put('/faq/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.faqValidation, faqController.update.bind(faqController));
+router.delete('/faq/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, faqController.delete.bind(faqController));
 
 export default router;

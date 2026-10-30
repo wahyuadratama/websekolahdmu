@@ -239,6 +239,35 @@ Pertanyaan:`);
                 </details>
               ))}
             </div>
+            <div className="mt-4">
+              <Link href="/faq" className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-700 hover:text-indigo-900">
+                <i className="fas fa-question-circle"></i>Lihat semua Pertanyaan Umum
+                <i className="fas fa-arrow-right text-xs"></i>
+              </Link>
+            </div>
+          </section>
+
+          <section className="border-b border-slate-200 pb-8">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Link href="/unduhan" className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-lg hover:border-primary-200 transition group">
+                <span className="w-12 h-12 rounded-xl bg-primary-100 text-primary-700 grid place-items-center shrink-0 group-hover:bg-primary-600 group-hover:text-white transition">
+                  <i className="fas fa-download text-xl"></i>
+                </span>
+                <span>
+                  <span className="block font-bold text-slate-900">Unduh Brosur &amp; Formulir</span>
+                  <span className="block text-sm text-slate-600 mt-1">Dokumen resmi PPSB dalam format PDF.</span>
+                </span>
+              </Link>
+              <Link href="/faq" className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-lg hover:border-primary-200 transition group">
+                <span className="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 grid place-items-center shrink-0 group-hover:bg-amber-500 group-hover:text-white transition">
+                  <i className="fas fa-question-circle text-xl"></i>
+                </span>
+                <span>
+                  <span className="block font-bold text-slate-900">Pertanyaan Umum</span>
+                  <span className="block text-sm text-slate-600 mt-1">Jawaban atas pertanyaan seputar PPSB.</span>
+                </span>
+              </Link>
+            </div>
           </section>
 
           <section className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-2xl p-6">

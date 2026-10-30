@@ -40,6 +40,25 @@ export const upload = multer({
   fileFilter: fileFilter
 });
 
+// Filter khusus dokumen (brosur, formulir, dll)
+const dokumenFilter = (req, file, cb) => {
+  const allowedTypes = /pdf|doc|docx|xls|xlsx|ppt|pptx/;
+  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = /pdf|msword|officedocument|ms-excel|ms-powerpoint/.test(file.mimetype);
+
+  if (extname && mimetype) {
+    return cb(null, true);
+  } else {
+    cb(new Error('Hanya file dokumen (pdf, doc, docx, xls, xlsx, ppt, pptx) yang diizinkan!'));
+  }
+};
+
+export const dokumenUpload = multer({
+  storage: storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  fileFilter: dokumenFilter
+});
+
 class UploadController {
   async uploadImage(req, res) {
     try {
@@ -51,10 +70,35 @@ class UploadController {
       }
 
       const filePath = `/uploads/${req.file.filename}`;
-      
+
       res.status(200).json({
         success: true,
         message: 'File uploaded successfully',
+        path: filePath,
+        filename: req.file.filename
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message
+      });
+    }
+  }
+
+  async uploadDokumen(req, res) {
+    try {
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          message: 'Tidak ada file yang diupload'
+        });
+      }
+
+      const filePath = `/uploads/${req.file.filename}`;
+
+      res.status(200).json({
+        success: true,
+        message: 'Dokumen berhasil diupload',
         path: filePath,
         filename: req.file.filename
       });

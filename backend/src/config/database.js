@@ -215,6 +215,28 @@ class Database {
         status ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         INDEX idx_komentar_berita (berita_id, status, created_at)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`,
+      `CREATE TABLE IF NOT EXISTS unduhan (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        judul VARCHAR(255) NOT NULL,
+        deskripsi TEXT NULL,
+        file_url VARCHAR(500) NOT NULL,
+        kategori VARCHAR(100) NOT NULL DEFAULT 'Umum',
+        urutan INT NOT NULL DEFAULT 0,
+        is_published TINYINT(1) NOT NULL DEFAULT 1,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX idx_unduhan (is_published, kategori, urutan)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`,
+      `CREATE TABLE IF NOT EXISTS faq (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        pertanyaan VARCHAR(500) NOT NULL,
+        jawaban TEXT NOT NULL,
+        urutan INT NOT NULL DEFAULT 0,
+        is_published TINYINT(1) NOT NULL DEFAULT 1,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX idx_faq (is_published, urutan)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`
     ];
 

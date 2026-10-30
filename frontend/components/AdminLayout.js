@@ -64,6 +64,8 @@ export default function AdminLayout({ children, title }) {
     { href: '/admin/prestasi', icon: 'fa-trophy', label: 'Prestasi' },
     { href: '/admin/pimpinan', icon: 'fa-user-tie', label: 'Pimpinan' },
     { href: '/admin/fasilitas', icon: 'fa-building', label: 'Fasilitas' },
+    { href: '/admin/unduhan', icon: 'fa-download', label: 'Unduhan' },
+    { href: '/admin/faq', icon: 'fa-question-circle', label: 'FAQ' },
     { href: '/admin/pesan', icon: 'fa-envelope', label: 'Pesan' },
     { href: '/admin/pendaftaran', icon: 'fa-user-plus', label: 'Pendaftaran' },
     { href: '/admin/testimoni', icon: 'fa-comments', label: 'Testimoni' },

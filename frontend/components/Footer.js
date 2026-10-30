@@ -74,6 +74,16 @@ export default function Footer() {
                   Kontak
                 </a>
               </li>
+              <li>
+                <a href="/unduhan" className="hover:text-white transition">
+                  Unduhan
+                </a>
+              </li>
+              <li>
+                <a href="/faq" className="hover:text-white transition">
+                  FAQ
+                </a>
+              </li>
             </ul>
           </div>
 

@@ -279,6 +279,46 @@ class ValidationMiddleware {
       .isLength({ min: 3, max: 1000 }).withMessage('Komentar harus 3-1000 karakter'),
     ValidationMiddleware.handleValidationErrors
   ];
+
+  // Unduhan validation
+  static unduhanValidation = [
+    body('judul')
+      .trim()
+      .notEmpty().withMessage('Judul harus diisi')
+      .isLength({ min: 3, max: 255 }).withMessage('Judul harus 3-255 karakter'),
+    body('deskripsi')
+      .optional({ checkFalsy: true })
+      .trim()
+      .isLength({ max: 5000 }).withMessage('Deskripsi maksimal 5000 karakter'),
+    body('file_url')
+      .trim()
+      .notEmpty().withMessage('File harus diupload')
+      .isLength({ max: 500 }).withMessage('URL file maksimal 500 karakter'),
+    body('kategori')
+      .optional({ checkFalsy: true })
+      .trim()
+      .isLength({ max: 100 }).withMessage('Kategori maksimal 100 karakter'),
+    body('urutan')
+      .optional({ checkFalsy: true })
+      .isInt({ min: 0 }).withMessage('Urutan harus angka >= 0'),
+    ValidationMiddleware.handleValidationErrors
+  ];
+
+  // FAQ validation
+  static faqValidation = [
+    body('pertanyaan')
+      .trim()
+      .notEmpty().withMessage('Pertanyaan harus diisi')
+      .isLength({ min: 5, max: 500 }).withMessage('Pertanyaan harus 5-500 karakter'),
+    body('jawaban')
+      .trim()
+      .notEmpty().withMessage('Jawaban harus diisi')
+      .isLength({ min: 5, max: 5000 }).withMessage('Jawaban harus 5-5000 karakter'),
+    body('urutan')
+      .optional({ checkFalsy: true })
+      .isInt({ min: 0 }).withMessage('Urutan harus angka >= 0'),
+    ValidationMiddleware.handleValidationErrors
+  ];
 }
 
 export default ValidationMiddleware;
