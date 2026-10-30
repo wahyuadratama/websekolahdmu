@@ -115,3 +115,6 @@ body {
 .prose a { color: var(--secondary); text-decoration: underline; }
 .prose a:hover { color: #1d4ed8; }
 .prose img { max-width: 100%; height: auto; border-radius: 0.75rem; margin: 1.25em 0; }
+
+/* Offset anchor agar judul section tidak tertutup navbar fixed */
+section[id] { scroll-margin-top: 88px; }

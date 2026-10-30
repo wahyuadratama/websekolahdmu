@@ -118,7 +118,7 @@ export default function Footer() {
             {identity.footerText}
           </p>
           <p className="text-slate-400">
-            Designed for a modern, professional digital presence.
+            Dikelola oleh Tim IT Pondok Pesantren Modern Darul Mukhlisin.
           </p>
         </div>
       </div>

@@ -14,23 +14,28 @@ function resolveSlideImage(img) {
   return img;
 }
 
+const FALLBACK_HERO_IMAGES = [
+  '/uploads/masjid.JPG',
+  '/uploads/poto 1.jpg',
+  '/uploads/poto 2.jpg',
+  '/uploads/poto 3.jpg',
+  '/uploads/poto 4.jpg',
+];
+
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [slides, setSlides] = useState([]);
+  // Langsung isi fallback agar hero tampil seketika (tanpa skeleton abu-abu);
+  // useEffect di bawah akan menukar dengan foto galeri/slides CMS begitu termuat.
+  const [slides, setSlides] = useState(() =>
+    FALLBACK_HERO_IMAGES.map((image) => ({ image, title: '' }))
+  );
   const [welcome, setWelcome] = useState({
     title: DEFAULT_SITE_SETTINGS.homepage.welcomeTitle,
     text: DEFAULT_SITE_SETTINGS.homepage.welcomeText,
   });
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fallbackImages = [
-      `${API_URL}/uploads/masjid.JPG`,
-      `${API_URL}/uploads/poto 1.jpg`,
-      `${API_URL}/uploads/poto 2.jpg`,
-      `${API_URL}/uploads/poto 3.jpg`,
-      `${API_URL}/uploads/poto 4.jpg`
-    ];
+    const fallbackImages = FALLBACK_HERO_IMAGES.map((image) => ({ image, title: '' }));
 
     const loadGaleriFallback = async () => {
       try {
@@ -53,9 +58,7 @@ export default function HeroSection() {
         const custom = (site.homepage.heroSlides || []).filter((s) => s.image);
         setSlides(custom.length > 0 ? custom : galeriSlides);
       } catch {
-        setSlides(fallbackImages.map((image) => ({ image, title: '' })));
-      } finally {
-        setLoading(false);
+        setSlides(fallbackImages);
       }
     })();
   }, []);
@@ -89,23 +92,13 @@ export default function HeroSection() {
               Website Resmi Pondok Pesantren
             </div>
 
-            {loading ? (
-              <div className="space-y-3">
-                <div className="h-10 animate-pulse rounded-lg bg-white/20 sm:h-12" />
-                <div className="h-10 animate-pulse rounded-lg bg-white/20 sm:h-12" />
-                <div className="mx-auto h-5 w-3/4 animate-pulse rounded bg-white/15 lg:mx-0" />
-              </div>
-            ) : (
-              <>
-                <h1 className="text-2xl font-bold leading-tight sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
-                  {welcome.title}
-                </h1>
+            <h1 className="text-2xl font-bold leading-tight sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
+              {welcome.title}
+            </h1>
 
-                <p className="mx-auto max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg md:text-xl lg:mx-0 lg:text-xl">
-                  {welcome.text}
-                </p>
-              </>
-            )}
+            <p className="mx-auto max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg md:text-xl lg:mx-0 lg:text-xl">
+              {welcome.text}
+            </p>
 
             <div className="flex flex-col gap-3 pt-3 sm:flex-row sm:justify-center lg:justify-start">
               <a
@@ -128,10 +121,7 @@ export default function HeroSection() {
 
           <div className="relative">
             <div className="relative h-[250px] w-full overflow-hidden rounded-2xl shadow-2xl sm:h-[320px] md:h-[420px] lg:h-[500px]">
-              {loading ? (
-                <div className="h-full w-full animate-pulse bg-white/15" />
-              ) : slides.length > 0 ? (
-                slides.map((slide, index) => (
+              {slides.map((slide, index) => (
                   <div
                     key={index}
                     className={`absolute inset-0 transition-opacity duration-700 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
@@ -152,14 +142,9 @@ export default function HeroSection() {
                       </div>
                     )}
                   </div>
-                ))
-              ) : (
-                <div className="grid h-full place-items-center bg-white/10">
-                  <i className="fas fa-image text-4xl text-white/40"></i>
-                </div>
-              )}
+                ))}
 
-              {!loading && slides.length > 1 && (
+              {slides.length > 1 && (
                 <>
                   <button
                     onClick={prevSlide}
