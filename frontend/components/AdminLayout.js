@@ -7,6 +7,9 @@ import Image from 'next/image';
 import { API_URL } from '@/lib/config';
 import { apiFetch } from '@/lib/fetcher';
 
+// Menu yang boleh diakses Admin PSB
+const PSB_MENU_HREFS = ['/admin', '/admin/pendaftaran', '/admin/psb', '/admin/unduhan', '/admin/faq'];
+
 export default function AdminLayout({ children, title }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -45,6 +48,14 @@ export default function AdminLayout({ children, title }) {
     });
   };
 
+  // Proteksi: Admin PSB yang membuka URL di luar menunya diarahkan ke dashboard
+  // (useEffect harus di sini — SEBELUM early return — agar urutan hooks konsisten)
+  useEffect(() => {
+    if (!loading && user && user.role === 'admin_psb' && !PSB_MENU_HREFS.includes(pathname)) {
+      router.push('/admin');
+    }
+  }, [loading, user, pathname, router]);
+
   if (loading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
@@ -77,16 +88,8 @@ export default function AdminLayout({ children, title }) {
   ];
 
   // Admin PSB hanya boleh mengakses menu terkait PSB
-  const PSB_MENU_HREFS = ['/admin', '/admin/pendaftaran', '/admin/psb', '/admin/unduhan', '/admin/faq'];
   const isPsbAdmin = user?.role === 'admin_psb';
   const visibleMenuItems = isPsbAdmin ? menuItems.filter((i) => PSB_MENU_HREFS.includes(i.href)) : menuItems;
-
-  // Proteksi: Admin PSB yang membuka URL di luar menunya diarahkan ke dashboard
-  useEffect(() => {
-    if (!loading && user && user.role === 'admin_psb' && !PSB_MENU_HREFS.includes(pathname)) {
-      router.push('/admin');
-    }
-  }, [loading, user, pathname, router]);
 
   return (
     <div className="flex h-screen bg-slate-50">
