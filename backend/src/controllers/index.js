@@ -12,6 +12,7 @@ import Unduhan from '../models/Unduhan.js';
 import Faq from '../models/Faq.js';
 import KomentarBerita from '../models/KomentarBerita.js';
 import Berita from '../models/Berita.js';
+import database from '../config/database.js';
 
 class GaleriController {
   async getAll(req, res) {
@@ -58,6 +59,22 @@ class PendaftaranController {
   async getAll(req, res) { try { res.json({ success:true, data: await Pendaftaran.getAll() }); } catch (error) { res.status(500).json({ success:false, message:error.message }); } }
   async create(req, res) { try { const item = await Pendaftaran.create(req.body); res.status(201).json({ success:true, message:'Pendaftaran berhasil', data:{ noPendaftaran: item.noPendaftaran } }); } catch (error) { res.status(500).json({ success:false, message:error.message }); } }
   async getCount(req, res) { try { const count = await Pendaftaran.countDocuments(); res.json({ success:true, data:{ count } }); } catch (error) { res.status(500).json({ success:false, message:error.message }); } }
+  async getStats(req, res) {
+    try {
+      const total = await Pendaftaran.countDocuments();
+      const byStatusRows = await database.query(`SELECT status, COUNT(*) AS count FROM pendaftaran GROUP BY status`);
+      const byStatus = { pending: 0, verified: 0, rejected: 0 };
+      for (const r of byStatusRows) { if (r.status in byStatus) byStatus[r.status] = Number(r.count); }
+      const byGenderRows = await database.query(`SELECT jenis_kelamin, COUNT(*) AS count FROM pendaftaran GROUP BY jenis_kelamin`);
+      const byGender = { 'Laki-laki': 0, 'Perempuan': 0 };
+      for (const r of byGenderRows) { if (r.jenis_kelamin in byGender) byGender[r.jenis_kelamin] = Number(r.count); }
+      const byMonthRows = await database.query(
+        `SELECT DATE_FORMAT(created_at, '%Y-%m') AS month, COUNT(*) AS count FROM pendaftaran WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH) GROUP BY month ORDER BY month ASC`
+      );
+      const byMonth = byMonthRows.map((r) => ({ month: r.month, count: Number(r.count) }));
+      res.json({ success:true, data:{ total, byStatus, byGender, byMonth } });
+    } catch (error) { res.status(500).json({ success:false, message:error.message }); }
+  }
 }
 
 class SettingsController {

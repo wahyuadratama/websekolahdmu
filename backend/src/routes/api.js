@@ -47,6 +47,7 @@ router.delete('/pesan/:id', AuthMiddleware.verifyToken, pesanController.delete.b
 
 // Pendaftaran Routes
 router.get('/pendaftaran', AuthMiddleware.verifyToken, pendaftaranController.getAll.bind(pendaftaranController));
+router.get('/pendaftaran/stats', AuthMiddleware.verifyToken, pendaftaranController.getStats.bind(pendaftaranController));
 router.post('/pendaftaran', rateLimiter.limit({ windowMs: 15 * 60 * 1000, max: 5, message: 'Terlalu banyak percobaan pendaftaran. Silakan coba lagi nanti.' }), ValidationMiddleware.pendaftaranValidation, pendaftaranController.create.bind(pendaftaranController));
 router.get('/pendaftaran/count', pendaftaranController.getCount.bind(pendaftaranController));
 
@@ -99,16 +100,16 @@ router.delete('/fasilitas/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdm
 
 // Unduhan Routes (publik: hanya yang published)
 router.get('/unduhan', unduhanController.getAll.bind(unduhanController));
-router.get('/unduhan/admin', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, unduhanController.getAllAdmin.bind(unduhanController));
-router.post('/unduhan', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.unduhanValidation, unduhanController.create.bind(unduhanController));
-router.put('/unduhan/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.unduhanValidation, unduhanController.update.bind(unduhanController));
-router.delete('/unduhan/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, unduhanController.delete.bind(unduhanController));
+router.get('/unduhan/admin', AuthMiddleware.verifyToken, AuthMiddleware.isPsbOrAbove, unduhanController.getAllAdmin.bind(unduhanController));
+router.post('/unduhan', AuthMiddleware.verifyToken, AuthMiddleware.isPsbOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.unduhanValidation, unduhanController.create.bind(unduhanController));
+router.put('/unduhan/:id', AuthMiddleware.verifyToken, AuthMiddleware.isPsbOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.unduhanValidation, unduhanController.update.bind(unduhanController));
+router.delete('/unduhan/:id', AuthMiddleware.verifyToken, AuthMiddleware.isPsbOrAbove, unduhanController.delete.bind(unduhanController));
 
 // FAQ Routes (publik: hanya yang published)
 router.get('/faq', faqController.getAll.bind(faqController));
-router.get('/faq/admin', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, faqController.getAllAdmin.bind(faqController));
-router.post('/faq', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.faqValidation, faqController.create.bind(faqController));
-router.put('/faq/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.faqValidation, faqController.update.bind(faqController));
-router.delete('/faq/:id', AuthMiddleware.verifyToken, AuthMiddleware.isAdminOrAbove, faqController.delete.bind(faqController));
+router.get('/faq/admin', AuthMiddleware.verifyToken, AuthMiddleware.isPsbOrAbove, faqController.getAllAdmin.bind(faqController));
+router.post('/faq', AuthMiddleware.verifyToken, AuthMiddleware.isPsbOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.faqValidation, faqController.create.bind(faqController));
+router.put('/faq/:id', AuthMiddleware.verifyToken, AuthMiddleware.isPsbOrAbove, SanitizeMiddleware.sanitizeBody, ValidationMiddleware.faqValidation, faqController.update.bind(faqController));
+router.delete('/faq/:id', AuthMiddleware.verifyToken, AuthMiddleware.isPsbOrAbove, faqController.delete.bind(faqController));
 
 export default router;

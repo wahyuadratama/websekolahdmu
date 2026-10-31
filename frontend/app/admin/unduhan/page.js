@@ -135,7 +135,7 @@ export default function AdminUnduhanPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-gray-700 mb-2 font-semibold">Judul <span className="text-red-500">*</span></label>
-              <input type="text" required value={form.judul} onChange={(e) => setForm({ ...form, judul: e.target.value })} className={inputCls} placeholder="Contoh: Brosur PPSB 2026/2027" />
+              <input type="text" required value={form.judul} onChange={(e) => setForm({ ...form, judul: e.target.value })} className={inputCls} placeholder="Contoh: Brosur PSB 2026/2027" />
             </div>
             <div>
               <label className="block text-gray-700 mb-2 font-semibold">Deskripsi</label>

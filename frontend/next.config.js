@@ -7,6 +7,20 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') })
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  async redirects() {
+    return [
+      {
+        source: '/ppsb',
+        destination: '/psb',
+        permanent: true,
+      },
+      {
+        source: '/ppsb/:path*',
+        destination: '/psb/:path*',
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

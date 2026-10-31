@@ -369,7 +369,7 @@ export default function PengaturanSitusPage() {
                         </div>
                         <div>
                           <label className={labelCls}>Tautan Tombol (opsional)</label>
-                          <input type="text" value={slide.ctaUrl || ''} onChange={(e) => updateSlide(idx, { ctaUrl: e.target.value })} className={inputCls} placeholder="/ppsb" />
+                          <input type="text" value={slide.ctaUrl || ''} onChange={(e) => updateSlide(idx, { ctaUrl: e.target.value })} className={inputCls} placeholder="/psb" />
                         </div>
                       </div>
                     </div>

@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react';
 
 import Link from 'next/link';
 import AdminLayout from '@/components/AdminLayout';
+import PsbDashboard from '@/components/PsbDashboard';
 import { showError } from '@/lib/sweetalert';
 import { API_URL } from '@/lib/config';
+import { apiFetch } from '@/lib/fetcher';
 
 const statItems = [
   {
@@ -117,10 +119,21 @@ export default function AdminDashboard() {
     pesan: 0
   });
   const [loading, setLoading] = useState(true);
+  const [isPsbAdmin, setIsPsbAdmin] = useState(false);
 
   useEffect(() => {
+    checkRole();
     loadStats();
   }, []);
+
+  const checkRole = async () => {
+    try {
+      const data = await apiFetch(`${API_URL}/api/auth/me`, { credentials: 'include' });
+      if (data?.success && data.data?.role === 'admin_psb') setIsPsbAdmin(true);
+    } catch {
+      // abaikan, AdminLayout yang menangani redirect login
+    }
+  };
 
   const loadStats = async () => {
     try {
@@ -160,6 +173,10 @@ export default function AdminDashboard() {
 
   return (
     <AdminLayout title="Dashboard">
+      {isPsbAdmin ? (
+        <PsbDashboard />
+      ) : (
+      <>
       <section className="mb-6 rounded-2xl bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 p-7 text-white shadow-lg">
         <p className="mb-2 inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1 text-xs font-medium">
           <i className="fas fa-sparkles"></i>
@@ -238,6 +255,8 @@ export default function AdminDashboard() {
           </div>
         </div>
       </section>
+      </>
+      )}
     </AdminLayout>
   );
 }

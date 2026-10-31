@@ -42,6 +42,7 @@ class AuthMiddleware {
 
   static isAdminOrAbove(req, res, next) { return AuthMiddleware.checkRole('superadmin', 'admin')(req, res, next); }
   static isSuperAdmin(req, res, next) { return AuthMiddleware.checkRole('superadmin')(req, res, next); }
+  static isPsbOrAbove(req, res, next) { return AuthMiddleware.checkRole('superadmin', 'admin', 'admin_psb')(req, res, next); }
 }
 
 export default AuthMiddleware;

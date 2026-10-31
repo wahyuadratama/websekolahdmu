@@ -7,7 +7,7 @@ import { API_BASE } from '@/lib/config';
 
 export default function PendaftaranSection() {
   const waTemplate = encodeURIComponent(
-    "Assalamu'alaikum Admin PPSB Darul Mukhlisin.%0A%0ASaya ingin konsultasi terkait:%0A1) Alur PPSB%0A2) Biaya pendidikan%0A3) Program beasiswa%0A%0ANama wali: \nNama calon santri: \nAsal sekolah: "
+    "Assalamu'alaikum Admin PSB Darul Mukhlisin.%0A%0ASaya ingin konsultasi terkait:%0A1) Alur PSB%0A2) Biaya pendidikan%0A3) Program beasiswa%0A%0ANama wali: \nNama calon santri: \nAsal sekolah: "
   );
   const waPpsbUrl = `https://wa.me/6285320753796?text=${waTemplate}`;
   const [pendaftar, setPendaftar] = useState(0);
@@ -102,7 +102,7 @@ export default function PendaftaranSection() {
             </span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-800">
-            PPSB (Penerimaan dan Pendaftaran Santri Baru)
+            PSB (Pendaftaran Santri Baru)
           </h2>
         </div>
 
@@ -110,11 +110,11 @@ export default function PendaftaranSection() {
           {!isOpen ? (
             <div className="mx-auto max-w-3xl rounded-2xl border border-blue-100 bg-white p-6 text-center shadow-sm md:p-8">
               <p className="text-gray-700 leading-relaxed">
-                Untuk melanjutkan pendaftaran, silakan baca informasi lengkap terlebih dahulu pada halaman PPSB.
+                Untuk melanjutkan pendaftaran, silakan baca informasi lengkap terlebih dahulu pada halaman PSB.
               </p>
               <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
-                <Link href="/ppsb" className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700">
-                  <i className="fas fa-circle-info mr-2"></i>Lihat Halaman PPSB
+                <Link href="/psb" className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700">
+                  <i className="fas fa-circle-info mr-2"></i>Lihat Halaman PSB
                 </Link>
               </div>
             </div>
@@ -142,7 +142,7 @@ export default function PendaftaranSection() {
                 </div>
 
                 <div className="rounded-2xl bg-white p-6 shadow-lg">
-                  <h4 className="mb-4 flex items-center gap-2 text-xl font-bold text-gray-800"><i className="fas fa-list-check text-blue-500"></i>Alur PPSB</h4>
+                  <h4 className="mb-4 flex items-center gap-2 text-xl font-bold text-gray-800"><i className="fas fa-list-check text-blue-500"></i>Alur PSB</h4>
                   <ol className="space-y-3 text-sm md:text-base">
                     <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-blue-700 font-bold">1</span><span className="text-gray-700"><strong>Isi formulir online</strong> dengan data calon santri.</span></li>
                     <li className="flex items-start gap-3"><span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-blue-700 font-bold">2</span><span className="text-gray-700"><strong>Verifikasi berkas</strong> oleh admin.</span></li>
@@ -155,7 +155,7 @@ export default function PendaftaranSection() {
                     <p className="mt-2"><strong>Jadwal:</strong> seleksi & daftar ulang diinformasikan melalui WhatsApp resmi.</p>
                   </div>
                   <a href={waPpsbUrl} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-green-600 px-4 py-2.5 text-white font-semibold hover:bg-green-700 transition">
-                    <i className="fab fa-whatsapp mr-2"></i> Tanya Admin PPSB
+                    <i className="fab fa-whatsapp mr-2"></i> Tanya Admin PSB
                   </a>
                 </div>
               </div>
@@ -163,7 +163,7 @@ export default function PendaftaranSection() {
               <div className="lg:col-span-3">
                 {fromPpsb && (
                   <div className="mb-4 inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-                    <i className="fas fa-circle-check mr-2"></i>Anda datang dari halaman PPSB
+                    <i className="fas fa-circle-check mr-2"></i>Anda datang dari halaman PSB
                   </div>
                 )}
                 <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-xl">
@@ -210,14 +210,14 @@ export default function PendaftaranSection() {
                 </div>
 
                 <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-lg">
-                  <h4 className="text-lg font-bold text-gray-800 mb-3">FAQ PPSB</h4>
+                  <h4 className="text-lg font-bold text-gray-800 mb-3">FAQ PSB</h4>
                   <div className="space-y-3 text-sm text-gray-700">
                     <div><p className="font-semibold">Apakah pendaftaran dapat dilakukan secara online?</p><p>Pendaftaran awal dapat dilakukan melalui formulir pada website resmi. Tim administrasi akan melakukan verifikasi dan menghubungi wali calon santri untuk tahapan selanjutnya.</p></div>
-                    <div><p className="font-semibold">Bagaimana informasi biaya pendidikan disampaikan?</p><p>Rincian biaya pendidikan, daftar ulang, dan ketentuan administrasi disampaikan secara resmi oleh admin PPSB setelah proses verifikasi data.</p></div>
+                    <div><p className="font-semibold">Bagaimana informasi biaya pendidikan disampaikan?</p><p>Rincian biaya pendidikan, daftar ulang, dan ketentuan administrasi disampaikan secara resmi oleh admin PSB setelah proses verifikasi data.</p></div>
                     <div><p className="font-semibold">Apakah tersedia program beasiswa?</p><p>Tersedia program beasiswa dengan ketentuan tertentu, mengikuti kebijakan pondok serta hasil seleksi akademik dan non-akademik.</p></div>
                   </div>
-                  <Link href="/ppsb" className="mt-4 inline-flex items-center text-blue-700 font-semibold hover:text-blue-800">
-                    Lihat panduan PPSB lengkap <i className="fas fa-arrow-right ml-2 text-xs"></i>
+                  <Link href="/psb" className="mt-4 inline-flex items-center text-blue-700 font-semibold hover:text-blue-800">
+                    Lihat panduan PSB lengkap <i className="fas fa-arrow-right ml-2 text-xs"></i>
                   </Link>
                 </div>
               </div>

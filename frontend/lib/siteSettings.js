@@ -48,7 +48,7 @@ export const DEFAULT_SITE_SETTINGS = {
       { label: 'Pimpinan', url: '/pimpinan', visible: true },
       { label: 'Fasilitas', url: '/fasilitas', visible: true },
     ] },
-    { label: 'PPSB/Pendaftaran', url: '/ppsb', visible: true },
+    { label: 'PSB/Pendaftaran', url: '/psb', visible: true },
     { label: 'Berita', url: '/berita', visible: true },
     { label: 'Galeri', url: '/#galeri', visible: true },
     { label: 'Guru', url: '/#guru', visible: true },

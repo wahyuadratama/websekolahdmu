@@ -73,10 +73,10 @@ export default function Home() {
               mainEntity: [
                 {
                   '@type': 'Question',
-                  name: 'Apakah bisa daftar PPSB secara online?',
+                  name: 'Apakah bisa daftar PSB secara online?',
                   acceptedAnswer: {
                     '@type': 'Answer',
-                    text: 'Bisa. Calon santri dapat mengisi formulir PPSB online melalui website resmi pondok.',
+                    text: 'Bisa. Calon santri dapat mengisi formulir PSB online melalui website resmi pondok.',
                   },
                 },
                 {

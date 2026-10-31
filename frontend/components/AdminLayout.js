@@ -70,11 +70,23 @@ export default function AdminLayout({ children, title }) {
     { href: '/admin/pendaftaran', icon: 'fa-user-plus', label: 'Pendaftaran' },
     { href: '/admin/testimoni', icon: 'fa-comments', label: 'Testimoni' },
     { href: '/admin/komentar', icon: 'fa-comment-dots', label: 'Komentar' },
-    { href: '/admin/ppsb', icon: 'fa-calendar-check', label: 'PPSB' },
+    { href: '/admin/psb', icon: 'fa-calendar-check', label: 'PSB' },
     { href: '/admin/pengaturan-situs', icon: 'fa-sliders-h', label: 'Pengaturan Situs' },
     { href: '/admin/pengguna', icon: 'fa-users-cog', label: 'Pengguna' },
     { href: '/admin/settings', icon: 'fa-cog', label: 'Pengaturan' },
   ];
+
+  // Admin PSB hanya boleh mengakses menu terkait PSB
+  const PSB_MENU_HREFS = ['/admin', '/admin/pendaftaran', '/admin/psb', '/admin/unduhan', '/admin/faq'];
+  const isPsbAdmin = user?.role === 'admin_psb';
+  const visibleMenuItems = isPsbAdmin ? menuItems.filter((i) => PSB_MENU_HREFS.includes(i.href)) : menuItems;
+
+  // Proteksi: Admin PSB yang membuka URL di luar menunya diarahkan ke dashboard
+  useEffect(() => {
+    if (!loading && user && user.role === 'admin_psb' && !PSB_MENU_HREFS.includes(pathname)) {
+      router.push('/admin');
+    }
+  }, [loading, user, pathname, router]);
 
   return (
     <div className="flex h-screen bg-slate-50">
@@ -91,7 +103,7 @@ export default function AdminLayout({ children, title }) {
               <Image src="/images/LOGO DMU.png" alt="Logo" width={34} height={34} />
             </div>
             <div className="min-w-0">
-              <h2 className="font-semibold truncate">DMU Admin</h2>
+              <h2 className="font-semibold truncate">{isPsbAdmin ? 'PSB Admin' : 'DMU Admin'}</h2>
               <p className="text-xs text-slate-400 truncate">Control Center</p>
             </div>
           </div>
@@ -102,7 +114,7 @@ export default function AdminLayout({ children, title }) {
 
         <nav className="p-4 flex-1 overflow-y-auto">
           <div className="space-y-1.5">
-            {menuItems.map((item) => {
+            {visibleMenuItems.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link
@@ -137,7 +149,7 @@ export default function AdminLayout({ children, title }) {
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-semibold truncate">{user.fullName || user.nama}</p>
-                <p className="text-xs text-slate-400 truncate">{user.role || 'Admin'}</p>
+                <p className="text-xs text-slate-400 truncate">{user.role === 'admin_psb' ? 'Admin PSB' : (user.role || 'Admin')}</p>
               </div>
             </div>
             <button onClick={handleLogout} className="text-slate-400 hover:text-rose-400 transition" title="Logout">

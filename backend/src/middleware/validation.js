@@ -48,7 +48,7 @@ class ValidationMiddleware {
       .normalizeEmail(),
     body('role')
       .optional()
-      .isIn(['superadmin', 'admin', 'staff']).withMessage('Role tidak valid'),
+      .isIn(['superadmin', 'admin', 'staff', 'admin_psb']).withMessage('Role tidak valid'),
     ValidationMiddleware.handleValidationErrors
   ];
 

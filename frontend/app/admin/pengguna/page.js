@@ -162,8 +162,9 @@ export default function PenggunaPage() {
   };
 
   const roleBadge = (role) => {
-    const map = { superadmin: 'bg-purple-100 text-purple-800', admin: 'bg-blue-100 text-blue-800', staff: 'bg-slate-100 text-slate-700' };
-    return <span className={`px-2 py-1 rounded text-xs font-semibold ${map[role] || map.staff}`}>{role}</span>;
+    const map = { superadmin: 'bg-purple-100 text-purple-800', admin: 'bg-blue-100 text-blue-800', staff: 'bg-slate-100 text-slate-700', admin_psb: 'bg-teal-100 text-teal-800' };
+    const labels = { superadmin: 'Superadmin', admin: 'Admin', staff: 'Staff', admin_psb: 'Admin PSB' };
+    return <span className={`px-2 py-1 rounded text-xs font-semibold ${map[role] || map.staff}`}>{labels[role] || role}</span>;
   };
 
   return (
@@ -194,6 +195,7 @@ export default function PenggunaPage() {
               <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} className={inputCls}>
                 <option value="staff">Staff</option>
                 <option value="admin">Admin</option>
+                <option value="admin_psb">Admin PSB</option>
                 {me?.role === 'superadmin' && <option value="superadmin">Superadmin</option>}
               </select>
             </div>
@@ -279,6 +281,7 @@ export default function PenggunaPage() {
                   <select value={editForm.role} onChange={(e) => setEditForm({ ...editForm, role: e.target.value })} className={inputCls} disabled={me?.role !== 'superadmin'}>
                     <option value="staff">Staff</option>
                     <option value="admin">Admin</option>
+                    <option value="admin_psb">Admin PSB</option>
                     <option value="superadmin">Superadmin</option>
                   </select>
                 </div>

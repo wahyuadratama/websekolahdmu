@@ -9,11 +9,11 @@ export const metadata = {
   description:
     'Informasi resmi Penerimaan dan Pendaftaran Santri Baru Pondok Pesantren Modern Darul Mukhlisin: alur pendaftaran, persyaratan, biaya, dan jadwal ujian.',
   alternates: {
-    canonical: 'https://darulmukhlisin.ponpes.id/ppsb',
+    canonical: 'https://darulmukhlisin.ponpes.id/psb',
   },
 };
 
-export default async function PPSBPage() {
+export default async function PSBPage() {
   const fallbackTimeline = [
     { tanggal: '1 November 2025', nama: 'Pembukaan Pendaftaran Santri Baru', status: 'Buka' },
     { tanggal: '8 Februari 2026', nama: 'Ujian Masuk Gelombang Pertama', status: 'Buka' },
@@ -21,12 +21,12 @@ export default async function PPSBPage() {
     { tanggal: '12 Juli 2026', nama: 'Penutupan Pendaftaran', status: 'Segera' },
   ];
 
-  let ppsbConfig = { timeline: fallbackTimeline, biayaUjian: 'Rp150.000', biaya: null };
+  let psbConfig = { timeline: fallbackTimeline, biayaUjian: 'Rp150.000', biaya: null };
   try {
     const res = await fetch(`${API_BASE}/settings/ppsb`, { cache: 'no-store' });
     const data = await res.json();
     if (data?.success && data?.data) {
-      ppsbConfig = {
+      psbConfig = {
         timeline: Array.isArray(data.data.timeline) && data.data.timeline.length ? data.data.timeline : fallbackTimeline,
         biayaUjian: data.data.biayaUjian || 'Rp150.000',
         biaya: data.data.biaya || null,
@@ -36,7 +36,7 @@ export default async function PPSBPage() {
     // fallback silently
   }
 
-  const waMessage = encodeURIComponent(`Assalamu'alaikum Admin PPSB Darul Mukhlisin.
+  const waMessage = encodeURIComponent(`Assalamu'alaikum Admin PSB Darul Mukhlisin.
 
 Saya ingin konsultasi pendaftaran santri baru.
 
@@ -53,7 +53,7 @@ Pertanyaan:`);
         <section className="bg-gradient-to-r from-indigo-700 via-blue-700 to-cyan-700 text-white py-10 sm:py-12 md:py-16">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 grid md:grid-cols-2 gap-6 md:gap-8 items-center">
             <div>
-              <p className="text-cyan-100 text-sm uppercase tracking-wider">PPSB Resmi</p>
+              <p className="text-cyan-100 text-sm uppercase tracking-wider">PSB Resmi</p>
               <h1 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
                 PENERIMAAN SANTRI BARU
                 <span className="block text-cyan-100 text-xl md:text-2xl mt-1">Pondok Pesantren Modern Darul Mukhlisin</span>
@@ -77,7 +77,7 @@ Pertanyaan:`);
             <div className="rounded-2xl overflow-hidden border border-white/20 shadow-lg">
               <Image
                 src={`${UPLOADS_BASE}/brosur%201.jpg`}
-                alt="Brosur PPSB Pondok Pesantren Modern Darul Mukhlisin"
+                alt="Brosur PSB Pondok Pesantren Modern Darul Mukhlisin"
                 width={1000}
                 height={1400}
                 className="w-full h-[220px] sm:h-[300px] md:h-[360px] object-cover"
@@ -149,7 +149,7 @@ Pertanyaan:`);
           <section className="border-b border-slate-200 pb-8">
             <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-3">Alur Pendaftaran (Timeline Gelombang)</h3>
             <div className="grid md:grid-cols-2 gap-3">
-              {ppsbConfig.timeline.map((item, idx) => (
+              {psbConfig.timeline.map((item, idx) => (
                 <div key={item.nama} className="rounded-lg border border-indigo-100 bg-indigo-50 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
@@ -165,7 +165,7 @@ Pertanyaan:`);
               ))}
             </div>
             <p className="mt-4 text-slate-700"><strong>Materi Ujian:</strong> Bacaan Al-Qur'an, Bahasa Indonesia, Berhitung</p>
-            <p className="text-slate-700"><strong>Biaya administrasi ujian:</strong> {ppsbConfig.biayaUjian}</p>
+            <p className="text-slate-700"><strong>Biaya administrasi ujian:</strong> {psbConfig.biayaUjian}</p>
           </section>
 
           <section id="persyaratan" className="border-b border-slate-200 pb-8">
@@ -191,30 +191,30 @@ Pertanyaan:`);
               <div>
                 <h4 className="font-semibold text-slate-900 mb-2">Biaya Awal</h4>
                 <ul className="space-y-1.5 text-slate-700">
-                  {(ppsbConfig.biaya?.awalItems || [
+                  {(psbConfig.biaya?.awalItems || [
                     'Uang pangkal masuk KMI: Rp1.500.000', 'Uang makan bulanan: Rp400.000', 'Iuran sekolah dan asrama bulanan: Rp200.000',
                     'Uang kesehatan (tahunan): Rp150.000', 'Sewa almari (tahunan): Rp300.000', 'Kasur: Rp550.000',
                     'Kegiatan ekstrakurikuler (tahunan): Rp150.000', 'Buku paket: Rp650.000', 'Iuran Pramuka (tahunan): Rp100.000', 'Iuran kertas (tahunan): Rp100.000'
                   ]).map((x) => <li key={x}>{x}</li>)}
                 </ul>
-                <p className="mt-2 font-bold text-indigo-700">Total: {ppsbConfig.biaya?.awalTotal || 'Rp4.100.000'}</p>
+                <p className="mt-2 font-bold text-indigo-700">Total: {psbConfig.biaya?.awalTotal || 'Rp4.100.000'}</p>
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900 mb-2">Seragam Putra</h4>
-                <ul className="space-y-1.5 text-slate-700">{(ppsbConfig.biaya?.putraItems || ['Kaos olahraga: Rp200.000','Seragam Tapak Suci: Rp160.000','3 kemeja: Rp480.000']).map((x)=> <li key={x}>{x}</li>)}</ul>
-                <p className="mt-2 font-bold text-indigo-700">Total: {ppsbConfig.biaya?.putraTotal || 'Rp840.000'}</p>
+                <ul className="space-y-1.5 text-slate-700">{(psbConfig.biaya?.putraItems || ['Kaos olahraga: Rp200.000','Seragam Tapak Suci: Rp160.000','3 kemeja: Rp480.000']).map((x)=> <li key={x}>{x}</li>)}</ul>
+                <p className="mt-2 font-bold text-indigo-700">Total: {psbConfig.biaya?.putraTotal || 'Rp840.000'}</p>
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900 mb-2">Seragam Putri</h4>
-                <ul className="space-y-1.5 text-slate-700">{(ppsbConfig.biaya?.putriItems || ['Kaos olahraga: Rp220.000','Seragam Tapak Suci: Rp160.000','Jubah toska: Rp190.000','Jubah biru: Rp160.000','Jilbab putih & coklat: Rp110.000']).map((x)=> <li key={x}>{x}</li>)}</ul>
-                <p className="mt-2 font-bold text-indigo-700">Total: {ppsbConfig.biaya?.putriTotal || 'Rp840.000'}</p>
+                <ul className="space-y-1.5 text-slate-700">{(psbConfig.biaya?.putriItems || ['Kaos olahraga: Rp220.000','Seragam Tapak Suci: Rp160.000','Jubah toska: Rp190.000','Jubah biru: Rp160.000','Jilbab putih & coklat: Rp110.000']).map((x)=> <li key={x}>{x}</li>)}</ul>
+                <p className="mt-2 font-bold text-indigo-700">Total: {psbConfig.biaya?.putriTotal || 'Rp840.000'}</p>
               </div>
             </div>
-            <p className="mt-4 text-sm text-amber-700">{ppsbConfig.biaya?.catatan || 'Catatan: Harga sewaktu-waktu dapat berubah.'}</p>
+            <p className="mt-4 text-sm text-amber-700">{psbConfig.biaya?.catatan || 'Catatan: Harga sewaktu-waktu dapat berubah.'}</p>
           </section>
 
           <section className="border-b border-slate-200 pb-8">
-            <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-3">FAQ PPSB</h3>
+            <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-3">FAQ PSB</h3>
             <div className="space-y-3">
               {[
                 {
@@ -223,7 +223,7 @@ Pertanyaan:`);
                 },
                 {
                   q: 'Bagaimana informasi biaya pendidikan disampaikan?',
-                  a: 'Rincian biaya pendidikan, daftar ulang, dan ketentuan administrasi disampaikan resmi oleh admin PPSB setelah proses verifikasi.',
+                  a: 'Rincian biaya pendidikan, daftar ulang, dan ketentuan administrasi disampaikan resmi oleh admin PSB setelah proses verifikasi.',
                 },
                 {
                   q: 'Apakah tersedia program beasiswa?',
@@ -255,7 +255,7 @@ Pertanyaan:`);
                 </span>
                 <span>
                   <span className="block font-bold text-slate-900">Unduh Brosur &amp; Formulir</span>
-                  <span className="block text-sm text-slate-600 mt-1">Dokumen resmi PPSB dalam format PDF.</span>
+                  <span className="block text-sm text-slate-600 mt-1">Dokumen resmi PSB dalam format PDF.</span>
                 </span>
               </Link>
               <Link href="/faq" className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-lg hover:border-primary-200 transition group">
@@ -264,7 +264,7 @@ Pertanyaan:`);
                 </span>
                 <span>
                   <span className="block font-bold text-slate-900">Pertanyaan Umum</span>
-                  <span className="block text-sm text-slate-600 mt-1">Jawaban atas pertanyaan seputar PPSB.</span>
+                  <span className="block text-sm text-slate-600 mt-1">Jawaban atas pertanyaan seputar PSB.</span>
                 </span>
               </Link>
             </div>
@@ -276,7 +276,7 @@ Pertanyaan:`);
             <div className="mt-5 grid grid-cols-1 sm:flex sm:flex-wrap gap-3">
               <Link href="/?openPpsbForm=1#pendaftaran" className="inline-flex w-full sm:w-auto justify-center items-center rounded-lg bg-white text-emerald-700 px-5 py-3 font-semibold hover:bg-emerald-50">Daftar Sekarang</Link>
               <a href={waLink} target="_blank" rel="noopener noreferrer" className="inline-flex w-full sm:w-auto justify-center items-center rounded-lg bg-slate-900 px-5 py-3 font-semibold hover:bg-slate-800">
-                <i className="fab fa-whatsapp mr-2"></i>Hubungi Admin PPSB
+                <i className="fab fa-whatsapp mr-2"></i>Hubungi Admin PSB
               </a>
             </div>
           </section>
@@ -284,7 +284,7 @@ Pertanyaan:`);
       </main>
 
       <a href={waLink} target="_blank" rel="noopener noreferrer" className="md:hidden fixed bottom-4 left-4 right-4 z-50 inline-flex items-center justify-center rounded-xl bg-emerald-600 text-white py-3.5 font-bold shadow-lg" style={{ paddingBottom: 'calc(0.875rem + env(safe-area-inset-bottom))' }}>
-        <i className="fab fa-whatsapp mr-2"></i>Chat Admin PPSB
+        <i className="fab fa-whatsapp mr-2"></i>Chat Admin PSB
       </a>
 
       <Footer />

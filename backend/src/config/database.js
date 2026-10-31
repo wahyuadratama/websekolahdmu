@@ -61,7 +61,7 @@ class Database {
         password VARCHAR(255) NOT NULL,
         full_name VARCHAR(120) NOT NULL,
         email VARCHAR(120) NOT NULL UNIQUE,
-        role ENUM('superadmin','admin','staff') NOT NULL DEFAULT 'staff',
+        role ENUM('superadmin','admin','staff','admin_psb') NOT NULL DEFAULT 'staff',
         status ENUM('active','inactive') NOT NULL DEFAULT 'active',
         last_login DATETIME NULL,
         created_by VARCHAR(80) DEFAULT 'system',
@@ -247,6 +247,8 @@ class Database {
     // Lightweight compatibility migration
     // Kontak form tidak lagi mewajibkan email
     await this.pool.query('ALTER TABLE pesan MODIFY email VARCHAR(120) NULL');
+    // Role baru admin_psb untuk Admin PSB
+    await this.pool.query(`ALTER TABLE users MODIFY COLUMN role ENUM('superadmin','admin','staff','admin_psb') NOT NULL DEFAULT 'staff'`);
   }
 
   async query(sql, params = []) {

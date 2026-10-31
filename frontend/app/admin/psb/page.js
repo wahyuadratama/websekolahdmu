@@ -25,10 +25,10 @@ function isoToIndo(iso) {
   return `${parseInt(m[3], 10)} ${BULAN_ID[bi]} ${m[1]}`;
 }
 
-export default function AdminPpsbPage() {
+export default function AdminPsbPage() {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
-  const [ppsb, setPpsb] = useState({
+  const [psb, setPsb] = useState({
     biayaUjian: 'Rp150.000',
     timeline: [
       { tanggal: '1 November 2025', nama: 'Pembukaan Pendaftaran Santri Baru', status: 'Buka' },
@@ -43,10 +43,10 @@ export default function AdminPpsbPage() {
       catatan: 'Catatan: Harga sewaktu-waktu dapat berubah.'
     }
   });
-  const [initialPpsb, setInitialPpsb] = useState(null);
+  const [initialPsb, setInitialPpsb] = useState(null);
 
   useEffect(() => {
-    loadPpsb();
+    loadPsb();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -67,7 +67,7 @@ export default function AdminPpsbPage() {
     putriItems: ['Kaos olahraga: Rp220.000', 'Seragam Tapak Suci: Rp160.000', 'Jubah toska: Rp190.000', 'Jubah biru: Rp160.000', 'Jilbab putih & coklat: Rp110.000'],
   };
 
-  const loadPpsb = async () => {
+  const loadPsb = async () => {
     try {
       setInitialLoading(true);
       const res = await fetch(`${API_URL}/api/settings/ppsb`);
@@ -75,7 +75,7 @@ export default function AdminPpsbPage() {
       if (data.success && data.data) {
         const next = {
           biayaUjian: data.data.biayaUjian || 'Rp150.000',
-          timeline: Array.isArray(data.data.timeline) && data.data.timeline.length ? data.data.timeline : ppsb.timeline,
+          timeline: Array.isArray(data.data.timeline) && data.data.timeline.length ? data.data.timeline : psb.timeline,
           biaya: {
             awalItems: data.data?.biaya?.awalItems || defaults.awalItems,
             awalTotal: data.data?.biaya?.awalTotal || 'Rp4.100.000',
@@ -86,39 +86,39 @@ export default function AdminPpsbPage() {
             catatan: data.data?.biaya?.catatan || 'Catatan: Harga sewaktu-waktu dapat berubah.',
           }
         };
-        setPpsb(next);
+        setPsb(next);
         setInitialPpsb(next);
       }
     } catch (e) {
-      showError('Gagal memuat pengaturan PPSB: ' + e.message);
+      showError('Gagal memuat pengaturan PSB: ' + e.message);
     } finally {
       setInitialLoading(false);
     }
   };
 
   const updateTimelineItem = (idx, field, value) => {
-    const next = [...ppsb.timeline];
+    const next = [...psb.timeline];
     next[idx] = { ...next[idx], [field]: value };
-    setPpsb({ ...ppsb, timeline: next });
+    setPsb({ ...psb, timeline: next });
   };
 
   const updateBiaya = (field, value) => {
-    setPpsb({ ...ppsb, biaya: { ...ppsb.biaya, [field]: value } });
+    setPsb({ ...psb, biaya: { ...psb.biaya, [field]: value } });
   };
 
-  const isDirty = JSON.stringify(ppsb) !== JSON.stringify(initialPpsb);
+  const isDirty = JSON.stringify(psb) !== JSON.stringify(initialPsb);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
       const payload = {
-        ...ppsb,
+        ...psb,
         biaya: {
-          ...ppsb.biaya,
-          awalItems: String(ppsb.biaya.awalItemsText || '').split('\n').map((x) => x.trim()).filter(Boolean),
-          putraItems: String(ppsb.biaya.putraItemsText || '').split('\n').map((x) => x.trim()).filter(Boolean),
-          putriItems: String(ppsb.biaya.putriItemsText || '').split('\n').map((x) => x.trim()).filter(Boolean),
+          ...psb.biaya,
+          awalItems: String(psb.biaya.awalItemsText || '').split('\n').map((x) => x.trim()).filter(Boolean),
+          putraItems: String(psb.biaya.putraItemsText || '').split('\n').map((x) => x.trim()).filter(Boolean),
+          putriItems: String(psb.biaya.putriItemsText || '').split('\n').map((x) => x.trim()).filter(Boolean),
         }
       };
       delete payload.biaya.awalItemsText;
@@ -133,10 +133,10 @@ export default function AdminPpsbPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setInitialPpsb(ppsb);
-        await showSuccess('Pengaturan PPSB berhasil diupdate!');
+        setInitialPpsb(psb);
+        await showSuccess('Pengaturan PSB berhasil diupdate!');
       } else {
-        showError(data.message || 'Gagal menyimpan pengaturan PPSB');
+        showError(data.message || 'Gagal menyimpan pengaturan PSB');
       }
     } catch (e) {
       showError('Terjadi kesalahan: ' + e.message);
@@ -145,24 +145,24 @@ export default function AdminPpsbPage() {
     }
   };
 
-  const biayaAwalText = (ppsb.biaya.awalItemsText ?? (ppsb.biaya.awalItems || []).join('\n'));
-  const biayaPutraText = (ppsb.biaya.putraItemsText ?? (ppsb.biaya.putraItems || []).join('\n'));
-  const biayaPutriText = (ppsb.biaya.putriItemsText ?? (ppsb.biaya.putriItems || []).join('\n'));
+  const biayaAwalText = (psb.biaya.awalItemsText ?? (psb.biaya.awalItems || []).join('\n'));
+  const biayaPutraText = (psb.biaya.putraItemsText ?? (psb.biaya.putraItems || []).join('\n'));
+  const biayaPutriText = (psb.biaya.putriItemsText ?? (psb.biaya.putriItems || []).join('\n'));
 
   return (
-    <AdminLayout title="PPSB">
+    <AdminLayout title="PSB">
       <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
-        <h3 className="text-lg sm:text-xl font-bold mb-4">Pengaturan PPSB</h3>
+        <h3 className="text-lg sm:text-xl font-bold mb-4">Pengaturan PSB</h3>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {initialLoading && <div className="rounded-lg border border-blue-100 bg-blue-50 px-4 py-2 text-sm text-blue-700">Memuat pengaturan PPSB...</div>}
+          {initialLoading && <div className="rounded-lg border border-blue-100 bg-blue-50 px-4 py-2 text-sm text-blue-700">Memuat pengaturan PSB...</div>}
           <fieldset disabled={loading || initialLoading} className="space-y-6">
             <div>
               <label className="block text-gray-700 mb-2 font-semibold">Biaya Administrasi Ujian</label>
-              <input type="text" value={ppsb.biayaUjian} onChange={(e) => setPpsb({ ...ppsb, biayaUjian: e.target.value })} className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm" />
+              <input type="text" value={psb.biayaUjian} onChange={(e) => setPsb({ ...psb, biayaUjian: e.target.value })} className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm" />
             </div>
 
             <div className="space-y-3">
-              {ppsb.timeline.map((item, idx) => (
+              {psb.timeline.map((item, idx) => (
                 <div key={idx} className="rounded-lg border border-slate-200 p-3 grid gap-3 md:grid-cols-3">
                   <div>
                     <input
@@ -190,28 +190,28 @@ export default function AdminPpsbPage() {
                 <div>
                   <label className="text-sm font-medium">Biaya Awal (1 baris 1 item)</label>
                   <textarea rows={8} value={biayaAwalText} onChange={(e)=>updateBiaya('awalItemsText', e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-                  <input type="text" value={ppsb.biaya.awalTotal || ''} onChange={(e)=>updateBiaya('awalTotal', e.target.value)} className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Total biaya awal"/>
+                  <input type="text" value={psb.biaya.awalTotal || ''} onChange={(e)=>updateBiaya('awalTotal', e.target.value)} className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Total biaya awal"/>
                 </div>
                 <div>
                   <label className="text-sm font-medium">Seragam Putra (1 baris 1 item)</label>
                   <textarea rows={8} value={biayaPutraText} onChange={(e)=>updateBiaya('putraItemsText', e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-                  <input type="text" value={ppsb.biaya.putraTotal || ''} onChange={(e)=>updateBiaya('putraTotal', e.target.value)} className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Total seragam putra"/>
+                  <input type="text" value={psb.biaya.putraTotal || ''} onChange={(e)=>updateBiaya('putraTotal', e.target.value)} className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Total seragam putra"/>
                 </div>
                 <div>
                   <label className="text-sm font-medium">Seragam Putri (1 baris 1 item)</label>
                   <textarea rows={8} value={biayaPutriText} onChange={(e)=>updateBiaya('putriItemsText', e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-                  <input type="text" value={ppsb.biaya.putriTotal || ''} onChange={(e)=>updateBiaya('putriTotal', e.target.value)} className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Total seragam putri"/>
+                  <input type="text" value={psb.biaya.putriTotal || ''} onChange={(e)=>updateBiaya('putriTotal', e.target.value)} className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Total seragam putri"/>
                 </div>
               </div>
               <div className="mt-3">
                 <label className="text-sm font-medium">Catatan Biaya</label>
-                <input type="text" value={ppsb.biaya.catatan || ''} onChange={(e)=>updateBiaya('catatan', e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                <input type="text" value={psb.biaya.catatan || ''} onChange={(e)=>updateBiaya('catatan', e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
               </div>
             </div>
 
             <div className="flex gap-3">
               <button type="submit" disabled={loading || !isDirty} className="rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-2 text-white disabled:opacity-50">
-                <i className="fas fa-save mr-2"></i>{loading ? 'Menyimpan...' : 'Simpan Pengaturan PPSB'}
+                <i className="fas fa-save mr-2"></i>{loading ? 'Menyimpan...' : 'Simpan Pengaturan PSB'}
               </button>
             </div>
           </fieldset>
